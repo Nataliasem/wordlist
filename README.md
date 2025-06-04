@@ -1,5 +1,9 @@
 An auxiliary tool for learning foreign language
 
-#git clone
-#npm i
-#npm run dev
+How to run in development mode:
+
+```bash
+git clone
+npm install
+npm run dev
+```
