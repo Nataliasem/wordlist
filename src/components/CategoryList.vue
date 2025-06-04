@@ -94,6 +94,7 @@ onMounted(() => {
 }
 
 .category-name {
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;

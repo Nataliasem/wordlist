@@ -1,12 +1,7 @@
 <template>
   <div class="word-list">
-    <WordForm :selected-category-id="selectedCategoryId"/>
 
-    <div v-if="!wordList.length">
-      ⚠ No words in this category
-    </div>
-
-    <table v-else>
+    <table>
       <tr>
         <th>Word</th>
         <th>Transcription</th>
@@ -15,6 +10,12 @@
         <td>Edit</td>
         <td>Delete</td>
       </tr>
+
+      <AddWordRow
+        v-if="selectedCategoryId"
+        :selected-category-id="selectedCategoryId"
+        @update-words="getWordListByCategory"
+      />
 
       <tr v-for="item in wordList" :key="item.id">
         <td>{{ item.word }}</td>
@@ -34,7 +35,7 @@
 </template>
 
 <script setup>
-import WordForm from './WordForm.vue'
+import AddWordRow from './AddWordRow.vue'
 import { onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
@@ -93,13 +94,5 @@ onMounted(() => {
 .word-list {
   flex-grow: 1;
   padding: 32px;
-}
-
-table, th, td {
-  border:1px solid black;
-}
-
-th, td {
-  padding: 4px;
 }
 </style>

@@ -1,13 +1,21 @@
 <template>
-  <form class="word-form">
-    <input v-for="(_, key) in word"
-      v-model="word[key]"
-      class="word-input"
-      type="text"
-      :placeholder="key"
-    >
-    <button type="button" @click="addWordToCategory">Add word to category</button>
-  </form>
+  <tr>
+    <td  v-for="(_, key) in word">
+       <textarea
+         rows="1"
+         v-model="word[key]"
+         :placeholder="key"
+       />
+    </td>
+
+    <td>
+      <button @click="addWordToCategory">Add</button>
+    </td>
+
+    <td>
+      <button @click="clearUserInput">Cancel</button>
+    </td>
+  </tr>
 </template>
 
 <script setup>
@@ -17,12 +25,23 @@ const props = defineProps({
   selectedCategoryId: Number
 })
 
+const emit = defineEmits(['updateWords'])
+
 const word = ref({
   word: '',
   transcription: '',
+  definition: '',
   translation: '',
-  definition: ''
 })
+const clearUserInput = () => {
+  word.value = {
+    word: '',
+    transcription: '',
+    translation: '',
+    definition: ''
+  }
+}
+
 const addWordToCategory = async () => {
   if (!word.value.word) {
     return
@@ -40,13 +59,8 @@ const addWordToCategory = async () => {
   })
 
   if (response.ok) {
-    await getWordListByCategory()
-    word.value = {
-      word: '',
-      transcription: '',
-      translation: '',
-      definition: ''
-    }
+    emit('updateWords')
+    clearUserInput()
   } else {
     alert('Ошибка HTTP: ' + response.status)
   }
@@ -54,16 +68,3 @@ const addWordToCategory = async () => {
 
 </script>
 
-<style scoped>
-.word-form {
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  width: 450px;
-}
-
-.word-input {
-  padding: 8px;
-  margin-bottom: 16px;
-}
-</style>
