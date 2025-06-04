@@ -12,7 +12,7 @@
        {{ item.name }}
      </div>
       <div class="category-actions">
-        <button class="category-actions__button">✏</button>
+        <button class="category-actions__button">✎</button>
         <button class="category-actions__button" @click="deleteCategory(item.id)">
           ❌
         </button>

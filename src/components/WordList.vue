@@ -7,7 +7,7 @@
         <th>Transcription</th>
         <th>Definition</th>
         <th>Translation</th>
-        <td>Edit</td>
+        <td>Add/edit</td>
         <td>Delete</td>
       </tr>
 
@@ -24,7 +24,7 @@
         <td>{{ item.translation }}</td>
 
         <td>
-          <button>✏</button>
+          <button>✎</button>
         </td>
         <td>
           <button @click="deleteWord(item.id)">❌</button>

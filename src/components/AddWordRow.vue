@@ -9,11 +9,11 @@
     </td>
 
     <td>
-      <button @click="addWordToCategory">Add</button>
+      <button @click="addWordToCategory">✅</button>
     </td>
 
     <td>
-      <button @click="clearUserInput">Cancel</button>
+      <button @click="clearUserInput">❌</button>
     </td>
   </tr>
 </template>
