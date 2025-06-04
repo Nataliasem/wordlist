@@ -1,17 +1,9 @@
 <template>
   <div class="word-list">
-    <form class="word-form">
-      <input v-for="(_, key) in word"
-        v-model="word[key]"
-        class="word-input"
-        type="text"
-        :placeholder="key"
-      >
-      <button type="button" @click="addWordToCategory">Add word to category</button>
-    </form>
+    <WordForm :selected-category-id="selectedCategoryId"/>
 
     <div v-if="!wordList.length">
-      ⚠ Select category
+      ⚠ No words in this category
     </div>
 
     <table v-else>
@@ -20,6 +12,8 @@
         <th>Transcription</th>
         <th>Definition</th>
         <th>Translation</th>
+        <td>Edit</td>
+        <td>Delete</td>
       </tr>
 
       <tr v-for="item in wordList" :key="item.id">
@@ -27,11 +21,12 @@
         <td>{{ item.transcription }}</td>
         <td>{{ item.definition }}</td>
         <td>{{ item.translation }}</td>
-        <td>
-          <button @click="deleteWord(item.id)">❌</button>
-        </td>
+
         <td>
           <button>✏</button>
+        </td>
+        <td>
+          <button @click="deleteWord(item.id)">❌</button>
         </td>
       </tr>
     </table>
@@ -39,6 +34,7 @@
 </template>
 
 <script setup>
+import WordForm from './WordForm.vue'
 import { onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
@@ -46,7 +42,10 @@ const props = defineProps({
 })
 
 watch(() => props.selectedCategoryId, () => {
-  getWordListByCategory()
+  props.selectedCategoryId
+    ? getWordListByCategory()
+    : getWordList()
+
 })
 
 const wordList = ref([])
@@ -71,41 +70,6 @@ const getWordListByCategory = async () => {
   }
 }
 
-const word = ref({
-  word: '',
-  transcription: '',
-  translation: '',
-  definition: ''
-})
-const addWordToCategory = async () => {
-  if (!word.value.word) {
-    return
-  }
-
-  const response = await fetch('http://192.168.1.67:8080/api/v1/words', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      ...word.value,
-      category: props.selectedCategoryId
-    })
-  })
-
-  if (response.ok) {
-    await getWordListByCategory()
-    word.value = {
-      word: '',
-      transcription: '',
-      translation: '',
-      definition: ''
-    }
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
-}
-
 const deleteWord = async (id) => {
   const response = await fetch(`http://192.168.1.67:8080/api/v1/words/${ id }`, {
     method: 'DELETE'
@@ -117,21 +81,15 @@ const deleteWord = async (id) => {
     alert('Ошибка HTTP: ' + response.status)
   }
 }
+
+onMounted(() => {
+  if(!props.selectedCategoryId) {
+    getWordList()
+  }
+})
 </script>
 
 <style scoped>
-.word-form {
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  width: 450px;
-}
-
-.word-input {
-  padding: 8px;
-  margin-bottom: 16px;
-}
-
 .word-list {
   flex-grow: 1;
   padding: 32px;
