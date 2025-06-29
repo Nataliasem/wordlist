@@ -22,7 +22,7 @@
 import { ref } from "vue";
 
 const props = defineProps({
-  selectedCategoryId: Number
+  selectedCategory: Object,
 })
 
 const emit = defineEmits(['updateWords'])
@@ -32,13 +32,15 @@ const word = ref({
   transcription: '',
   definition: '',
   translation: '',
+  category: props.selectedCategory?.name || ''
 })
 const clearUserInput = () => {
   word.value = {
     word: '',
     transcription: '',
     translation: '',
-    definition: ''
+    definition: '',
+    category: null
   }
 }
 
@@ -54,7 +56,7 @@ const addWordToCategory = async () => {
     },
     body: JSON.stringify({
       ...word.value,
-      category: props.selectedCategoryId
+      category: props.selectedCategory?.id
     })
   })
 

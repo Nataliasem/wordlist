@@ -1,7 +1,7 @@
 <template>
   <div class="page-layout">
-    <CategoryList @selectCategoryId="selectCategory" />
-    <WordList :selected-category-id="selectedCategoryId"/>
+    <CategoryList @selectCategory="selectCategory" />
+    <WordList :selected-category="selectedCategory" />
   </div>
 </template>
 
@@ -10,9 +10,9 @@ import { ref } from 'vue'
 import CategoryList from './components/CategoryList.vue'
 import WordList from './components/WordList.vue'
 
-const selectedCategoryId = ref(null)
-const selectCategory = (id) => {
-  selectedCategoryId.value = id
+const selectedCategory = ref(null)
+const selectCategory = (category) => {
+  selectedCategory.value = category
 }
 </script>
 

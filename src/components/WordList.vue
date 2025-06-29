@@ -1,19 +1,21 @@
 <template>
   <div class="word-list">
 
+    <h2>{{ selectedCategory?.name || 'Without category' }}</h2>
+
     <table>
       <tr>
         <th>Word</th>
         <th>Transcription</th>
         <th>Definition</th>
         <th>Translation</th>
+        <th>Category</th>
         <td>Add/edit</td>
         <td>Delete</td>
       </tr>
 
       <AddWordRow
-        v-if="selectedCategoryId"
-        :selected-category-id="selectedCategoryId"
+        :selected-category="selectedCategory"
         @update-words="getWordListByCategory"
       />
 
@@ -22,6 +24,7 @@
         <td>{{ item.transcription }}</td>
         <td>{{ item.definition }}</td>
         <td>{{ item.translation }}</td>
+        <td>{{ item.category?.name || 'no category' }}</td>
 
         <td>
           <button>✎</button>
@@ -39,19 +42,18 @@ import AddWordRow from './AddWordRow.vue'
 import { onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
-  selectedCategoryId: Number
+  selectedCategory: Object
 })
 
-watch(() => props.selectedCategoryId, () => {
-  props.selectedCategoryId
+watch(() => props.selectedCategory, () => {
+  props.selectedCategory?.id
     ? getWordListByCategory()
-    : getWordList()
-
+    : getWordsWithoutCategory()
 })
 
 const wordList = ref([])
-const getWordList = async () => {
-  const response = await fetch('http://192.168.1.67:8080/api/v1/words')
+const getWordsWithoutCategory = async () => {
+  const response = await fetch('http://192.168.1.67:8080/api/v1/words/categories/orphan')
   if (response.ok) {
     wordList.value = await response.json()
   } else {
@@ -60,10 +62,10 @@ const getWordList = async () => {
 }
 
 const getWordListByCategory = async () => {
-  if (!props.selectedCategoryId) {
+  if (!props.selectedCategory?.id) {
     return
   }
-  const response = await fetch(`http://192.168.1.67:8080/api/v1/words/categories/${ props.selectedCategoryId }`)
+  const response = await fetch(`http://192.168.1.67:8080/api/v1/words/categories/${ props.selectedCategory.id }`)
   if (response.ok) {
     wordList.value = await response.json()
   } else {
@@ -84,8 +86,8 @@ const deleteWord = async (id) => {
 }
 
 onMounted(() => {
-  if(!props.selectedCategoryId) {
-    getWordList()
+  if(!props.selectedCategory?.id) {
+    getWordsWithoutCategory()
   }
 })
 </script>
