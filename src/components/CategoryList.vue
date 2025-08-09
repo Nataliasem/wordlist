@@ -28,10 +28,10 @@
           </div>
         </div>
       </div>
-      <div class="divider" />
-      <div class="category-name" @click="selectCategory(null)">Without category</div>
     </div>
 
+    <div class="divider" />
+    <div class="category-name" @click="selectCategory(null)">no category</div>
   </div>
 </template>
 
@@ -108,7 +108,7 @@ onMounted(() => {
 
 .category-list__wrapper {
   overflow-y: scroll;
-  height: 80%;
+  height: 75%;
 }
 
 .category-name {
