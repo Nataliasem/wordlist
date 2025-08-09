@@ -1,6 +1,6 @@
 <template>
   <tr>
-    <td  v-for="(_, key) in word">
+    <td v-for="(_, key) in word">
        <textarea
          rows="1"
          v-model="word[key]"
