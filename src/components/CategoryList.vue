@@ -50,7 +50,8 @@ const categories = ref([])
 const getCategories = async () => {
   const response = await fetch('http://192.168.1.67:8080/api/v1/categories')
   if (response.ok) {
-    categories.value = await response.json()
+    const res = await response.json()
+    categories.value = res.sort((a, b) => a.id - b.id)
   } else {
     alert('Ошибка HTTP: ' + response.status)
   }
