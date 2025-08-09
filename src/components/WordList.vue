@@ -100,6 +100,6 @@ onMounted(() => {
 <style scoped>
 .word-list {
   flex-grow: 1;
-  padding: 32px;
+  padding: 16px;
 }
 </style>

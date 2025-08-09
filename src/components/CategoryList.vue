@@ -96,9 +96,9 @@ onMounted(() => {
 
 <style scoped>
 .category-list {
+  height: 100%;
   background-color: lightseagreen;
-  padding: 32px;
-  min-width: 300px;
+  padding: 16px;
   -webkit-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   -moz-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
