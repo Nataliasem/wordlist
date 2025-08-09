@@ -2,7 +2,7 @@
   <div class="word-list">
     <table>
       <caption>
-        <h2>{{ selectedCategory?.name || 'Without category' }}</h2>
+        <h2>Category: {{ selectedCategory?.name || 'Without category' }}</h2>
       </caption>
 
       <thead>

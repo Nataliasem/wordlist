@@ -12,8 +12,9 @@
       :key="item.id"
       class="category-name"
       :class="{ 'category-name__selected' : selectedCategory?.id === item.id }"
+      @click="selectCategory(item)"
     >
-     <div @click="selectCategory(item)">
+     <div>
        {{ item.name }}
      </div>
       <div
@@ -95,12 +96,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.text-blue {
-   color: blue;
-}
 .category-list {
   height: 100%;
-  background-color: lightseagreen;
+  background-color: #f1f0f2;
   padding: 16px;
   -webkit-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   -moz-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
@@ -113,14 +111,17 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 8px 16px;
-  color: #fff;
   font-weight: bold;
 }
 
+.category-name:hover {
+  background-color: #e7e6e9;
+}
+
 .category-name__selected {
-  color: black;
-  background-color: white;
+  background-color: lavender;
   border-radius: 4px;
+  border: 2px solid purple;
 }
 
 .add-category__wrapper {
@@ -131,16 +132,15 @@ onMounted(() => {
 
 .add-category__input {
   flex-grow: 1;
-  border: 1px solid transparent;
+  border: 2px solid #e7e6e9;
   border-radius: 4px;
   font-size: 1em;
 }
 
 .add-category__button {
-  color: #fff;
   margin-left: 8px;
   border-radius: 4px;
-  border: 1px solid #fff;
+  border: 2px solid #e7e6e9;
 }
 
 .category-actions {
@@ -154,7 +154,6 @@ onMounted(() => {
 
 .category-actions__button {
   padding: 0 8px;
-  background-color: white;
 }
 
 .category-actions__button:first-child {
@@ -164,7 +163,7 @@ onMounted(() => {
 .divider {
   height: 2px;
   width: 100%;
-  background-color: white;
+  background-color: #e7e6e9;
   margin: 8px 0;
   border-radius: 1px;
 }
