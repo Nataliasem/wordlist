@@ -1,6 +1,6 @@
 <template>
-  <tr>
-    <td  v-for="(_, key) in word">
+  <tr class="add-word-row">
+    <td v-for="(_, key) in word">
        <textarea
          rows="1"
          v-model="word[key]"
@@ -69,4 +69,10 @@ const addWordToCategory = async () => {
 }
 
 </script>
+
+<style>
+.add-word-row {
+  background-color: lavender;
+}
+</style>
 

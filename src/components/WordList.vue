@@ -1,26 +1,30 @@
 <template>
   <div class="word-list">
-
-    <h2>{{ selectedCategory?.name || 'Without category' }}</h2>
-
     <table>
+      <caption>
+        <h2>Category: {{ selectedCategory?.name || 'Without category' }}</h2>
+      </caption>
+
+      <thead>
       <tr>
         <th>Word</th>
         <th>Transcription</th>
         <th>Definition</th>
         <th>Translation</th>
         <th>Category</th>
-        <td>Add/edit</td>
-        <td>Delete</td>
+        <th>Add/edit</th>
+        <th>Delete</th>
       </tr>
+      </thead>
 
+      <tbody>
       <AddWordRow
         :selected-category="selectedCategory"
         @update-words="getWordListByCategory"
       />
 
       <tr v-for="item in wordList" :key="item.id">
-        <td>{{ item.word }}</td>
+        <th scope="row">{{ item.word }}</th>
         <td>{{ item.transcription }}</td>
         <td>{{ item.definition }}</td>
         <td>{{ item.translation }}</td>
@@ -33,6 +37,7 @@
           <button @click="deleteWord(item.id)">❌</button>
         </td>
       </tr>
+      </tbody>
     </table>
   </div>
 </template>
@@ -94,7 +99,10 @@ onMounted(() => {
 
 <style scoped>
 .word-list {
+  position: fixed;
+  top: 0;
+  left: 300px;
   flex-grow: 1;
-  padding: 32px;
+  padding: 16px;
 }
 </style>

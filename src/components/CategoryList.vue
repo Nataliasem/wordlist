@@ -7,31 +7,31 @@
 
     <div class="divider" />
 
-    <div
-      v-for="item in categories"
-      :key="item.id"
-      class="category-name"
-      :class="{ 'category-name__selected' : selectedCategory?.id === item.id }"
-    >
-     <div @click="selectCategory(item)">
-       {{ item.name }}
-     </div>
+    <div class="category-list__wrapper">
       <div
-        class="category-actions"
-        :class="{ 'category-actions__selected' : selectedCategory?.id === item.id }"
+        v-for="item in categories"
+        :key="item.id"
+        class="category-name"
+        :class="{ 'category-name__selected' : selectedCategory?.id === item.id }"
+        @click="selectCategory(item)"
       >
-        <div class="category-actions__button">✎</div>
-        <div class="category-actions__button" @click="deleteCategory(item.id)">
-          ❌
+        <div>
+          {{ item.name }}
+        </div>
+        <div
+          class="category-actions"
+          :class="{ 'category-actions__selected' : selectedCategory?.id === item.id }"
+        >
+          <div class="category-actions__button">✎</div>
+          <div class="category-actions__button" @click="deleteCategory(item.id)">
+            ❌
+          </div>
         </div>
       </div>
     </div>
 
     <div class="divider" />
-
-    <div class="category-name" @click="selectCategory(null)">Without category</div>
-
-    <div class="divider" />
+    <div class="category-name" @click="selectCategory(null)">no category</div>
   </div>
 </template>
 
@@ -50,7 +50,8 @@ const categories = ref([])
 const getCategories = async () => {
   const response = await fetch('http://192.168.1.67:8080/api/v1/categories')
   if (response.ok) {
-    categories.value = await response.json()
+    const res = await response.json()
+    categories.value = res.sort((a, b) => a.id - b.id)
   } else {
     alert('Ошибка HTTP: ' + response.status)
   }
@@ -96,12 +97,19 @@ onMounted(() => {
 
 <style scoped>
 .category-list {
-  background-color: lightseagreen;
-  padding: 32px;
-  min-width: 300px;
+  position: fixed;
+  top: 0;
+  height: 100%;
+  background-color: #f1f0f2;
+  padding: 16px;
   -webkit-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   -moz-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
+}
+
+.category-list__wrapper {
+  overflow-y: scroll;
+  height: 75%;
 }
 
 .category-name {
@@ -110,14 +118,17 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 8px 16px;
-  color: #fff;
   font-weight: bold;
 }
 
+.category-name:hover {
+  background-color: #e7e6e9;
+}
+
 .category-name__selected {
-  color: palevioletred;
-  background-color: white;
+  background-color: lavender;
   border-radius: 4px;
+  border: 2px solid purple;
 }
 
 .add-category__wrapper {
@@ -128,12 +139,15 @@ onMounted(() => {
 
 .add-category__input {
   flex-grow: 1;
-  border: 1px dashed palevioletred;
+  border: 2px solid #e7e6e9;
+  border-radius: 4px;
   font-size: 1em;
 }
 
 .add-category__button {
   margin-left: 8px;
+  border-radius: 4px;
+  border: 2px solid #e7e6e9;
 }
 
 .category-actions {
@@ -147,7 +161,6 @@ onMounted(() => {
 
 .category-actions__button {
   padding: 0 8px;
-  background-color: white;
 }
 
 .category-actions__button:first-child {
@@ -157,7 +170,7 @@ onMounted(() => {
 .divider {
   height: 2px;
   width: 100%;
-  background-color: white;
+  background-color: #e7e6e9;
   margin: 8px 0;
   border-radius: 1px;
 }
