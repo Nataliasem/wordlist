@@ -99,6 +99,9 @@ onMounted(() => {
 
 <style scoped>
 .word-list {
+  position: fixed;
+  top: 0;
+  left: 300px;
   flex-grow: 1;
   padding: 16px;
 }

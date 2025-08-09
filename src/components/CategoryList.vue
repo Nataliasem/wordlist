@@ -7,32 +7,31 @@
 
     <div class="divider" />
 
-    <div
-      v-for="item in categories"
-      :key="item.id"
-      class="category-name"
-      :class="{ 'category-name__selected' : selectedCategory?.id === item.id }"
-      @click="selectCategory(item)"
-    >
-     <div>
-       {{ item.name }}
-     </div>
+    <div class="category-list__wrapper">
       <div
-        class="category-actions"
-        :class="{ 'category-actions__selected' : selectedCategory?.id === item.id }"
+        v-for="item in categories"
+        :key="item.id"
+        class="category-name"
+        :class="{ 'category-name__selected' : selectedCategory?.id === item.id }"
+        @click="selectCategory(item)"
       >
-        <div class="category-actions__button">✎</div>
-        <div class="category-actions__button" @click="deleteCategory(item.id)">
-          ❌
+        <div>
+          {{ item.name }}
+        </div>
+        <div
+          class="category-actions"
+          :class="{ 'category-actions__selected' : selectedCategory?.id === item.id }"
+        >
+          <div class="category-actions__button">✎</div>
+          <div class="category-actions__button" @click="deleteCategory(item.id)">
+            ❌
+          </div>
         </div>
       </div>
+      <div class="divider" />
+      <div class="category-name" @click="selectCategory(null)">Without category</div>
     </div>
 
-    <div class="divider" />
-
-    <div class="category-name" @click="selectCategory(null)">Without category</div>
-
-    <div class="divider" />
   </div>
 </template>
 
@@ -97,12 +96,19 @@ onMounted(() => {
 
 <style scoped>
 .category-list {
+  position: fixed;
+  top: 0;
   height: 100%;
   background-color: #f1f0f2;
   padding: 16px;
   -webkit-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   -moz-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
+}
+
+.category-list__wrapper {
+  overflow-y: scroll;
+  height: 80%;
 }
 
 .category-name {
