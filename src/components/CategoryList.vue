@@ -95,6 +95,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.text-blue {
+   color: blue;
+}
 .category-list {
   height: 100%;
   background-color: lightseagreen;
@@ -115,7 +118,7 @@ onMounted(() => {
 }
 
 .category-name__selected {
-  color: palevioletred;
+  color: black;
   background-color: white;
   border-radius: 4px;
 }
@@ -128,12 +131,16 @@ onMounted(() => {
 
 .add-category__input {
   flex-grow: 1;
-  border: 1px dashed palevioletred;
+  border: 1px solid transparent;
+  border-radius: 4px;
   font-size: 1em;
 }
 
 .add-category__button {
+  color: #fff;
   margin-left: 8px;
+  border-radius: 4px;
+  border: 1px solid #fff;
 }
 
 .category-actions {

@@ -18,6 +18,11 @@
       </thead>
 
       <tbody>
+      <AddWordRow
+        :selected-category="selectedCategory"
+        @update-words="getWordListByCategory"
+      />
+
       <tr v-for="item in wordList" :key="item.id">
         <th scope="row">{{ item.word }}</th>
         <td>{{ item.transcription }}</td>
@@ -33,11 +38,6 @@
         </td>
       </tr>
       </tbody>
-
-      <AddWordRow
-        :selected-category="selectedCategory"
-        @update-words="getWordListByCategory"
-      />
     </table>
   </div>
 </template>
