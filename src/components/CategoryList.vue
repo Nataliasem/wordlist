@@ -23,7 +23,7 @@
           :class="{ 'category-actions__selected' : selectedCategory?.id === item.id }"
         >
           <div class="category-actions__button">✎</div>
-          <div class="category-actions__button" @click="deleteCategory(item.id)">
+          <div class="category-actions__button" @click="deleteCategoryById(item.id)">
             ❌
           </div>
         </div>
@@ -37,6 +37,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import { getCategories, createCategory, deleteCategory } from '../api/category.js'
 
 const emit = defineEmits(['selectCategory'])
 
@@ -47,51 +48,24 @@ const selectCategory = (category) => {
 }
 
 const categories = ref([])
-const getCategories = async () => {
-  const response = await fetch('http://192.168.1.67:8080/api/v1/categories')
-  if (response.ok) {
-    const res = await response.json()
-    categories.value = res.sort((a, b) => a.id - b.id)
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
+const updateCategories = async () => {
+  categories.value = await getCategories()
 }
+
 const category = ref('')
 const addCategory = async () => {
-  if(category.value === '') {
-    return
-  }
-
-  const response = await fetch('http://192.168.1.67:8080/api/v1/categories', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ category: category.value })
-  })
-
-  if (response.ok) {
-    await getCategories()
-    category.value = ''
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
+  if(!category.value) return
+  await createCategory(category.value)
+  await updateCategories()
 }
-const deleteCategory = async (id) => {
-  const response = await fetch(`http://192.168.1.67:8080/api/v1/categories/${ id }`, {
-    method: 'DELETE'
-  })
 
-  if (response.ok) {
-    await getCategories()
-    selectedCategory.value = null
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
+const deleteCategoryById = async (id) => {
+  await deleteCategory(id)
+  await updateCategories()
 }
 
 onMounted(() => {
-  getCategories()
+  updateCategories()
 })
 </script>
 

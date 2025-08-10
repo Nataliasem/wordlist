@@ -2,7 +2,7 @@
   <div class="word-list">
     <table>
       <caption>
-        <h2>Category: {{ selectedCategory?.name || 'Without category' }}</h2>
+        <h2>Category: {{ selectedCategory?.name || 'No category' }}</h2>
       </caption>
 
       <thead>
@@ -20,7 +20,7 @@
       <tbody>
       <AddWordRow
         :selected-category="selectedCategory"
-        @update-words="getWordListByCategory"
+        @update-words="updateWords"
       />
 
       <tr v-for="item in wordList" :key="item.id">
@@ -28,13 +28,13 @@
         <td>{{ item.transcription }}</td>
         <td>{{ item.definition }}</td>
         <td>{{ item.translation }}</td>
-        <td>{{ item.category?.name || 'no category' }}</td>
+        <td>{{ item.category?.name || 'No category' }}</td>
 
         <td>
           <button>✎</button>
         </td>
         <td>
-          <button @click="deleteWord(item.id)">❌</button>
+          <button @click="deleteWordFromCategory(item.id)">❌</button>
         </td>
       </tr>
       </tbody>
@@ -44,57 +44,26 @@
 
 <script setup>
 import AddWordRow from './AddWordRow.vue'
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
+import { getWordlist, deleteWord} from '../api/word.js'
 
 const props = defineProps({
   selectedCategory: Object
 })
 
 watch(() => props.selectedCategory, () => {
-  props.selectedCategory?.id
-    ? getWordListByCategory()
-    : getWordsWithoutCategory()
+  getWordlist(props.selectedCategory?.id || '')
 })
 
 const wordList = ref([])
-const getWordsWithoutCategory = async () => {
-  const response = await fetch('http://192.168.1.67:8080/api/v1/words/categories/orphan')
-  if (response.ok) {
-    wordList.value = await response.json()
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
+const updateWords = async () => {
+  wordList.value = await getWordlist(props.selectedCategory?.id || '')
 }
 
-const getWordListByCategory = async () => {
-  if (!props.selectedCategory?.id) {
-    return
-  }
-  const response = await fetch(`http://192.168.1.67:8080/api/v1/words/categories/${ props.selectedCategory.id }`)
-  if (response.ok) {
-    wordList.value = await response.json()
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
+const deleteWordFromCategory = async (id) => {
+  await deleteWord(id)
+  await updateWords()
 }
-
-const deleteWord = async (id) => {
-  const response = await fetch(`http://192.168.1.67:8080/api/v1/words/${ id }`, {
-    method: 'DELETE'
-  })
-
-  if (response.ok) {
-    await getWordListByCategory()
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
-}
-
-onMounted(() => {
-  if(!props.selectedCategory?.id) {
-    getWordsWithoutCategory()
-  }
-})
 </script>
 
 <style scoped>
