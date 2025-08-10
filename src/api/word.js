@@ -19,9 +19,13 @@ export const getWord = async (wordId) => {
   }
 }
 
-export const updateWord = async (wordId) => {
-  await fetch(`${WORD_URL}/${wordId}`, {
-    method: 'PUT'
+export const updateWord = async (word) => {
+  await fetch(`${WORD_URL}/${word.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(word)
   })
 }
 

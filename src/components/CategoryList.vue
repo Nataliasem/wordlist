@@ -8,36 +8,31 @@
     <div class="divider" />
 
     <div class="category-list__wrapper">
-      <div
-        v-for="item in categories"
-        :key="item.id"
-        class="category-name"
-        :class="{ 'category-name__selected' : selectedCategory?.id === item.id }"
-        @click="selectCategory(item)"
-      >
-        <div>
-          {{ item.name }}
-        </div>
-        <div
-          class="category-actions"
-          :class="{ 'category-actions__selected' : selectedCategory?.id === item.id }"
-        >
-          <div class="category-actions__button">✎</div>
-          <div class="category-actions__button" @click="deleteCategoryById(item.id)">
-            ❌
-          </div>
-        </div>
-      </div>
+      <template v-for="item in categories" :key="item.id">
+        <CategoryItem
+          :category="item"
+          :selected-category-id="selectedCategory.id"
+          @select-category="selectCategory"
+          @update-categories="updateCategories"
+        />
+      </template>
     </div>
 
     <div class="divider" />
-    <div class="category-name" @click="selectCategory(null)">no category</div>
+    <div
+      class="category-name"
+      :class="{ 'category-name__selected' : !selectedCategory }"
+      @click="selectCategory(null)"
+    >
+      no category
+    </div>
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { getCategories, createCategory, deleteCategory } from '../api/category.js'
+import { getCategories, createCategory } from '../api/category.js'
+import CategoryItem from './CategoryItem.vue'
 
 const emit = defineEmits(['selectCategory'])
 
@@ -59,17 +54,12 @@ const addCategory = async () => {
   await updateCategories()
 }
 
-const deleteCategoryById = async (id) => {
-  await deleteCategory(id)
-  await updateCategories()
-}
-
 onMounted(() => {
   updateCategories()
 })
 </script>
 
-<style scoped>
+<style>
 .category-list {
   position: fixed;
   top: 0;
@@ -124,22 +114,6 @@ onMounted(() => {
   border: 2px solid #e7e6e9;
 }
 
-.category-actions {
-  display: none;
-  cursor: pointer;
-}
-
-.category-actions__selected {
-  display: flex;
-}
-
-.category-actions__button {
-  padding: 0 8px;
-}
-
-.category-actions__button:first-child {
-  margin-right: 4px;
-}
 
 .divider {
   height: 2px;
