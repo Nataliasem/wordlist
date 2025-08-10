@@ -19,13 +19,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue'
+import { createWord } from '../api/word.js'
 
 const props = defineProps({
-  selectedCategory: Object,
+  selectedCategory: Object
 })
 
-const emit = defineEmits(['updateWords'])
+const emit = defineEmits([ 'updateWords' ])
 
 const word = ref({
   word: '',
@@ -48,24 +49,13 @@ const addWordToCategory = async () => {
   if (!word.value.word) {
     return
   }
-
-  const response = await fetch('http://192.168.1.67:8080/api/v1/words', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
+  await createWord({
       ...word.value,
       category: props.selectedCategory?.id
-    })
-  })
-
-  if (response.ok) {
-    emit('updateWords')
-    clearUserInput()
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
+    }
+  )
+  emit('updateWords')
+  clearUserInput()
 }
 
 </script>
