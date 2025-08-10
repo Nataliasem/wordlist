@@ -52,7 +52,7 @@ const props = defineProps({
 })
 
 watch(() => props.selectedCategory, () => {
-  getWordlist(props.selectedCategory?.id || '')
+  updateWords()
 })
 
 const wordList = ref([])
