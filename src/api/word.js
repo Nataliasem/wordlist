@@ -10,15 +10,6 @@ export const createWord = async (word) => {
   })
 }
 
-export const getWord = async (wordId) => {
-  const response = await fetch(`${WORD_URL}/${ wordId }`)
-  if (response.ok) {
-    return await response.json()
-  } else {
-    return {}
-  }
-}
-
 export const updateWord = async (word) => {
   await fetch(`${WORD_URL}/${word.id}`, {
     method: 'PUT',
