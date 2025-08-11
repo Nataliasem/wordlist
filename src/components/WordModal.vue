@@ -1,5 +1,6 @@
 <template>
-  <div v-if="isOpen" class="modal-mask">
+  <Transition name="modal">
+    <div v-if="isOpen" class="modal-mask">
     <div class="modal-body">
       <h2>Edit the word <span class="word-name">{{ updatedWord.word }}</span></h2>
       <form @submit.prevent="save" class="word-form">
@@ -44,6 +45,7 @@
       </form>
     </div>
   </div>
+  </Transition>
 </template>
 
 <script setup>
@@ -89,6 +91,7 @@ const closeModal = () => {
   justify-content: center;
   align-items: center;
   padding: 64px;
+  transition: opacity 0.3s ease;
 }
 
 .modal-body {
@@ -97,6 +100,22 @@ const closeModal = () => {
   min-width: 500px;
   border-radius: 4px;
   padding: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  transition: all 0.3s ease;
+}
+
+.modal-enter-from {
+  opacity: 0;
+}
+
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from .modal-container,
+.modal-leave-to .modal-container {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .word-form {
@@ -104,7 +123,6 @@ const closeModal = () => {
   flex-direction: column;
   gap: 32px;
 }
-
 
 .form-field {
   display: flex;
