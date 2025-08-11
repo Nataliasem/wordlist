@@ -38,7 +38,7 @@ export const deleteWord = async (wordId) => {
 export const getWordlist = async (categoryId) => {
   return await categoryId
      ? await getWordlistByCategory(categoryId)
-     : await getWordlistOrphans
+     : await getWordlistOrphans()
 }
 
 export const getWordlistByCategory = async (categoryId) => {

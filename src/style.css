@@ -64,6 +64,10 @@ th, td {
     padding: 4px;
 }
 
+.td-action {
+    text-align: center;
+}
+
 @media (prefers-color-scheme: light) {
     :root {
         color: #213547;

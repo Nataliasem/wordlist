@@ -6,10 +6,10 @@
     <td>{{ word.translation }}</td>
     <td>{{ word.category?.name || 'No category' }}</td>
 
-    <td>
+    <td class="td-action">
       <button>✎</button>
     </td>
-    <td>
+    <td class="td-action">
       <button @click="deleteWordFromCategory">❌</button>
     </td>
   </tr>

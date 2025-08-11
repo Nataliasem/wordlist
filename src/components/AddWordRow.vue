@@ -8,18 +8,22 @@
        />
     </td>
 
-    <td>
-      <button @click="addWordToCategory">✅</button>
+    <td class="td-action">
+      <button
+        :disabled="!selectedCategory?.id"
+        @click="addWordToCategory">
+        ✅
+      </button>
     </td>
 
-    <td>
+    <td class="td-action">
       <button @click="clearUserInput">❌</button>
     </td>
   </tr>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { createWord } from '../api/word.js'
 
 const props = defineProps({
@@ -28,12 +32,16 @@ const props = defineProps({
 
 const emit = defineEmits([ 'updateWords' ])
 
+watch(() => props.selectedCategory, () => {
+  word.value.category = props.selectedCategory?.name || 'No category'
+})
+
 const word = ref({
   word: '',
   transcription: '',
   definition: '',
   translation: '',
-  category: props.selectedCategory?.name || ''
+  category: ''
 })
 const clearUserInput = () => {
   word.value = {
