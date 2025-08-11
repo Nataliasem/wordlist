@@ -4,7 +4,7 @@
        <textarea
          rows="1"
          v-model="word[key]"
-         :placeholder="key"
+         :name="word[key]"
        />
     </td>
 
@@ -30,7 +30,7 @@ const props = defineProps({
   selectedCategory: Object
 })
 
-const emit = defineEmits([ 'updateWords' ])
+const emit = defineEmits([ 'update-words' ])
 
 watch(() => props.selectedCategory, () => {
   word.value.category = props.selectedCategory?.name || 'No category'
@@ -62,7 +62,7 @@ const addWordToCategory = async () => {
       category: props.selectedCategory?.id
     }
   )
-  emit('updateWords')
+  emit('update-words')
   clearUserInput()
 }
 

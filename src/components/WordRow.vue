@@ -7,24 +7,41 @@
     <td>{{ word.category?.name || 'No category' }}</td>
 
     <td class="td-action">
-      <button>✎</button>
+      <button @click="isModalOpen = true">✎</button>
     </td>
     <td class="td-action">
       <button @click="deleteWordFromCategory">❌</button>
     </td>
   </tr>
+
+  <Teleport to="body">
+    <WordModal
+      :is-open="isModalOpen"
+      :word="word"
+      @close="isModalOpen = false"
+      @update-words="updateWords"
+    />
+  </Teleport>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import WordModal from './WordModal.vue'
 import { deleteWord } from '../api/word.js'
 
 const props = defineProps({
   word: Object
 })
 
-const emit = defineEmits([ 'updateWords' ])
+const emit = defineEmits([ 'update-words' ])
+const updateWords = () => {
+  emit('update-words')
+}
+
 const deleteWordFromCategory = async () => {
   await deleteWord(props.word.id)
-  emit('updateWords')
+  updateWords()
 }
+
+const isModalOpen = ref(false)
 </script>

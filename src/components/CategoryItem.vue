@@ -7,8 +7,9 @@
     <div v-if="isEditing">
       <input
         v-model="updatedCategory"
-        class="add-category__input"
+        class="category-input"
         type="text"
+        name="update-category"
       >
       <button class="add-category__button" @click="updateCategoryById">✅</button>
     </div>
@@ -35,7 +36,7 @@ import { deleteCategory, updateCategory } from '../api/category.js'
 
 const props = defineProps({
   category: Object,
-  selectedCategoryId: String
+  selectedCategoryId: Number
 })
 
 const emit = defineEmits(['select-category', 'update-categories'])
@@ -43,7 +44,7 @@ const emit = defineEmits(['select-category', 'update-categories'])
 const isSelected = computed(() => props.category.id === props.selectedCategoryId)
 
 const selectCategory = () => {
-  emit('selectCategory', props.category)
+  emit('select-category', props.category)
 }
 
 watch(() => props.selectedCategoryId, () => {

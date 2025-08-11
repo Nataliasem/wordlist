@@ -1,7 +1,13 @@
 <template>
   <div class="category-list">
     <div class="add-category__wrapper">
-      <input v-model="category" class="add-category__input" type="text" placeholder="New category">
+      <input
+        v-model="category"
+        class="category-input"
+        type="text"
+        placeholder="New category"
+        name="add-category"
+      >
       <button class="add-category__button" @click="addCategory">Add</button>
     </div>
 
@@ -34,12 +40,12 @@ import { onMounted, ref } from 'vue'
 import { getCategories, createCategory } from '../api/category.js'
 import CategoryItem from './CategoryItem.vue'
 
-const emit = defineEmits(['selectCategory'])
+const emit = defineEmits(['select-category'])
 
 const selectedCategory = ref(null)
 const selectCategory = (category) => {
   selectedCategory.value = category
-  emit('selectCategory', category)
+  emit('select-category', category)
 }
 
 const categories = ref([])
@@ -104,7 +110,7 @@ onMounted(() => {
   padding: 8px 0;
 }
 
-.add-category__input {
+.category-input {
   flex-grow: 1;
   border: 2px solid #e7e6e9;
   border-radius: 4px;
