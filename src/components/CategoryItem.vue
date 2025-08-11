@@ -4,33 +4,33 @@
     :class="{ 'category-name__selected' : isSelected }"
     @click="selectCategory"
   >
-    <div class="add-category__wrapper">
+    <div v-if="isEditing">
       <input
-        v-model="updateCategory"
-        :placeholder=category.name
+        v-model="updatedCategory"
         class="add-category__input"
         type="text"
       >
-      <button class="add-category__button" @click="updateCategoryById">Save</button>
+      <button class="add-category__button" @click="updateCategoryById">✅</button>
     </div>
-    <input type="text" v-if="isEditing">
-    <div v-else>
-      {{ category.name }}
-    </div>
-    <div
-      class="category-actions"
-      :class="{ 'category-actions__selected' : isSelected }"
-    >
-      <div class="category-actions__button" @click="isEditing = true">✎</div>
-      <div class="category-actions__button" @click="deleteCategoryById">
-        ❌
+
+    <template v-else>
+      <div class="truncated">{{ category.name }}</div>
+
+      <div
+        class="category-actions"
+        :class="{ 'category-actions__selected' : isSelected }"
+      >
+        <div class="category-actions__button" @click="isEditing = true">✎</div>
+        <div class="category-actions__button" @click="deleteCategoryById">
+          ❌
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { deleteCategory, updateCategory } from '../api/category.js'
 
 const props = defineProps({
@@ -46,14 +46,19 @@ const selectCategory = () => {
   emit('selectCategory', props.category)
 }
 
+watch(() => props.selectedCategoryId, () => {
+  isEditing.value = false
+})
+
 const isEditing = ref(false)
-const updatedCategory = ref('')
+const updatedCategory = ref(props.category.name)
 const updateCategoryById = async () => {
   await updateCategory({
     id: props.category.id,
     name: updatedCategory.value
   })
   emit('update-categories')
+  isEditing.value = false
 }
 
 const deleteCategoryById = async () => {
@@ -79,5 +84,12 @@ const deleteCategoryById = async () => {
 
 .category-actions__button:first-child {
   margin-right: 4px;
+}
+
+.truncated {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

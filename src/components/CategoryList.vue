@@ -11,7 +11,7 @@
       <template v-for="item in categories" :key="item.id">
         <CategoryItem
           :category="item"
-          :selected-category-id="selectedCategory.id"
+          :selected-category-id="selectedCategory?.id"
           @select-category="selectCategory"
           @update-categories="updateCategories"
         />
@@ -52,6 +52,7 @@ const addCategory = async () => {
   if(!category.value) return
   await createCategory(category.value)
   await updateCategories()
+  category.value = ''
 }
 
 onMounted(() => {
@@ -83,6 +84,8 @@ onMounted(() => {
   align-items: center;
   padding: 8px 16px;
   font-weight: bold;
+  border: 2px solid transparent;
+  width: 220px;
 }
 
 .category-name:hover {
@@ -105,19 +108,19 @@ onMounted(() => {
   flex-grow: 1;
   border: 2px solid #e7e6e9;
   border-radius: 4px;
-  font-size: 1em;
+  font-size: 16px;
 }
 
 .add-category__button {
   margin-left: 8px;
   border-radius: 4px;
-  border: 2px solid #e7e6e9;
+
 }
 
 
 .divider {
   height: 2px;
-  width: 100%;
+  min-width: 100%;
   background-color: #e7e6e9;
   margin: 8px 0;
   border-radius: 1px;
