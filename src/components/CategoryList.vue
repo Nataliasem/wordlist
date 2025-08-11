@@ -120,7 +120,6 @@ onMounted(() => {
 .add-category__button {
   margin-left: 8px;
   border-radius: 4px;
-
 }
 
 

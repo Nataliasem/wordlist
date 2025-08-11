@@ -54,7 +54,7 @@ const save = async () => {
 
   const payload = {
     ...updatedWord.value,
-    category: updatedWord.value.id
+    category: updatedWord.value.category.id
   }
   await updateWord(payload)
   emit('close')

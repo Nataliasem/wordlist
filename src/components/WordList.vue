@@ -13,7 +13,7 @@
         <th>Translation</th>
         <th>Category</th>
         <th>Add/edit</th>
-        <th>Delete</th>
+        <th>Clear</th>
       </tr>
       </thead>
 

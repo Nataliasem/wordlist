@@ -11,13 +11,16 @@
     <td class="td-action">
       <button
         :disabled="!selectedCategory?.id"
-        @click="addWordToCategory">
-        ✅
+        @click="addWordToCategory"
+      >
+        <v-icon name="ri-play-list-add-fill" title="Add to wordlist" fill="purple" />
       </button>
     </td>
 
     <td class="td-action">
-      <button @click="clearUserInput">❌</button>
+      <button @click="clearUserInput">
+        <v-icon name="ri-delete-back-2-line" title="Clear inputs" fill="purple" />
+      </button>
     </td>
   </tr>
 </template>

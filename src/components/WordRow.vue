@@ -7,10 +7,16 @@
     <td>{{ word.category?.name || 'No category' }}</td>
 
     <td class="td-action">
-      <button @click="isModalOpen = true">✎</button>
+      <button @click="isModalOpen = true">
+        <v-icon name="ri-pencil-line" title="Edit word" />
+      </button>
     </td>
     <td class="td-action">
-      <button @click="deleteWordFromCategory">❌</button>
+      <v-icon
+        name="ri-delete-bin-2-line"
+        title="Delete from category"
+        @click="deleteWordFromCategory"
+      />
     </td>
   </tr>
 

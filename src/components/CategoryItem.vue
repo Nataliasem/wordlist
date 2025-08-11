@@ -11,7 +11,9 @@
         type="text"
         name="update-category"
       >
-      <button class="add-category__button" @click="updateCategoryById">✅</button>
+      <button class="add-category__button" @click="updateCategoryById">
+        <v-icon name="ri-checkbox-fill" title="Update category" fill="purple"></v-icon>
+      </button>
     </div>
 
     <template v-else>
@@ -21,9 +23,11 @@
         class="category-actions"
         :class="{ 'category-actions__selected' : isSelected }"
       >
-        <div class="category-actions__button" @click="isEditing = true">✎</div>
+        <div class="category-actions__button" @click="isEditing = true">
+          <v-icon name="ri-pencil-line" title="Edit category"></v-icon>
+        </div>
         <div class="category-actions__button" @click="deleteCategoryById">
-          ❌
+          <v-icon name="ri-delete-bin-2-line" title="Delete category"></v-icon>
         </div>
       </div>
     </template>
@@ -92,5 +96,9 @@ const deleteCategoryById = async () => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.update-category__actions {
+  display: flex;
 }
 </style>
