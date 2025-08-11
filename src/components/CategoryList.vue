@@ -61,8 +61,11 @@ const addCategory = async () => {
   category.value = ''
 }
 
-onMounted(() => {
-  updateCategories()
+onMounted(async () => {
+  await updateCategories()
+  if(categories.value.length > 0) {
+    selectCategory(categories.value[0])
+  }
 })
 </script>
 
