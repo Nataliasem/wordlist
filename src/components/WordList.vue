@@ -19,12 +19,18 @@
 
       <tbody>
       <AddWordRow
+        :categories="categories"
         :selected-category="selectedCategory"
         @update-words="updateWords"
       />
 
       <template v-for="item in wordList" :key="item.id">
-        <WordRow :word="item" @update-words="updateWords"/>
+        <WordRow
+          :word="item"
+          :categories="categories"
+          :selected-category="selectedCategory"
+          @update-words="updateWords"
+        />
       </template>
       </tbody>
     </table>
@@ -38,6 +44,7 @@ import { computed, ref, watch } from 'vue'
 import { getWordlist} from '../api/word.js'
 
 const props = defineProps({
+  categories: Array,
   selectedCategory: Object
 })
 

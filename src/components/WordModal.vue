@@ -21,11 +21,12 @@
         </div>
         <div class="form-field">
           <label for="category" class="word-form__label">Category: </label>
-          <select name="category">
+          <select v-model="selectedCategoryId" name="category">
             <option
               v-for="item in categories"
-              :value="item.id"
               :key="item.id"
+              :value="item.id"
+              :selected="selectedCategoryId === item.id"
             >
               {{ item.name }}
             </option>
@@ -49,27 +50,29 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { updateWord } from '../api/word.js'
-import { getCategories } from '../api/category.js'
 
 const props = defineProps({
+  selectedCategory: Object,
   isOpen: Boolean,
-  word: Object
+  word: Object,
+  categories: Array
 })
 
 const emit = defineEmits([ 'close', 'updateWord' ])
 
-const updatedWord = ref({})
-const categories = ref([])
+const updatedWord = ref(null)
 watch(() => props.isOpen, async () => {
   updatedWord.value = {...props.word}
-  categories.value = await getCategories()
+  selectedCategoryId.value = props.selectedCategory?.id || null
 })
+
+const selectedCategoryId = ref(updatedWord.value?.category?.id)
 const save = async () => {
   if(!updatedWord.value.word) return
 
   const payload = {
     ...updatedWord.value,
-    category: updatedWord.value.category.id
+    category: selectedCategoryId.value
   }
   await updateWord(payload)
   emit('close')
