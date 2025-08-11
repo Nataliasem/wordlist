@@ -19,6 +19,18 @@
           <label for="translation" class="word-form__label">Translation: </label>
           <textarea v-model="updatedWord.translation" name="translation" id="translation" />
         </div>
+        <div class="form-field">
+          <label for="category" class="word-form__label">Category: </label>
+          <select name="category">
+            <option
+              v-for="item in categories"
+              :value="item.id"
+              :key="item.id"
+            >
+              {{ item.name }}
+            </option>
+          </select>
+        </div>
         <div class="form-actions">
           <button type="submit" class="word-form__button">Save</button>
           <button
@@ -37,6 +49,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { updateWord } from '../api/word.js'
+import { getCategories } from '../api/category.js'
 
 const props = defineProps({
   isOpen: Boolean,
@@ -46,8 +59,10 @@ const props = defineProps({
 const emit = defineEmits([ 'close', 'updateWord' ])
 
 const updatedWord = ref({})
-watch(() => props.isOpen, () => {
+const categories = ref([])
+watch(() => props.isOpen, async () => {
   updatedWord.value = {...props.word}
+  categories.value = await getCategories()
 })
 const save = async () => {
   if(!updatedWord.value.word) return

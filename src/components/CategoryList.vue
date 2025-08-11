@@ -56,7 +56,8 @@ const updateCategories = async () => {
 const category = ref('')
 const addCategory = async () => {
   if(!category.value) return
-  await createCategory(category.value)
+  const created = await createCategory(category.value)
+  // TODO: selectCategory(created) after fix https://tracker.yandex.ru/WL-4
   await updateCategories()
   category.value = ''
 }
