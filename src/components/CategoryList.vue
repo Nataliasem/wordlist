@@ -19,7 +19,7 @@
           :category="item"
           :selected-category-id="selectedCategory?.id"
           @select-category="selectCategory"
-          @update-categories="updateCategories"
+          @update-categories="$emit('update-categories')"
         />
       </template>
     </div>
@@ -36,38 +36,28 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { getCategories, createCategory } from '../api/category.js'
+import { ref } from 'vue'
+import { createCategory } from '../api/category.js'
 import CategoryItem from './CategoryItem.vue'
 
-const emit = defineEmits(['select-category'])
+defineProps({
+  categories: Array,
+  selectedCategory: Object
+})
+const emit = defineEmits(['select-category', 'update-categories'])
 
-const selectedCategory = ref(null)
 const selectCategory = (category) => {
-  selectedCategory.value = category
   emit('select-category', category)
-}
-
-const categories = ref([])
-const updateCategories = async () => {
-  categories.value = await getCategories()
 }
 
 const category = ref('')
 const addCategory = async () => {
   if(!category.value) return
-  const created = await createCategory(category.value)
-  // TODO: selectCategory(created) after fix https://tracker.yandex.ru/WL-4
-  await updateCategories()
+  const newCategory = await createCategory(category.value)
+  // TODO: selectCategory(newCategory) after fix https://tracker.yandex.ru/WL-4
+  emit('update-categories')
   category.value = ''
 }
-
-onMounted(async () => {
-  await updateCategories()
-  if(categories.value.length > 0) {
-    selectCategory(categories.value[0])
-  }
-})
 </script>
 
 <style>

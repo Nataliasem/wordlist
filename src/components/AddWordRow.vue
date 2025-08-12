@@ -4,21 +4,31 @@
        <textarea
          rows="1"
          v-model="word[key]"
-         :name="word[key]"
+         :name="key"
        />
     </td>
 
+    <td>
+      <select v-model="selectedCategoryId" name="category">
+        <option
+          v-for="item in categories"
+          :key="item.id"
+          :value="item.id"
+          :selected="selectedCategoryId === item.id"
+        >
+          {{ item.name }}
+        </option>
+      </select>
+    </td>
+
     <td class="td-action">
-      <button
-        :disabled="!selectedCategory?.id"
-        @click="addWordToCategory"
-      >
+      <button type="button" @click="addWordToCategory">
         <v-icon name="ri-play-list-add-fill" title="Add to wordlist" fill="purple" />
       </button>
     </td>
 
     <td class="td-action">
-      <button @click="clearUserInput">
+      <button type="button" @click="clearUserInput">
         <v-icon name="ri-delete-back-2-line" title="Clear inputs" fill="purple" />
       </button>
     </td>
@@ -30,29 +40,28 @@ import { ref, watch } from 'vue'
 import { createWord } from '../api/word.js'
 
 const props = defineProps({
-  selectedCategory: Object
+  selectedCategory: Object,
+  categories: Array
 })
 
 const emit = defineEmits([ 'update-words' ])
-
-watch(() => props.selectedCategory, () => {
-  word.value.category = props.selectedCategory?.name || 'No category'
-})
 
 const word = ref({
   word: '',
   transcription: '',
   definition: '',
-  translation: '',
-  category: ''
+  translation: ''
+})
+const selectedCategoryId = ref(null)
+watch(() => props.selectedCategory, () => {
+  selectedCategoryId.value = props.selectedCategory?.id || null
 })
 const clearUserInput = () => {
   word.value = {
     word: '',
     transcription: '',
     translation: '',
-    definition: '',
-    category: null
+    definition: ''
   }
 }
 
@@ -62,7 +71,7 @@ const addWordToCategory = async () => {
   }
   await createWord({
       ...word.value,
-      category: props.selectedCategory?.id
+      category: selectedCategoryId.value
     }
   )
   emit('update-words')
