@@ -10,18 +10,13 @@ export const createWord = async (word) => {
   })
 }
 
-export const getWord = async (wordId) => {
-  const response = await fetch(`${WORD_URL}/${ wordId }`)
-  if (response.ok) {
-    return await response.json()
-  } else {
-    return {}
-  }
-}
-
-export const updateWord = async (wordId) => {
-  await fetch(`${WORD_URL}/${wordId}`, {
-    method: 'PUT'
+export const updateWord = async (word) => {
+  await fetch(`${WORD_URL}/${word.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(word)
   })
 }
 
@@ -34,7 +29,7 @@ export const deleteWord = async (wordId) => {
 export const getWordlist = async (categoryId) => {
   return await categoryId
      ? await getWordlistByCategory(categoryId)
-     : await getWordlistOrphans
+     : await getWordlistOrphans()
 }
 
 export const getWordlistByCategory = async (categoryId) => {

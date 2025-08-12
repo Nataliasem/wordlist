@@ -1,75 +1,66 @@
 <template>
   <div class="category-list">
     <div class="add-category__wrapper">
-      <input v-model="category" class="add-category__input" type="text" placeholder="New category">
+      <input
+        v-model="category"
+        class="category-input"
+        type="text"
+        placeholder="New category"
+        name="add-category"
+      >
       <button class="add-category__button" @click="addCategory">Add</button>
     </div>
 
     <div class="divider" />
 
     <div class="category-list__wrapper">
-      <div
-        v-for="item in categories"
-        :key="item.id"
-        class="category-name"
-        :class="{ 'category-name__selected' : selectedCategory?.id === item.id }"
-        @click="selectCategory(item)"
-      >
-        <div>
-          {{ item.name }}
-        </div>
-        <div
-          class="category-actions"
-          :class="{ 'category-actions__selected' : selectedCategory?.id === item.id }"
-        >
-          <div class="category-actions__button">✎</div>
-          <div class="category-actions__button" @click="deleteCategoryById(item.id)">
-            ❌
-          </div>
-        </div>
-      </div>
+      <template v-for="item in categories" :key="item.id">
+        <CategoryItem
+          :category="item"
+          :selected-category-id="selectedCategory?.id"
+          @select-category="selectCategory"
+          @update-categories="$emit('update-categories')"
+        />
+      </template>
     </div>
 
     <div class="divider" />
-    <div class="category-name" @click="selectCategory(null)">no category</div>
+    <div
+      class="category-name"
+      :class="{ 'category-name__selected' : !selectedCategory }"
+      @click="selectCategory(null)"
+    >
+      no category
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { getCategories, createCategory, deleteCategory } from '../api/category.js'
+import { ref } from 'vue'
+import { createCategory } from '../api/category.js'
+import CategoryItem from './CategoryItem.vue'
 
-const emit = defineEmits(['selectCategory'])
+defineProps({
+  categories: Array,
+  selectedCategory: Object
+})
+const emit = defineEmits(['select-category', 'update-categories'])
 
-const selectedCategory = ref(null)
 const selectCategory = (category) => {
-  selectedCategory.value = category
-  emit('selectCategory', category)
-}
-
-const categories = ref([])
-const updateCategories = async () => {
-  categories.value = await getCategories()
+  emit('select-category', category)
 }
 
 const category = ref('')
 const addCategory = async () => {
   if(!category.value) return
-  await createCategory(category.value)
-  await updateCategories()
+  const newCategory = await createCategory(category.value)
+  // TODO: selectCategory(newCategory) after fix https://tracker.yandex.ru/WL-4
+  emit('update-categories')
+  category.value = ''
 }
-
-const deleteCategoryById = async (id) => {
-  await deleteCategory(id)
-  await updateCategories()
-}
-
-onMounted(() => {
-  updateCategories()
-})
 </script>
 
-<style scoped>
+<style>
 .category-list {
   position: fixed;
   top: 0;
@@ -93,6 +84,8 @@ onMounted(() => {
   align-items: center;
   padding: 8px 16px;
   font-weight: bold;
+  border: 2px solid transparent;
+  width: 220px;
 }
 
 .category-name:hover {
@@ -111,39 +104,22 @@ onMounted(() => {
   padding: 8px 0;
 }
 
-.add-category__input {
+.category-input {
   flex-grow: 1;
   border: 2px solid #e7e6e9;
   border-radius: 4px;
-  font-size: 1em;
+  font-size: 16px;
 }
 
 .add-category__button {
   margin-left: 8px;
   border-radius: 4px;
-  border: 2px solid #e7e6e9;
 }
 
-.category-actions {
-  display: none;
-  cursor: pointer;
-}
-
-.category-actions__selected {
-  display: flex;
-}
-
-.category-actions__button {
-  padding: 0 8px;
-}
-
-.category-actions__button:first-child {
-  margin-right: 4px;
-}
 
 .divider {
   height: 2px;
-  width: 100%;
+  min-width: 100%;
   background-color: #e7e6e9;
   margin: 8px 0;
   border-radius: 1px;

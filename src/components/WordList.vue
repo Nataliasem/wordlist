@@ -2,7 +2,7 @@
   <div class="word-list">
     <table>
       <caption>
-        <h2>Category: {{ selectedCategory?.name || 'No category' }}</h2>
+        <h2>Category: {{ selectedCategoryName }}</h2>
       </caption>
 
       <thead>
@@ -13,30 +13,25 @@
         <th>Translation</th>
         <th>Category</th>
         <th>Add/edit</th>
-        <th>Delete</th>
+        <th>Clear</th>
       </tr>
       </thead>
 
       <tbody>
       <AddWordRow
+        :categories="categories"
         :selected-category="selectedCategory"
         @update-words="updateWords"
       />
 
-      <tr v-for="item in wordList" :key="item.id">
-        <th scope="row">{{ item.word }}</th>
-        <td>{{ item.transcription }}</td>
-        <td>{{ item.definition }}</td>
-        <td>{{ item.translation }}</td>
-        <td>{{ item.category?.name || 'No category' }}</td>
-
-        <td>
-          <button>✎</button>
-        </td>
-        <td>
-          <button @click="deleteWordFromCategory(item.id)">❌</button>
-        </td>
-      </tr>
+      <template v-for="item in wordList" :key="item.id">
+        <WordRow
+          :word="item"
+          :categories="categories"
+          :selected-category="selectedCategory"
+          @update-words="updateWords"
+        />
+      </template>
       </tbody>
     </table>
   </div>
@@ -44,10 +39,12 @@
 
 <script setup>
 import AddWordRow from './AddWordRow.vue'
-import { ref, watch } from 'vue'
-import { getWordlist, deleteWord} from '../api/word.js'
+import WordRow from './WordRow.vue'
+import { computed, ref, watch } from 'vue'
+import { getWordlist} from '../api/word.js'
 
 const props = defineProps({
+  categories: Array,
   selectedCategory: Object
 })
 
@@ -55,14 +52,11 @@ watch(() => props.selectedCategory, () => {
   updateWords()
 })
 
+const selectedCategoryName = computed(() => props.selectedCategory?.name || 'No category')
+
 const wordList = ref([])
 const updateWords = async () => {
   wordList.value = await getWordlist(props.selectedCategory?.id || '')
-}
-
-const deleteWordFromCategory = async (id) => {
-  await deleteWord(id)
-  await updateWords()
 }
 </script>
 
