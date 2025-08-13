@@ -25,7 +25,6 @@
       :is-open="isModalOpen"
       :word="word"
       @close="isModalOpen = false"
-      @update-words="updateWords"
     />
   </Teleport>
 </template>
@@ -34,18 +33,16 @@
 import { ref } from 'vue'
 import WordModal from './WordModal.vue'
 import { deleteWord } from '../api/word.js'
+import { useWordStore } from '../stores/word.js'
 
 const props = defineProps({
   word: Object
 })
-const emit = defineEmits([ 'update-words' ])
-const updateWords = () => {
-  emit('update-words')
-}
 
+const wordStore = useWordStore()
 const deleteWordFromCategory = async () => {
   await deleteWord(props.word.id)
-  updateWords()
+  await wordStore.fetchWords()
 }
 
 const isModalOpen = ref(false)

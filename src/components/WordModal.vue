@@ -38,7 +38,7 @@
           <button
             type="button"
             class="word-form__button word-form__button-cancel"
-            @click="closeModal"
+            @click="$emit('close')"
           >
             Cancel
           </button>
@@ -53,14 +53,16 @@
 import { ref, watch } from 'vue'
 import { updateWord } from '../api/word.js'
 import { useCategoryStore } from '../stores/category.js'
+import { useWordStore } from '../stores/word.js'
 
 const props = defineProps({
   isOpen: Boolean,
   word: Object
 })
-const emit = defineEmits([ 'close', 'update-words' ])
+const emit = defineEmits([ 'close'])
 
 const categoryStore = useCategoryStore()
+const wordStore = useWordStore()
 
 const updatedWord = ref(null)
 watch(() => props.isOpen, async () => {
@@ -77,11 +79,7 @@ const save = async () => {
     category: selectedCategoryId.value
   }
   await updateWord(payload)
-  emit('update-words')
-  emit('close')
-}
-
-const closeModal = () => {
+  await wordStore.fetchWords()
   emit('close')
 }
 </script>

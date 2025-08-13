@@ -39,10 +39,11 @@
 import { ref, computed } from 'vue'
 import { createWord } from '../api/word.js'
 import { useCategoryStore } from '../stores/category.js'
-
-const emit = defineEmits([ 'update-words' ])
+import { useWordStore } from '../stores/word.js'
 
 const categoryStore = useCategoryStore()
+const wordStore = useWordStore()
+
 const selectedCategoryId = computed(() => categoryStore.selectedCategory?.id || null)
 
 const word = ref({
@@ -70,7 +71,7 @@ const addWordToCategory = async () => {
       category: selectedCategoryId.value
     }
   )
-  emit('update-words')
+  await wordStore.fetchWords()
   clearUserInput()
 }
 

@@ -38,12 +38,14 @@
 import { computed, ref, watch } from 'vue'
 import { deleteCategory, updateCategory } from '../api/category.js'
 import { useCategoryStore } from '../stores/category.js'
+import { useWordStore } from '../stores/word.js'
 
 const props = defineProps({
   category: Object
 })
 
 const categoryStore = useCategoryStore()
+const wordStore = useWordStore()
 
 const selectedCategoryId = computed(() => categoryStore.selectedCategory?.id || null)
 const isSelected = computed(() => props.category.id === selectedCategoryId.value)
@@ -63,6 +65,7 @@ const updateCategoryById = async () => {
     name: updatedCategory.value
   })
   await categoryStore.fetchCategories()
+  await wordStore.fetchWords()
   isEditing.value = false
 }
 
