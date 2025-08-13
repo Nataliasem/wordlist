@@ -15,11 +15,7 @@
 
     <div class="category-list__wrapper">
       <template v-for="item in categoryStore.categories" :key="item.id">
-        <CategoryItem
-          :category="item"
-          :selected-category-id="categoryStore.selectedCategory?.id"
-          @select-category="selectCategory"
-        />
+        <CategoryItem :category="item" />
       </template>
     </div>
 
