@@ -60,7 +60,7 @@ const props = defineProps({
   categories: Array
 })
 
-const emit = defineEmits([ 'close', 'updateWord' ])
+const emit = defineEmits([ 'close', 'update-words' ])
 
 const updatedWord = ref(null)
 watch(() => props.isOpen, async () => {
@@ -77,6 +77,7 @@ const save = async () => {
     category: selectedCategoryId.value
   }
   await updateWord(payload)
+  emit('update-words')
   emit('close')
 }
 
