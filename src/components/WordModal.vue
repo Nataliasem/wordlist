@@ -24,7 +24,7 @@
           <label for="category" class="word-form__label">Category: </label>
           <select v-model="selectedCategoryId" name="category">
             <option
-              v-for="item in categories"
+              v-for="item in categoryStore.categories"
               :key="item.id"
               :value="item.id"
               :selected="selectedCategoryId === item.id"
@@ -52,20 +52,20 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { updateWord } from '../api/word.js'
+import { useCategoryStore } from '../stores/category.js'
 
 const props = defineProps({
-  selectedCategory: Object,
   isOpen: Boolean,
-  word: Object,
-  categories: Array
+  word: Object
 })
-
 const emit = defineEmits([ 'close', 'update-words' ])
+
+const categoryStore = useCategoryStore()
 
 const updatedWord = ref(null)
 watch(() => props.isOpen, async () => {
   updatedWord.value = {...props.word}
-  selectedCategoryId.value = props.selectedCategory?.id || null
+  selectedCategoryId.value = categoryStore.selectedCategory?.id || null
 })
 
 const selectedCategoryId = ref(updatedWord.value?.category?.id)

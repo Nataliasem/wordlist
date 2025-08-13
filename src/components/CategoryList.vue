@@ -14,12 +14,11 @@
     <div class="divider" />
 
     <div class="category-list__wrapper">
-      <template v-for="item in categories" :key="item.id">
+      <template v-for="item in categoryStore.categories" :key="item.id">
         <CategoryItem
           :category="item"
-          :selected-category-id="selectedCategory?.id"
+          :selected-category-id="categoryStore.selectedCategory?.id"
           @select-category="selectCategory"
-          @update-categories="$emit('update-categories')"
         />
       </template>
     </div>
@@ -27,7 +26,7 @@
     <div class="divider" />
     <div
       class="category-name"
-      :class="{ 'category-name__selected' : !selectedCategory }"
+      :class="{ 'category-name__selected' : !categoryStore.selectedCategory }"
       @click="selectCategory(null)"
     >
       no category
@@ -36,18 +35,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { createCategory } from '../api/category.js'
 import CategoryItem from './CategoryItem.vue'
+import { useCategoryStore } from '../stores/category.js'
 
-defineProps({
-  categories: Array,
-  selectedCategory: Object
-})
-const emit = defineEmits(['select-category', 'update-categories'])
-
+const categoryStore = useCategoryStore()
 const selectCategory = (category) => {
-  emit('select-category', category)
+  categoryStore.selectCategory(category)
 }
 
 const category = ref('')
@@ -55,9 +50,16 @@ const addCategory = async () => {
   if(!category.value) return
   const newCategory = await createCategory(category.value)
   selectCategory(newCategory)
-  emit('update-categories')
+  await categoryStore.fetchCategories()
   category.value = ''
 }
+
+onMounted(async () => {
+  await categoryStore.fetchCategories()
+  if(categoryStore.categories.length > 1) {
+    categoryStore.selectCategory(categoryStore.categories[0])
+  }
+})
 </script>
 
 <style>

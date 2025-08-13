@@ -11,7 +11,7 @@
     <td>
       <select v-model="selectedCategoryId" name="category">
         <option
-          v-for="item in categories"
+          v-for="item in categoryStore.categories"
           :key="item.id"
           :value="item.id"
           :selected="selectedCategoryId === item.id"
@@ -36,15 +36,14 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { createWord } from '../api/word.js'
-
-const props = defineProps({
-  selectedCategory: Object,
-  categories: Array
-})
+import { useCategoryStore } from '../stores/category.js'
 
 const emit = defineEmits([ 'update-words' ])
+
+const categoryStore = useCategoryStore()
+const selectedCategoryId = computed(() => categoryStore.selectedCategory?.id || null)
 
 const word = ref({
   word: '',
@@ -52,10 +51,7 @@ const word = ref({
   definition: '',
   translation: ''
 })
-const selectedCategoryId = ref(null)
-watch(() => props.selectedCategory, () => {
-  selectedCategoryId.value = props.selectedCategory?.id || null
-})
+
 const clearUserInput = () => {
   word.value = {
     word: '',

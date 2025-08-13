@@ -19,16 +19,12 @@
 
       <tbody>
       <AddWordRow
-        :categories="categories"
-        :selected-category="selectedCategory"
         @update-words="updateWords"
       />
 
       <template v-for="item in wordList" :key="item.id">
         <WordRow
           :word="item"
-          :categories="categories"
-          :selected-category="selectedCategory"
           @update-words="updateWords"
         />
       </template>
@@ -42,21 +38,18 @@ import AddWordRow from './AddWordRow.vue'
 import WordRow from './WordRow.vue'
 import { computed, ref, watch } from 'vue'
 import { getWordlist} from '../api/word.js'
+import { useCategoryStore } from '../stores/category.js'
 
-const props = defineProps({
-  categories: Array,
-  selectedCategory: Object
-})
-
-watch(() => props.selectedCategory, () => {
+const categoryStore = useCategoryStore()
+watch(() => categoryStore.selectedCategory, () => {
   updateWords()
 })
 
-const selectedCategoryName = computed(() => props.selectedCategory?.name || 'No category')
+const selectedCategoryName = computed(() => categoryStore.selectedCategory?.name || 'No category')
 
 const wordList = ref([])
 const updateWords = async () => {
-  wordList.value = await getWordlist(props.selectedCategory?.id || '')
+  wordList.value = await getWordlist(categoryStore.selectedCategory?.id || '')
 }
 </script>
 

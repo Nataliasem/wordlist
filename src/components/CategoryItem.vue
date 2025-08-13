@@ -37,21 +37,21 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { deleteCategory, updateCategory } from '../api/category.js'
+import { useCategoryStore } from '../stores/category.js'
 
 const props = defineProps({
-  category: Object,
-  selectedCategoryId: Number
+  category: Object
 })
 
-const emit = defineEmits(['select-category', 'update-categories'])
+const categoryStore = useCategoryStore()
 
-const isSelected = computed(() => props.category.id === props.selectedCategoryId)
-
+const selectedCategoryId = computed(() => categoryStore.selectedCategory?.id || null)
+const isSelected = computed(() => props.category.id === selectedCategoryId.value)
 const selectCategory = () => {
-  emit('select-category', props.category)
+  categoryStore.selectCategory(props.category)
 }
 
-watch(() => props.selectedCategoryId, () => {
+watch(() => selectedCategoryId, () => {
   isEditing.value = false
 })
 
@@ -62,13 +62,16 @@ const updateCategoryById = async () => {
     id: props.category.id,
     name: updatedCategory.value
   })
-  emit('update-categories')
+  await categoryStore.fetchCategories()
   isEditing.value = false
 }
 
 const deleteCategoryById = async () => {
   await deleteCategory(props.category.id)
-  emit('update-categories')
+  await categoryStore.fetchCategories()
+  if(categoryStore.categories.length > 0) {
+    categoryStore.selectCategory(categoryStore.categories[0])
+  }
 }
 
 </script>
