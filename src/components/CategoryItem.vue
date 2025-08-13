@@ -100,8 +100,4 @@ const deleteCategoryById = async () => {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-.update-category__actions {
-  display: flex;
-}
 </style>

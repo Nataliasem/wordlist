@@ -108,6 +108,7 @@ const closeModal = () => {
   transition: all 0.3s ease;
 }
 
+/* Special styles for Transition component */
 .modal-enter-from {
   opacity: 0;
 }
