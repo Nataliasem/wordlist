@@ -1,105 +1,101 @@
 <template>
   <div class="category-list">
     <div class="add-category__wrapper">
-      <input v-model="category" class="add-category__input" type="text">
+      <input
+        v-model="category"
+        class="category-input"
+        type="text"
+        placeholder="New category"
+        name="add-category"
+      >
       <button class="add-category__button" @click="addCategory">Add</button>
     </div>
 
     <div class="divider" />
 
-    <div v-for="item in categories" :key="item.id" class="category-name">
-     <div @click="selectCategoryId(item.id)">
-       {{ item.name }}
-     </div>
-      <div class="category-actions">
-        <button class="category-actions__button">✏</button>
-        <button class="category-actions__button" @click="deleteCategory(item.id)">
-          ❌
-        </button>
-      </div>
+    <div class="category-list__wrapper">
+      <template v-for="item in categories" :key="item.id">
+        <CategoryItem
+          :category="item"
+          :selected-category-id="selectedCategory?.id"
+          @select-category="selectCategory"
+          @update-categories="$emit('update-categories')"
+        />
+      </template>
     </div>
 
     <div class="divider" />
-
-    <div class="category-name" @click="selectCategoryId(null)">All words</div>
-
-    <div class="divider" />
+    <div
+      class="category-name"
+      :class="{ 'category-name__selected' : !selectedCategory }"
+      @click="selectCategory(null)"
+    >
+      no category
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
+import { createCategory } from '../api/category.js'
+import CategoryItem from './CategoryItem.vue'
 
-const emit = defineEmits(['selectCategoryId'])
-const selectCategoryId = (id) => {
-  emit('selectCategoryId', id)
+defineProps({
+  categories: Array,
+  selectedCategory: Object
+})
+const emit = defineEmits(['select-category', 'update-categories'])
+
+const selectCategory = (category) => {
+  emit('select-category', category)
 }
 
-const categories = ref([])
-
-const getCategories = async () => {
-  const response = await fetch('http://192.168.1.67:8080/api/v1/categories')
-  if (response.ok) {
-    categories.value = await response.json()
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
-}
 const category = ref('')
 const addCategory = async () => {
-  if(category.value === '') {
-    return
-  }
-
-  const response = await fetch('http://192.168.1.67:8080/api/v1/categories', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ category: category.value })
-  })
-
-  if (response.ok) {
-    await getCategories()
-    category.value = ''
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
+  if(!category.value) return
+  const newCategory = await createCategory(category.value)
+  // TODO: selectCategory(newCategory) after fix https://tracker.yandex.ru/WL-4
+  emit('update-categories')
+  category.value = ''
 }
-const deleteCategory = async (id) => {
-  const response = await fetch(`http://192.168.1.67:8080/api/v1/categories/${ id }`, {
-    method: 'DELETE'
-  })
-
-  if (response.ok) {
-    await getCategories()
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
-}
-
-onMounted(() => {
-  getCategories()
-})
 </script>
 
-<style scoped>
+<style>
 .category-list {
-  background-color: lightseagreen;
-  padding: 32px;
-  min-width: 300px;
+  position: fixed;
+  top: 0;
+  height: 100%;
+  background-color: #f1f0f2;
+  padding: 16px;
   -webkit-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   -moz-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
 }
 
+.category-list__wrapper {
+  overflow-y: scroll;
+  height: 75%;
+}
+
 .category-name {
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 8px 16px;
-  color: #fff;
   font-weight: bold;
+  border: 2px solid transparent;
+  width: 220px;
+}
+
+.category-name:hover {
+  background-color: #e7e6e9;
+}
+
+.category-name__selected {
+  background-color: lavender;
+  border-radius: 4px;
+  border: 2px solid purple;
 }
 
 .add-category__wrapper {
@@ -108,34 +104,23 @@ onMounted(() => {
   padding: 8px 0;
 }
 
-.add-category__input {
+.category-input {
   flex-grow: 1;
-  border: 1px dashed cadetblue;
-  font-size: 1em;
+  border: 2px solid #e7e6e9;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 .add-category__button {
   margin-left: 8px;
+  border-radius: 4px;
 }
 
-.category-actions {
-  display: flex;
-  cursor: pointer;
-}
-
-.category-actions__button {
-  padding: 2px 8px;
-  background-color: white;
-}
-
-.category-actions__button:first-child {
-  margin-right: 4px;
-}
 
 .divider {
   height: 2px;
-  width: 100%;
-  background-color: white;
+  min-width: 100%;
+  background-color: #e7e6e9;
   margin: 8px 0;
   border-radius: 1px;
 }

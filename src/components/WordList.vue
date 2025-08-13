@@ -1,105 +1,71 @@
 <template>
   <div class="word-list">
-    <WordForm :selected-category-id="selectedCategoryId"/>
+    <table>
+      <caption>
+        <h2>Category: {{ selectedCategoryName }}</h2>
+      </caption>
 
-    <div v-if="!wordList.length">
-      ⚠ No words in this category
-    </div>
-
-    <table v-else>
+      <thead>
       <tr>
         <th>Word</th>
         <th>Transcription</th>
         <th>Definition</th>
         <th>Translation</th>
-        <td>Edit</td>
-        <td>Delete</td>
+        <th>Category</th>
+        <th>Add/edit</th>
+        <th>Clear</th>
       </tr>
+      </thead>
 
-      <tr v-for="item in wordList" :key="item.id">
-        <td>{{ item.word }}</td>
-        <td>{{ item.transcription }}</td>
-        <td>{{ item.definition }}</td>
-        <td>{{ item.translation }}</td>
+      <tbody>
+      <AddWordRow
+        :categories="categories"
+        :selected-category="selectedCategory"
+        @update-words="updateWords"
+      />
 
-        <td>
-          <button>✏</button>
-        </td>
-        <td>
-          <button @click="deleteWord(item.id)">❌</button>
-        </td>
-      </tr>
+      <template v-for="item in wordList" :key="item.id">
+        <WordRow
+          :word="item"
+          :categories="categories"
+          :selected-category="selectedCategory"
+          @update-words="updateWords"
+        />
+      </template>
+      </tbody>
     </table>
   </div>
 </template>
 
 <script setup>
-import WordForm from './WordForm.vue'
-import { onMounted, ref, watch } from 'vue'
+import AddWordRow from './AddWordRow.vue'
+import WordRow from './WordRow.vue'
+import { computed, ref, watch } from 'vue'
+import { getWordlist} from '../api/word.js'
 
 const props = defineProps({
-  selectedCategoryId: Number
+  categories: Array,
+  selectedCategory: Object
 })
 
-watch(() => props.selectedCategoryId, () => {
-  props.selectedCategoryId
-    ? getWordListByCategory()
-    : getWordList()
-
+watch(() => props.selectedCategory, () => {
+  updateWords()
 })
+
+const selectedCategoryName = computed(() => props.selectedCategory?.name || 'No category')
 
 const wordList = ref([])
-const getWordList = async () => {
-  const response = await fetch('http://192.168.1.67:8080/api/v1/words')
-  if (response.ok) {
-    wordList.value = await response.json()
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
+const updateWords = async () => {
+  wordList.value = await getWordlist(props.selectedCategory?.id || '')
 }
-
-const getWordListByCategory = async () => {
-  if (!props.selectedCategoryId) {
-    return
-  }
-  const response = await fetch(`http://192.168.1.67:8080/api/v1/words/categories/${ props.selectedCategoryId }`)
-  if (response.ok) {
-    wordList.value = await response.json()
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
-}
-
-const deleteWord = async (id) => {
-  const response = await fetch(`http://192.168.1.67:8080/api/v1/words/${ id }`, {
-    method: 'DELETE'
-  })
-
-  if (response.ok) {
-    await getWordListByCategory()
-  } else {
-    alert('Ошибка HTTP: ' + response.status)
-  }
-}
-
-onMounted(() => {
-  if(!props.selectedCategoryId) {
-    getWordList()
-  }
-})
 </script>
 
 <style scoped>
 .word-list {
+  position: fixed;
+  top: 0;
+  left: 300px;
   flex-grow: 1;
-  padding: 32px;
-}
-
-table, th, td {
-  border:1px solid black;
-}
-
-th, td {
-  padding: 4px;
+  padding: 16px;
 }
 </style>
