@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, watch } from 'vue'
 import { createWord } from '../api/word.js'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
@@ -44,7 +44,10 @@ import { useWordStore } from '../stores/word.js'
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
 
-const selectedCategoryId = computed(() => categoryStore.selectedCategory?.id || null)
+const selectedCategoryId = ref(null)
+watch(() => categoryStore.selectedCategory, () => {
+  selectedCategoryId.value = categoryStore.selectedCategory?.id || null
+})
 
 const word = ref({
   word: '',
