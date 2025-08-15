@@ -1,87 +1,78 @@
 <template>
   <Transition name="modal">
     <div v-if="isOpen" class="modal-mask">
-    <div class="modal-body">
-      <h2>Edit the word <span class="word-name">{{ updatedWord.word }}</span></h2>
-      <form @submit.prevent="save" class="word-form">
-        <div class="form-field">
-          <label for="word" class="word-form__label">Word: </label>
-          <input v-model="updatedWord.word" type="text" name="word" id="word" required />
-        </div>
-        <div class="form-field">
-          <label for="transcription" class="word-form__label">Transcription: </label>
-          <input v-model="updatedWord.transcription" type="text" name="transcription" id="transcription" />
-        </div>
-        <div class="form-field">
-          <label for="definition" class="word-form__label">Definition: </label>
-          <textarea v-model="updatedWord.definition" name="definition" id="definition" />
-        </div>
-        <div class="form-field">
-          <label for="translation" class="word-form__label">Translation: </label>
-          <textarea v-model="updatedWord.translation" name="translation" id="translation" />
-        </div>
-        <div class="form-field">
-          <label for="category" class="word-form__label">Category: </label>
-          <select v-model="selectedCategoryId" name="category">
-            <option
-              v-for="item in categories"
-              :key="item.id"
-              :value="item.id"
-              :selected="selectedCategoryId === item.id"
+      <div class="modal-body">
+        <h2>Edit the word <span class="word-name">{{ updatedWord.word }}</span></h2>
+        <form @submit.prevent="save" class="word-form">
+          <template v-for="(_, key) in updatedWord">
+            <div v-if="key === 'category'" class="form-field">
+              <label :for="key" class="word-form__label">{{ key }}: </label>
+              <select v-model="updatedWord.category" :name="key">
+                <option
+                  v-for="item in categoryStore.categories"
+                  :key="item.id"
+                  :value="item.id"
+                  :selected="updatedWord.category === item.id"
+                >
+                  {{ item.name }}
+                </option>
+              </select>
+            </div>
+            <div v-if="!['id', 'examples', 'category'].includes(key)" class="form-field">
+              <label :for="key" class="word-form__label">{{ key }}: </label>
+              <input
+                v-model="updatedWord[key]"
+                type="text"
+                :name="key"
+                :id="key"
+                :required="key === 'word'"
+              />
+            </div>
+          </template>
+
+          <div class="form-actions">
+            <button type="submit" class="word-form__button">Save</button>
+            <button
+              type="button"
+              class="word-form__button word-form__button-cancel"
+              @click="$emit('close')"
             >
-              {{ item.name }}
-            </option>
-          </select>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="word-form__button">Save</button>
-          <button
-            type="button"
-            class="word-form__button word-form__button-cancel"
-            @click="closeModal"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
   </Transition>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
 import { updateWord } from '../api/word.js'
+import { useCategoryStore } from '../stores/category.js'
+import { useWordStore } from '../stores/word.js'
 
 const props = defineProps({
-  selectedCategory: Object,
   isOpen: Boolean,
-  word: Object,
-  categories: Array
+  word: Object
 })
+const emit = defineEmits(['close'])
 
-const emit = defineEmits([ 'close', 'update-words' ])
+const categoryStore = useCategoryStore()
+const wordStore = useWordStore()
 
 const updatedWord = ref(null)
 watch(() => props.isOpen, async () => {
-  updatedWord.value = {...props.word}
-  selectedCategoryId.value = props.selectedCategory?.id || null
+  updatedWord.value = {
+    ...props.word,
+    category: props.word?.category?.id || null
+  }
 })
 
-const selectedCategoryId = ref(updatedWord.value?.category?.id)
 const save = async () => {
-  if(!updatedWord.value.word) return
-
-  const payload = {
-    ...updatedWord.value,
-    category: selectedCategoryId.value
-  }
-  await updateWord(payload)
-  emit('update-words')
-  emit('close')
-}
-
-const closeModal = () => {
+  if (!updatedWord.value.word) return
+  await updateWord(updatedWord.value)
+  await wordStore.fetchWords()
   emit('close')
 }
 </script>
@@ -108,6 +99,7 @@ const closeModal = () => {
   transition: all 0.3s ease;
 }
 
+/* Special styles for Transition component */
 .modal-enter-from {
   opacity: 0;
 }
