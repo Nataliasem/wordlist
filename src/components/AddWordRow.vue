@@ -1,24 +1,26 @@
 <template>
   <tr class="add-word-row">
     <td v-for="(_, key) in word">
-       <textarea
-         rows="1"
-         v-model="word[key]"
-         :name="key"
-       />
-    </td>
-
-    <td>
-      <select v-model="selectedCategoryId" name="category">
+      <select
+        v-if="key === 'category'"
+        v-model="word.category" name="category"
+      >
         <option
-          v-for="item in categories"
+          v-for="item in categoryStore.categories"
           :key="item.id"
           :value="item.id"
-          :selected="selectedCategoryId === item.id"
+          :selected="word.category === item.id"
         >
           {{ item.name }}
         </option>
       </select>
+
+       <textarea
+         v-else
+         rows="1"
+         v-model="word[key]"
+         :name="key"
+       />
     </td>
 
     <td class="td-action">
@@ -38,43 +40,38 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { createWord } from '../api/word.js'
+import { useCategoryStore } from '../stores/category.js'
+import { useWordStore } from '../stores/word.js'
 
-const props = defineProps({
-  selectedCategory: Object,
-  categories: Array
-})
-
-const emit = defineEmits([ 'update-words' ])
+const categoryStore = useCategoryStore()
+const wordStore = useWordStore()
 
 const word = ref({
   word: '',
   transcription: '',
   definition: '',
-  translation: ''
+  translation: '',
+  category: null
 })
-const selectedCategoryId = ref(null)
-watch(() => props.selectedCategory, () => {
-  selectedCategoryId.value = props.selectedCategory?.id || null
+
+watch(() => categoryStore.selectedCategoryId, () => {
+  word.value.category = categoryStore.selectedCategoryId || null
 })
+
 const clearUserInput = () => {
   word.value = {
     word: '',
     transcription: '',
     translation: '',
-    definition: ''
+    definition: '',
+    category: null
   }
 }
 
 const addWordToCategory = async () => {
-  if (!word.value.word) {
-    return
-  }
-  await createWord({
-      ...word.value,
-      category: selectedCategoryId.value
-    }
-  )
-  emit('update-words')
+  if (!word.value.word) return
+  await createWord(word.value)
+  await wordStore.fetchWords()
   clearUserInput()
 }
 

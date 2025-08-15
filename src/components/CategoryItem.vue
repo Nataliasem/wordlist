@@ -37,23 +37,21 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { deleteCategory, updateCategory } from '../api/category.js'
+import { useCategoryStore } from '../stores/category.js'
+import { useWordStore } from '../stores/word.js'
 
 const props = defineProps({
-  category: Object,
-  selectedCategoryId: Number
+  category: Object
 })
 
-const emit = defineEmits(['select-category', 'update-categories'])
+const categoryStore = useCategoryStore()
+const wordStore = useWordStore()
 
-const isSelected = computed(() => props.category.id === props.selectedCategoryId)
-
+const isSelected = computed(() => props.category.id === categoryStore.selectedCategoryId)
+watch(isSelected, () => isEditing.value = false)
 const selectCategory = () => {
-  emit('select-category', props.category)
+  categoryStore.selectCategory(props.category)
 }
-
-watch(() => props.selectedCategoryId, () => {
-  isEditing.value = false
-})
 
 const isEditing = ref(false)
 const updatedCategory = ref(props.category.name)
@@ -62,13 +60,17 @@ const updateCategoryById = async () => {
     id: props.category.id,
     name: updatedCategory.value
   })
-  emit('update-categories')
+  await categoryStore.fetchCategories()
+  await wordStore.fetchWords()
   isEditing.value = false
 }
 
 const deleteCategoryById = async () => {
   await deleteCategory(props.category.id)
-  emit('update-categories')
+  await categoryStore.fetchCategories()
+  if (categoryStore.categories.length > 0) {
+    selectCategory(categoryStore.categories[0])
+  }
 }
 
 </script>
@@ -96,9 +98,5 @@ const deleteCategoryById = async () => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.update-category__actions {
-  display: flex;
 }
 </style>

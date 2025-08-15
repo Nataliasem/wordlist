@@ -18,20 +18,13 @@
       </thead>
 
       <tbody>
-      <AddWordRow
-        :categories="categories"
-        :selected-category="selectedCategory"
-        @update-words="updateWords"
-      />
+      <AddWordRow />
 
-      <template v-for="item in wordList" :key="item.id">
-        <WordRow
-          :word="item"
-          :categories="categories"
-          :selected-category="selectedCategory"
-          @update-words="updateWords"
-        />
-      </template>
+      <WordRow
+        v-for="item in wordStore.words"
+        :key="item.id"
+        :word="item"
+      />
       </tbody>
     </table>
   </div>
@@ -40,23 +33,19 @@
 <script setup>
 import AddWordRow from './AddWordRow.vue'
 import WordRow from './WordRow.vue'
-import { computed, ref, watch } from 'vue'
-import { getWordlist} from '../api/word.js'
+import { computed, watch } from 'vue'
+import { useCategoryStore } from '../stores/category.js'
+import { useWordStore } from '../stores/word.js'
 
-const props = defineProps({
-  categories: Array,
-  selectedCategory: Object
-})
-
-watch(() => props.selectedCategory, () => {
+const categoryStore = useCategoryStore()
+watch(() => categoryStore.selectedCategory, () => {
   updateWords()
 })
+const selectedCategoryName = computed(() => categoryStore.selectedCategory?.name || 'No category')
 
-const selectedCategoryName = computed(() => props.selectedCategory?.name || 'No category')
-
-const wordList = ref([])
+const wordStore = useWordStore()
 const updateWords = async () => {
-  wordList.value = await getWordlist(props.selectedCategory?.id || '')
+  await wordStore.fetchWords()
 }
 </script>
 
