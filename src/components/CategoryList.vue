@@ -14,9 +14,11 @@
     <div class="divider" />
 
     <div class="category-list__wrapper">
-      <template v-for="item in categoryStore.categories" :key="item.id">
-        <CategoryItem :category="item" />
-      </template>
+      <CategoryItem
+        v-for="item in categoryStore.categories"
+        :key="item.id"
+        :category="item"
+      />
     </div>
 
     <div class="divider" />
@@ -43,7 +45,7 @@ const selectCategory = (category) => {
 
 const category = ref('')
 const addCategory = async () => {
-  if(!category.value) return
+  if (!category.value) return
   const newCategory = await createCategory(category.value)
   selectCategory(newCategory)
   await categoryStore.fetchCategories()
@@ -52,7 +54,7 @@ const addCategory = async () => {
 
 onMounted(async () => {
   await categoryStore.fetchCategories()
-  if(categoryStore.categories.length > 1) {
+  if (categoryStore.categories.length > 1) {
     selectCategory(categoryStore.categories[0])
   }
 })

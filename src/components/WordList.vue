@@ -20,9 +20,11 @@
       <tbody>
       <AddWordRow />
 
-      <template v-for="item in wordStore.words" :key="item.id">
-        <WordRow :word="item" />
-      </template>
+      <WordRow
+        v-for="item in wordStore.words"
+        :key="item.id"
+        :word="item"
+      />
       </tbody>
     </table>
   </div>
@@ -31,7 +33,7 @@
 <script setup>
 import AddWordRow from './AddWordRow.vue'
 import WordRow from './WordRow.vue'
-import { computed, ref, watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
 

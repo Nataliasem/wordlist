@@ -56,7 +56,7 @@ const props = defineProps({
   isOpen: Boolean,
   word: Object
 })
-const emit = defineEmits([ 'close' ])
+const emit = defineEmits(['close'])
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
@@ -65,7 +65,7 @@ const updatedWord = ref(null)
 watch(() => props.isOpen, async () => {
   updatedWord.value = {
     ...props.word,
-    category: props.word.category.id
+    category: props.word?.category?.id || null
   }
 })
 
