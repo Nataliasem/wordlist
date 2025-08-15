@@ -1,24 +1,26 @@
 <template>
   <tr class="add-word-row">
     <td v-for="(_, key) in word">
-       <textarea
-         rows="1"
-         v-model="word[key]"
-         :name="key"
-       />
-    </td>
-
-    <td>
-      <select v-model="selectedCategoryId" name="category">
+      <select
+        v-if="key === 'category'"
+        v-model="word.category" name="category"
+      >
         <option
           v-for="item in categoryStore.categories"
           :key="item.id"
           :value="item.id"
-          :selected="selectedCategoryId === item.id"
+          :selected="word.category === item.id"
         >
           {{ item.name }}
         </option>
       </select>
+
+       <textarea
+         v-else
+         rows="1"
+         v-model="word[key]"
+         :name="key"
+       />
     </td>
 
     <td class="td-action">
@@ -44,16 +46,16 @@ import { useWordStore } from '../stores/word.js'
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
 
-const selectedCategoryId = ref(null)
-watch(() => categoryStore.selectedCategory, () => {
-  selectedCategoryId.value = categoryStore.selectedCategory?.id || null
-})
-
 const word = ref({
   word: '',
   transcription: '',
   definition: '',
-  translation: ''
+  translation: '',
+  category: null
+})
+
+watch(() => categoryStore.selectedCategoryId, () => {
+  word.value.category = categoryStore.selectedCategoryId || null
 })
 
 const clearUserInput = () => {
@@ -61,19 +63,14 @@ const clearUserInput = () => {
     word: '',
     transcription: '',
     translation: '',
-    definition: ''
+    definition: '',
+    category: null
   }
 }
 
 const addWordToCategory = async () => {
-  if (!word.value.word) {
-    return
-  }
-  await createWord({
-      ...word.value,
-      category: selectedCategoryId.value
-    }
-  )
+  if (!word.value.word) return
+  await createWord(word.value)
   await wordStore.fetchWords()
   clearUserInput()
 }
