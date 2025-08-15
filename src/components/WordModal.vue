@@ -22,12 +22,12 @@
         </div>
         <div class="form-field">
           <label for="category" class="word-form__label">Category: </label>
-          <select v-model="selectedCategoryId" name="category">
+          <select v-model="updatedWord.category" name="category">
             <option
               v-for="item in categoryStore.categories"
               :key="item.id"
               :value="item.id"
-              :selected="selectedCategoryId === item.id"
+              :selected="updatedWord.category === item.id"
             >
               {{ item.name }}
             </option>
@@ -66,19 +66,15 @@ const wordStore = useWordStore()
 
 const updatedWord = ref(null)
 watch(() => props.isOpen, async () => {
-  updatedWord.value = {...props.word}
-  selectedCategoryId.value = categoryStore.selectedCategory?.id || null
+  updatedWord.value = {
+    ...props.word,
+    category: props.word.category.id
+  }
 })
 
-const selectedCategoryId = ref(updatedWord.value?.category?.id)
 const save = async () => {
   if(!updatedWord.value.word) return
-
-  const payload = {
-    ...updatedWord.value,
-    category: selectedCategoryId.value
-  }
-  await updateWord(payload)
+  await updateWord(updatedWord.value)
   await wordStore.fetchWords()
   emit('close')
 }
