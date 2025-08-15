@@ -1,51 +1,48 @@
 <template>
   <Transition name="modal">
     <div v-if="isOpen" class="modal-mask">
-    <div class="modal-body">
-      <h2>Edit the word <span class="word-name">{{ updatedWord.word }}</span></h2>
-      <form @submit.prevent="save" class="word-form">
-        <div class="form-field">
-          <label for="word" class="word-form__label">Word: </label>
-          <input v-model="updatedWord.word" type="text" name="word" id="word" required />
-        </div>
-        <div class="form-field">
-          <label for="transcription" class="word-form__label">Transcription: </label>
-          <input v-model="updatedWord.transcription" type="text" name="transcription" id="transcription" />
-        </div>
-        <div class="form-field">
-          <label for="definition" class="word-form__label">Definition: </label>
-          <textarea v-model="updatedWord.definition" name="definition" id="definition" />
-        </div>
-        <div class="form-field">
-          <label for="translation" class="word-form__label">Translation: </label>
-          <textarea v-model="updatedWord.translation" name="translation" id="translation" />
-        </div>
-        <div class="form-field">
-          <label for="category" class="word-form__label">Category: </label>
-          <select v-model="updatedWord.category" name="category">
-            <option
-              v-for="item in categoryStore.categories"
-              :key="item.id"
-              :value="item.id"
-              :selected="updatedWord.category === item.id"
+      <div class="modal-body">
+        <h2>Edit the word <span class="word-name">{{ updatedWord.word }}</span></h2>
+        <form @submit.prevent="save" class="word-form">
+          <template v-for="(_, key) in updatedWord">
+            <div v-if="key === 'category'" class="form-field">
+              <label :for="key" class="word-form__label">{{ key }}: </label>
+              <select v-model="updatedWord.category" :name="key">
+                <option
+                  v-for="item in categoryStore.categories"
+                  :key="item.id"
+                  :value="item.id"
+                  :selected="updatedWord.category === item.id"
+                >
+                  {{ item.name }}
+                </option>
+              </select>
+            </div>
+            <div v-if="!['id', 'examples', 'category'].includes(key)" class="form-field">
+              <label :for="key" class="word-form__label">{{ key }}: </label>
+              <input
+                v-model="updatedWord[key]"
+                type="text"
+                :name="key"
+                :id="key"
+                :required="key === 'word'"
+              />
+            </div>
+          </template>
+
+          <div class="form-actions">
+            <button type="submit" class="word-form__button">Save</button>
+            <button
+              type="button"
+              class="word-form__button word-form__button-cancel"
+              @click="$emit('close')"
             >
-              {{ item.name }}
-            </option>
-          </select>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="word-form__button">Save</button>
-          <button
-            type="button"
-            class="word-form__button word-form__button-cancel"
-            @click="$emit('close')"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
   </Transition>
 </template>
 
@@ -59,7 +56,7 @@ const props = defineProps({
   isOpen: Boolean,
   word: Object
 })
-const emit = defineEmits([ 'close'])
+const emit = defineEmits([ 'close' ])
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
@@ -73,7 +70,7 @@ watch(() => props.isOpen, async () => {
 })
 
 const save = async () => {
-  if(!updatedWord.value.word) return
+  if (!updatedWord.value.word) return
   await updateWord(updatedWord.value)
   await wordStore.fetchWords()
   emit('close')
