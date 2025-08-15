@@ -8,6 +8,9 @@ export const useCategoryStore = defineStore('category', {
       selectedCategory: null
     }
   },
+  getters: {
+    selectedCategoryId: (state) => state?.selectedCategory?.id || null
+  },
   actions: {
     async fetchCategories() {
       this.categories = await getCategories()
