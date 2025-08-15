@@ -53,7 +53,7 @@ const addCategory = async () => {
 onMounted(async () => {
   await categoryStore.fetchCategories()
   if(categoryStore.categories.length > 1) {
-    categoryStore.selectCategory(categoryStore.categories[0])
+    selectCategory(categoryStore.categories[0])
   }
 })
 </script>
