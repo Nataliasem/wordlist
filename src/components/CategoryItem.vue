@@ -47,15 +47,11 @@ const props = defineProps({
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
 
-const selectedCategoryId = computed(() => categoryStore.selectedCategory?.id || null)
-const isSelected = computed(() => props.category.id === selectedCategoryId.value)
+const isSelected = computed(() => props.category.id === categoryStore.selectedCategoryId)
+watch(isSelected, () => isEditing.value = false)
 const selectCategory = () => {
   categoryStore.selectCategory(props.category)
 }
-
-watch(() => selectedCategoryId, () => {
-  isEditing.value = false
-})
 
 const isEditing = ref(false)
 const updatedCategory = ref(props.category.name)
@@ -72,8 +68,8 @@ const updateCategoryById = async () => {
 const deleteCategoryById = async () => {
   await deleteCategory(props.category.id)
   await categoryStore.fetchCategories()
-  if(categoryStore.categories.length > 0) {
-    categoryStore.selectCategory(categoryStore.categories[0])
+  if (categoryStore.categories.length > 0) {
+    selectCategory(categoryStore.categories[0])
   }
 }
 
