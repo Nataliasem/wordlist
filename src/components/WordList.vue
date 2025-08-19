@@ -38,7 +38,7 @@ import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
 
 const categoryStore = useCategoryStore()
-watch(() => categoryStore.selectedCategory, () => {
+watch(() => categoryStore.selectedCategoryId, () => {
   updateWords()
 })
 const selectedCategoryName = computed(() => categoryStore.selectedCategory?.name || 'No category')
