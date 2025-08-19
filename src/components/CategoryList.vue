@@ -62,9 +62,6 @@ onMounted(async () => {
 
 <style>
 .category-list {
-  position: fixed;
-  top: 0;
-  height: 100%;
   background-color: #f1f0f2;
   padding: 16px;
   -webkit-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
