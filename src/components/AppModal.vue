@@ -1,6 +1,6 @@
 <template>
   <Transition name="modal">
-    <div v-if="modalStore.isOpen" class="modal-mask">
+    <div class="modal-mask">
       <div class="modal-body">
         <h2><slot name="header" /></h2>
 
@@ -28,8 +28,6 @@
 </template>
 
 <script setup>
-import { useModalStore } from '../stores/modal.js'
-const modalStore = useModalStore()
 const emit = defineEmits(['confirm', 'cancel'])
 </script>
 

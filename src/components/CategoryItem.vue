@@ -29,7 +29,7 @@
           <div class="category-actions__button" @click.stop="switchToUpdatingMode(item)">
             <v-icon name="ri-pencil-line" title="Edit category"></v-icon>
           </div>
-          <div class="category-actions__button" @click.stop="modalStore.openModal">
+          <div class="category-actions__button" @click.stop="openModal">
             <v-icon name="ri-delete-bin-2-line" title="Delete category"></v-icon>
           </div>
         </div>
@@ -39,8 +39,9 @@
 
   <Teleport to="body">
     <AppModal
+      v-if="isModalOpen"
       @confirm="deleteCategoryById"
-      @cancel="modalStore.closeModal"
+      @cancel="closeModal"
     >
       <template #header>
         Want to remove category <em class="">{{ categoryStore.selectedCategory.name }}</em>?
@@ -63,12 +64,13 @@ import { ref, watch } from 'vue'
 import { deleteCategory, updateCategory } from '../api/category.js'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
-import { useModalStore } from '../stores/modal.js'
 import AppModal from './AppModal.vue'
+import { useModal } from '../composables/useModal.js'
 
-const modalStore = useModalStore()
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
+
+const { isModalOpen, closeModal, openModal } = useModal()
 
 const updatedCategory = ref(null)
 const selectCategory = (category) => {
@@ -76,7 +78,6 @@ const selectCategory = (category) => {
   if(updatedCategory.value?.id === category.id) {
     return
   }
-
   categoryStore.selectCategory(category)
 }
 watch(() => categoryStore.selectedCategoryId, () => {
@@ -102,7 +103,7 @@ const deleteCategoryById = async () => {
   if (categoryStore.categories.length > 0) {
     selectCategory(categoryStore.categories[0])
   }
-  modalStore.closeModal()
+  closeModal()
 }
 
 </script>
