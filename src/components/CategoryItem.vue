@@ -29,7 +29,7 @@
           <div class="category-actions__button" @click.stop="switchToUpdatingMode(item)">
             <v-icon name="ri-pencil-line" title="Edit category"></v-icon>
           </div>
-          <div class="category-actions__button" @click.stop="modalStore.isOpen = true">
+          <div class="category-actions__button" @click.stop="modalStore.openModal">
             <v-icon name="ri-delete-bin-2-line" title="Delete category"></v-icon>
           </div>
         </div>
@@ -37,7 +37,25 @@
     </div>
   </div>
 
-<!--  <Teleport to="body"> <AppModal /></Teleport>-->
+  <Teleport to="body">
+    <AppModal
+      @confirm="deleteCategoryById"
+      @cancel="modalStore.closeModal"
+    >
+      <template #header>
+        Want to remove category <em class="">{{ categoryStore.selectedCategory.name }}</em>?
+      </template>
+
+      <template #content>
+        <p>All words in this category will be moved to <b>No category</b> tab.</p>
+      </template>
+
+      <template #confirm-text>
+       Confirm removal
+      </template>
+
+    </AppModal>
+  </Teleport>
 </template>
 
 <script setup>
@@ -46,7 +64,7 @@ import { deleteCategory, updateCategory } from '../api/category.js'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
 import { useModalStore } from '../stores/modal.js'
-// import AppModal from './AppModal.vue'
+import AppModal from './AppModal.vue'
 
 const modalStore = useModalStore()
 const categoryStore = useCategoryStore()
@@ -78,12 +96,13 @@ const updateCategoryById = async () => {
   updatedCategory.value = null
 }
 
-const deleteCategoryById = async (id) => {
-  await deleteCategory(id)
+const deleteCategoryById = async () => {
+  await deleteCategory(categoryStore.selectedCategoryId)
   await categoryStore.fetchCategories()
   if (categoryStore.categories.length > 0) {
     selectCategory(categoryStore.categories[0])
   }
+  modalStore.closeModal()
 }
 
 </script>
