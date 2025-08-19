@@ -1,34 +1,40 @@
 <template>
-  <Transition name="modal">
-    <div class="modal-mask">
-      <div class="modal-body">
-        <h2><slot name="header" /></h2>
+  <Teleport to="body">
+    <Transition name="modal">
+      <div class="modal-mask">
+        <div class="modal-body">
+          <h2>
+            <slot name="header" />
+          </h2>
 
-        <div><slot name="content" /></div>
+          <div>
+            <slot name="content" />
+          </div>
 
-        <div class="modal-actions">
-          <button
-            type="button"
-            class="modal-button modal-button__confirm"
-            @click="emit('confirm')"
-          >
-            <slot name="confirm-text" />
-          </button>
-          <button
-            type="button"
-            class="modal-button modal-button__cancel"
-            @click="emit('cancel')"
-          >
-            <slot name="cancel-text">Cancel</slot>
-          </button>
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="modal-button modal-button__confirm"
+              @click="emit('confirm')"
+            >
+              <slot name="confirm-text" />
+            </button>
+            <button
+              type="button"
+              class="modal-button modal-button__cancel"
+              @click="emit('cancel')"
+            >
+              <slot name="cancel-text">Cancel</slot>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  </Transition>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup>
-const emit = defineEmits(['confirm', 'cancel'])
+const emit = defineEmits([ 'confirm', 'cancel' ])
 </script>
 
 <style scoped>

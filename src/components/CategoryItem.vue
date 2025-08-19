@@ -37,26 +37,23 @@
     </div>
   </div>
 
-  <Teleport to="body">
-    <AppModal
-      v-if="isModalOpen"
-      @confirm="deleteCategoryById"
-      @cancel="closeModal"
-    >
-      <template #header>
-        Want to remove category <em class="">{{ categoryStore.selectedCategory.name }}</em>?
-      </template>
+  <AppModal
+    v-if="isModalOpen"
+    @confirm="deleteCategoryById"
+    @cancel="closeModal"
+  >
+    <template #header>
+      Want to remove category <em class="">{{ categoryStore.selectedCategory.name }}</em>?
+    </template>
 
-      <template #content>
-        <p>All words in this category will be moved to <b>No category</b> tab.</p>
-      </template>
+    <template #content>
+      <p>All words in this category will be moved to <b>No category</b> tab.</p>
+    </template>
 
-      <template #confirm-text>
-       Confirm removal
-      </template>
-
-    </AppModal>
-  </Teleport>
+    <template #confirm-text>
+      Confirm removal
+    </template>
+  </AppModal>
 </template>
 
 <script setup>
@@ -75,7 +72,7 @@ const { isModalOpen, closeModal, openModal } = useModal()
 const updatedCategory = ref(null)
 const selectCategory = (category) => {
   // To avoid extra calling of "selectCategory" method when clicking on input in updating mode
-  if(updatedCategory.value?.id === category.id) {
+  if (updatedCategory.value?.id === category.id) {
     return
   }
   categoryStore.selectCategory(category)
@@ -86,7 +83,7 @@ watch(() => categoryStore.selectedCategoryId, () => {
 
 const switchToUpdatingMode = (category) => {
   // To avoid direct reference with categories in store
-  updatedCategory.value = {...category}
+  updatedCategory.value = { ...category }
 }
 
 const updateCategoryById = async () => {
