@@ -7,7 +7,7 @@
     <td>{{ word.category?.name || 'No category' }}</td>
 
     <td class="td-action">
-      <button @click="isModalOpen = true">
+      <button @click="openModal">
         <v-icon name="ri-pencil-line" title="Edit word" />
       </button>
     </td>
@@ -20,30 +20,108 @@
     </td>
   </tr>
 
-  <Teleport to="body">
-    <WordModal
-      :is-open="isModalOpen"
-      :word="word"
-      @close="isModalOpen = false"
-    />
-  </Teleport>
+    <AppModal
+      v-if="isModalOpen"
+      @confirm="save"
+      @cancel="closeModal"
+    >
+      <template #header>
+        Edit the word <span class="word-name">{{ word.word }}</span>
+      </template>
+
+      <template #content>
+        <form @submit.prevent class="word-form">
+          <template v-for="(_, key) in updatedWord">
+            <div v-if="key === 'category'" class="form-field">
+              <label :for="key" class="word-form__label">{{ key }}: </label>
+              <select v-model="updatedWord.category" :name="key">
+                <option
+                  v-for="item in categoryStore.categories"
+                  :key="item.id"
+                  :value="item.id"
+                  :selected="updatedWord.category === item.id"
+                >
+                  {{ item.name }}
+                </option>
+              </select>
+            </div>
+            <div v-if="!['id', 'examples', 'category'].includes(key)" class="form-field">
+              <label :for="key" class="word-form__label">{{ key }}: </label>
+              <input
+                v-model="updatedWord[key]"
+                type="text"
+                :name="key"
+                :id="key"
+                :required="key === 'word'"
+              />
+            </div>
+          </template>
+        </form>
+      </template>
+
+      <template #confirm-text>Save</template>
+    </AppModal>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import WordModal from './WordModal.vue'
-import { deleteWord } from '../api/word.js'
+import AppModal from './AppModal.vue'
+import { ref, watch } from 'vue'
+import { deleteWord, updateWord } from '../api/word.js'
 import { useWordStore } from '../stores/word.js'
+import { useCategoryStore } from '../stores/category.js'
+import { useModal } from '../composables/useModal.js'
 
 const props = defineProps({
   word: Object
 })
 
+const {isModalOpen, closeModal, openModal} = useModal()
+
+const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
 const deleteWordFromCategory = async () => {
   await deleteWord(props.word.id)
   await wordStore.fetchWords()
 }
 
-const isModalOpen = ref(false)
+const updatedWord = ref(null)
+watch(() => props.word, async () => {
+  updatedWord.value = {
+    ...props.word,
+    category: props.word?.category?.id || null
+  }
+}, {
+  immediate: true,
+  deep: true
+})
+
+const save = async () => {
+  if (!updatedWord.value.word) return
+  await updateWord(updatedWord.value)
+  await wordStore.fetchWords()
+  closeModal()
+}
 </script>
+
+<style scoped>
+.word-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.word-form__label {
+  font-weight: bold;
+}
+
+.word-name {
+  font-style: italic;
+  font-weight: normal;
+}
+</style>

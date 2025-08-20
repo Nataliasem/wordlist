@@ -1,81 +1,116 @@
 <template>
-  <div
-    class="category-name"
-    :class="{ 'category-name__selected' : isSelected }"
-    @click="selectCategory"
-  >
-    <div v-if="isEditing">
-      <input
-        v-model="updatedCategory"
-        class="category-input"
-        type="text"
-        name="update-category"
-      >
-      <button class="add-category__button" @click="updateCategoryById">
-        <v-icon name="ri-checkbox-fill" title="Update category" fill="purple"></v-icon>
-      </button>
-    </div>
-
-    <template v-else>
-      <div class="truncated">{{ category.name }}</div>
-
-      <div
-        class="category-actions"
-        :class="{ 'category-actions__selected' : isSelected }"
-      >
-        <div class="category-actions__button" @click="isEditing = true">
-          <v-icon name="ri-pencil-line" title="Edit category"></v-icon>
-        </div>
-        <div class="category-actions__button" @click="deleteCategoryById">
-          <v-icon name="ri-delete-bin-2-line" title="Delete category"></v-icon>
-        </div>
+  <div class="category-items__wrapper">
+    <div
+      v-for="item in categoryStore.categories"
+      :key="item.id"
+      class="category-name"
+      :class="{ 'category-name__selected' : item.id === categoryStore.selectedCategoryId }"
+      @click="selectCategory(item)"
+    >
+      <div v-if="updatedCategory && updatedCategory.id === item.id">
+        <input
+          v-model="updatedCategory.name"
+          class="category-input"
+          type="text"
+          name="update-category"
+        >
+        <button class="add-category__button" @click.stop="updateCategoryById">
+          <v-icon name="ri-checkbox-fill" title="Update category" fill="purple"></v-icon>
+        </button>
       </div>
-    </template>
+
+      <template v-else>
+        <div class="truncated">{{ item.name }}</div>
+
+        <div
+          class="category-actions"
+          :class="{ 'category-actions__selected' : item.id === categoryStore.selectedCategoryId }"
+        >
+          <div class="category-actions__button" @click.stop="switchToUpdatingMode(item)">
+            <v-icon name="ri-pencil-line" title="Edit category"></v-icon>
+          </div>
+          <div class="category-actions__button" @click.stop="openModal">
+            <v-icon name="ri-delete-bin-2-line" title="Delete category"></v-icon>
+          </div>
+        </div>
+      </template>
+    </div>
   </div>
+
+  <AppModal
+    v-if="isModalOpen"
+    @confirm="deleteCategoryById"
+    @cancel="closeModal"
+  >
+    <template #header>
+      Want to remove category <em class="">{{ categoryStore.selectedCategory.name }}</em>?
+    </template>
+
+    <template #content>
+      <p>All words in this category will be moved to <b>No category</b> tab.</p>
+    </template>
+
+    <template #confirm-text>
+      Confirm removal
+    </template>
+  </AppModal>
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { deleteCategory, updateCategory } from '../api/category.js'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
-
-const props = defineProps({
-  category: Object
-})
+import AppModal from './AppModal.vue'
+import { useModal } from '../composables/useModal.js'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
 
-const isSelected = computed(() => props.category.id === categoryStore.selectedCategoryId)
-watch(isSelected, () => isEditing.value = false)
-const selectCategory = () => {
-  categoryStore.selectCategory(props.category)
+const { isModalOpen, closeModal, openModal } = useModal()
+
+const updatedCategory = ref(null)
+const selectCategory = (category) => {
+  // To avoid extra calling of "selectCategory" method when clicking on input in updating mode
+  if (updatedCategory.value?.id === category.id) {
+    return
+  }
+  categoryStore.selectCategory(category)
+}
+watch(() => categoryStore.selectedCategoryId, () => {
+  updatedCategory.value = null
+})
+
+const switchToUpdatingMode = (category) => {
+  // To avoid direct reference with categories in store
+  updatedCategory.value = { ...category }
 }
 
-const isEditing = ref(false)
-const updatedCategory = ref(props.category.name)
 const updateCategoryById = async () => {
-  await updateCategory({
-    id: props.category.id,
-    name: updatedCategory.value
-  })
+  await updateCategory(updatedCategory.value)
   await categoryStore.fetchCategories()
   await wordStore.fetchWords()
-  isEditing.value = false
+  categoryStore.selectCategory(updatedCategory.value)
+  updatedCategory.value = null
 }
 
 const deleteCategoryById = async () => {
-  await deleteCategory(props.category.id)
+  await deleteCategory(categoryStore.selectedCategoryId)
   await categoryStore.fetchCategories()
   if (categoryStore.categories.length > 0) {
     selectCategory(categoryStore.categories[0])
   }
+  closeModal()
 }
 
 </script>
 
 <style>
+.category-items__wrapper {
+  overflow-y: scroll;
+  height: 75%;
+}
+
 .category-actions {
   display: none;
   cursor: pointer;

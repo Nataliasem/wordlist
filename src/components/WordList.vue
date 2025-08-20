@@ -38,7 +38,7 @@ import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
 
 const categoryStore = useCategoryStore()
-watch(() => categoryStore.selectedCategory, () => {
+watch(() => categoryStore.selectedCategoryId, () => {
   updateWords()
 })
 const selectedCategoryName = computed(() => categoryStore.selectedCategory?.name || 'No category')
@@ -51,10 +51,10 @@ const updateWords = async () => {
 
 <style scoped>
 .word-list {
-  position: fixed;
-  top: 0;
-  left: 300px;
   flex-grow: 1;
   padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
 }
 </style>

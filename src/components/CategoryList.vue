@@ -13,13 +13,7 @@
 
     <div class="divider" />
 
-    <div class="category-list__wrapper">
-      <CategoryItem
-        v-for="item in categoryStore.categories"
-        :key="item.id"
-        :category="item"
-      />
-    </div>
+    <CategoryItem />
 
     <div class="divider" />
     <div
@@ -62,19 +56,11 @@ onMounted(async () => {
 
 <style>
 .category-list {
-  position: fixed;
-  top: 0;
-  height: 100%;
   background-color: #f1f0f2;
   padding: 16px;
   -webkit-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   -moz-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
   box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
-}
-
-.category-list__wrapper {
-  overflow-y: scroll;
-  height: 75%;
 }
 
 .category-name {
@@ -115,7 +101,6 @@ onMounted(async () => {
   margin-left: 8px;
   border-radius: 4px;
 }
-
 
 .divider {
   height: 2px;
