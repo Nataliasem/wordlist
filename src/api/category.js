@@ -1,6 +1,6 @@
 import { CATEGORY_URL } from '../constants.js'
 
-export const createCategory = async (category) => {
+export const create = async (category) => {
   const response = await fetch(`${CATEGORY_URL}`, {
     method: 'POST',
     headers: {
@@ -24,7 +24,7 @@ export const getCategories = async () => {
   }
 }
 
-export const updateCategory = async (category) => {
+export const update = async (category) => {
   await fetch(`${CATEGORY_URL}/${category.id}`, {
     method: 'PUT',
     headers: {
@@ -34,7 +34,7 @@ export const updateCategory = async (category) => {
   })
 }
 
-export const deleteCategory = async (id) => {
+export const remove = async (id) => {
   await fetch(`${CATEGORY_URL}/${ id }`, {
     method: 'DELETE'
   })

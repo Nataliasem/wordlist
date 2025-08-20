@@ -14,7 +14,7 @@
           type="text"
           name="update-category"
         >
-        <button class="icon-button_filled" @click.stop="updateCategoryById">
+        <button class="icon-button_filled" @click.stop="updateCategory">
           <v-icon name="ri-checkbox-line" title="Update category"></v-icon>
         </button>
       </div>
@@ -39,7 +39,7 @@
 
   <AppModal
     v-if="isModalOpen"
-    @confirm="deleteCategoryById"
+    @confirm="deleteCategory"
     @cancel="closeModal"
   >
     <template #header>
@@ -58,14 +58,11 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { deleteCategory, updateCategory } from '../api/category.js'
 import { useCategoryStore } from '../stores/category.js'
-import { useWordStore } from '../stores/word.js'
 import AppModal from './reusable/AppModal.vue'
 import { useModal } from '../composables/useModal.js'
 
 const categoryStore = useCategoryStore()
-const wordStore = useWordStore()
 
 const { isModalOpen, closeModal, openModal } = useModal()
 
@@ -86,20 +83,13 @@ const switchToUpdatingMode = (category) => {
   updatedCategory.value = { ...category }
 }
 
-const updateCategoryById = async () => {
-  await updateCategory(updatedCategory.value)
-  await categoryStore.fetchCategories()
-  await wordStore.fetchWords()
-  categoryStore.selectCategory(updatedCategory.value)
+const updateCategory = async () => {
+  await categoryStore.updateCategory(updatedCategory.value)
   updatedCategory.value = null
 }
 
-const deleteCategoryById = async () => {
-  await deleteCategory(categoryStore.selectedCategoryId)
-  await categoryStore.fetchCategories()
-  if (categoryStore.categories.length > 0) {
-    selectCategory(categoryStore.categories[0])
-  }
+const deleteCategory = async () => {
+  await categoryStore.deleteCategory(categoryStore.selectedCategoryId)
   closeModal()
 }
 

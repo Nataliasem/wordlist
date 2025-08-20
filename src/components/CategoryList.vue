@@ -34,7 +34,6 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { createCategory } from '../api/category.js'
 import CategoryItem from './CategoryItem.vue'
 import { useCategoryStore } from '../stores/category.js'
 
@@ -46,9 +45,7 @@ const selectCategory = (category) => {
 const category = ref('')
 const addCategory = async () => {
   if (!category.value) return
-  const newCategory = await createCategory(category.value)
-  selectCategory(newCategory)
-  await categoryStore.fetchCategories()
+  await categoryStore.createCategory(category.value)
   category.value = ''
 }
 
