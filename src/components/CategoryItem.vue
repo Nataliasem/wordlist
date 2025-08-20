@@ -61,7 +61,7 @@ import { ref, watch } from 'vue'
 import { deleteCategory, updateCategory } from '../api/category.js'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
-import AppModal from './AppModal.vue'
+import AppModal from './reusable/AppModal.vue'
 import { useModal } from '../composables/useModal.js'
 
 const categoryStore = useCategoryStore()
