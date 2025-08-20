@@ -1,19 +1,12 @@
 <template>
   <tr class="add-word-row">
     <td v-for="(_, key) in word">
-      <select
+      <AppSelect
         v-if="key === 'category'"
-        v-model="word.category" name="category"
-      >
-        <option
-          v-for="item in categoryStore.categories"
-          :key="item.id"
-          :value="item.id"
-          :selected="word.category === item.id"
-        >
-          {{ item.name }}
-        </option>
-      </select>
+        v-model="word.category"
+        select-name="category"
+        :options="categoryStore.categories"
+      />
 
        <textarea
          v-else
@@ -38,6 +31,7 @@
 </template>
 
 <script setup>
+import AppSelect from './reusable/AppSelect.vue'
 import { ref, watch } from 'vue'
 import { createWord } from '../api/word.js'
 import { useCategoryStore } from '../stores/category.js'
