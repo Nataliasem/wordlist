@@ -13,7 +13,13 @@
 
     <div class="divider" />
 
-    <CategoryItem />
+    <div v-if="categoryStore.isFetching" class="fetching-message">Categories are fetching...</div>
+    <div v-else-if="categoryStore.isEmpty" class="fetching-message">
+      <p>Something went wrong.</p>
+      <p>Please <a @click="reloadPage">reload the page</a>.</p>
+    </div>
+
+    <CategoryItem v-else />
 
     <div class="divider" />
     <div
@@ -44,6 +50,10 @@ const addCategory = async () => {
   selectCategory(newCategory)
   await categoryStore.fetchCategories()
   category.value = ''
+}
+
+const reloadPage = () => {
+  location.reload()
 }
 
 onMounted(async () => {
@@ -114,5 +124,12 @@ onMounted(async () => {
   background-color: #e7e6e9;
   margin: 8px 0;
   border-radius: 1px;
+}
+
+.fetching-message {
+  background-color: lavender;
+  padding: 8px;
+  border-radius: 4px;
+  border: 2px solid #e7e6e9;
 }
 </style>
