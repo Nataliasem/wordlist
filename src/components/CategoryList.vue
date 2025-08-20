@@ -8,7 +8,7 @@
         placeholder="New category"
         name="add-category"
       >
-      <button class="add-category__button" @click="addCategory">Add</button>
+      <button class="icon-button_filled" @click="addCategory">Add</button>
     </div>
 
     <div class="divider" />
@@ -87,7 +87,12 @@ onMounted(async () => {
 .add-category__wrapper {
   display: flex;
   justify-content: space-between;
+  gap: 4px;
   padding: 8px 0;
+}
+
+.add-category__wrapper .icon-button_filled {
+  border: 2px solid #e7e6e9;
 }
 
 .category-input {
@@ -95,11 +100,12 @@ onMounted(async () => {
   border: 2px solid #e7e6e9;
   border-radius: 4px;
   font-size: 16px;
+  padding: 2px 4px;
+  cursor: pointer;
 }
 
-.add-category__button {
-  margin-left: 8px;
-  border-radius: 4px;
+.add-category__wrapper .category-input:hover {
+  background-color: lavender;
 }
 
 .divider {

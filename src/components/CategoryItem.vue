@@ -14,8 +14,8 @@
           type="text"
           name="update-category"
         >
-        <button class="add-category__button" @click.stop="updateCategoryById">
-          <v-icon name="ri-checkbox-fill" title="Update category" fill="purple"></v-icon>
+        <button class="icon-button_filled" @click.stop="updateCategoryById">
+          <v-icon name="ri-checkbox-line" title="Update category"></v-icon>
         </button>
       </div>
 
@@ -26,12 +26,12 @@
           class="category-actions"
           :class="{ 'category-actions__selected' : item.id === categoryStore.selectedCategoryId }"
         >
-          <div class="category-actions__button" @click.stop="switchToUpdatingMode(item)">
+          <button class="icon-button_filled" @click.stop="switchToUpdatingMode(item)">
             <v-icon name="ri-pencil-line" title="Edit category"></v-icon>
-          </div>
-          <div class="category-actions__button" @click.stop="openModal">
+          </button>
+          <button class="icon-button_filled" @click.stop="openModal">
             <v-icon name="ri-delete-bin-2-line" title="Delete category"></v-icon>
-          </div>
+          </button>
         </div>
       </template>
     </div>
@@ -118,14 +118,7 @@ const deleteCategoryById = async () => {
 
 .category-actions__selected {
   display: flex;
-}
-
-.category-actions__button {
-  padding: 0 8px;
-}
-
-.category-actions__button:first-child {
-  margin-right: 4px;
+  gap: 4px;
 }
 
 .truncated {
