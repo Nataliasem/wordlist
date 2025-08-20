@@ -7,16 +7,14 @@
     <td>{{ word.category?.name || 'No category' }}</td>
 
     <td class="td-action">
-      <button @click="openModal">
+      <button class="icon-button_filled" @click="openModal">
         <v-icon name="ri-pencil-line" title="Edit word" />
       </button>
     </td>
     <td class="td-action">
-      <v-icon
-        name="ri-delete-bin-2-line"
-        title="Delete from category"
-        @click="deleteWordFromCategory"
-      />
+      <button class="icon-button_filled"  @click="deleteWordFromCategory">
+        <v-icon name="ri-delete-bin-2-line" title="Delete from category" />
+      </button>
     </td>
   </tr>
 
@@ -104,6 +102,13 @@ const save = async () => {
 </script>
 
 <style scoped>
+tr {
+  transition: background-color 0.3s ease;
+}
+tr:hover {
+ background-color: lavenderblush;
+}
+
 .word-form {
   display: flex;
   flex-direction: column;

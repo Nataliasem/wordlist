@@ -86,15 +86,25 @@ const emit = defineEmits([ 'confirm', 'cancel' ])
 }
 
 .modal-button {
+  color: white;
   font-weight: bold;
   padding: 8px;
+  transition: background-color 0.3s ease;
 }
 
 .modal-button__confirm {
-  background-color: lavender;
+  background-color: rebeccapurple;
+}
+
+.modal-button__confirm:hover {
+  background-color: mediumpurple;
 }
 
 .modal-button__cancel {
-  background-color: salmon;
+  background-color: darkred;
+}
+
+.modal-button__cancel:hover {
+  background-color: orangered;
 }
 </style>
