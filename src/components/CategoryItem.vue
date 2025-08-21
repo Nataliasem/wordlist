@@ -85,11 +85,13 @@ const switchToUpdatingMode = (category) => {
 
 const updateCategory = async () => {
   await categoryStore.updateCategory(updatedCategory.value)
+  categoryStore.selectCategory(updatedCategory.value)
   updatedCategory.value = null
 }
 
 const deleteCategory = async () => {
   await categoryStore.deleteCategory(categoryStore.selectedCategoryId)
+  categoryStore.selectFirstCategoryAsDefault()
   closeModal()
 }
 

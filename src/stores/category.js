@@ -1,53 +1,64 @@
 import { defineStore } from 'pinia'
-import { useFetch } from '@vueuse/core'
-import { useWordStore } from './word.js'
+import { create, update, remove, getCategories } from '../api/category.js'
+import { computed, ref } from 'vue'
 
-import { CATEGORY_URL } from '../constants.js'
-import { create, update, remove, } from '../api/category.js'
+export const useCategoryStore = defineStore('category', () => {
+  const isFetching = ref(false)
+  const hasError = ref(false)
+  const categories = ref([])
+  const isEmpty = computed(() => {
+    return !isFetching.value && (hasError.value || categories.value.length === 0)
+  })
+  const fetchCategories = async () => {
+    isFetching.value = true
+    hasError.value = false
+    try {
+      categories.value = await getCategories()
+    } catch {
+      hasError.value = true
+    } finally {
+      isFetching.value = false
+    }
+  }
+  const createCategory = async (category) => {
+    const newCategory = await create(category)
+    await fetchCategories()
+    selectCategory(newCategory)
+  }
+  const updateCategory = async (category) => {
+    await update(category)
+    await fetchCategories()
+    selectCategory(category)
+  }
+  const deleteCategory = async (id) => {
+    await remove(id)
+    await fetchCategories()
+  }
 
-export const useCategoryStore = defineStore('category', {
-  state: () => {
-    return {
-      isFetching: false,
-      error: null,
-      categories: [],
-      selectedCategory: null
+  const selectedCategory = ref(null)
+  const selectedCategoryId = computed(() => selectedCategory.value?.id || null)
+  const selectedCategoryName = computed(() => selectedCategory.value?.name || '')
+  const selectCategory = (category) => {
+    selectedCategory.value= category
+  }
+  const selectFirstCategoryAsDefault = () => {
+    if(!isEmpty.value) {
+      selectCategory(categories.value[0])
     }
-  },
-  getters: {
-    isEmpty: (state) => {
-      return !state?.isFetching && (state?.error || !state?.categories.length)
-    },
-    selectedCategoryId: (state) => state?.selectedCategory?.id || null
-  },
-  actions: {
-    async createCategory(category) {
-      const newCategory = await create(category)
-      this.selectCategory(newCategory)
-      await this.fetchCategories()
-    },
-    async fetchCategories() {
-      const { isFetching, error, data } =  await useFetch(CATEGORY_URL).get().json()
-      this.isFetching = isFetching
-      this.error = error
-      this.categories = data
-    },
-    async updateCategory(category) {
-      const wordStore = useWordStore()
-      await update(category)
-      await this.fetchCategories()
-      await wordStore.fetchWords()
-      this.selectCategory(category)
-    },
-    async deleteCategory(id) {
-      await remove(id)
-      await this.fetchCategories()
-      if (this.categories.length > 0) {
-        this.selectCategory(this.categories[0])
-      }
-    },
-    selectCategory(category) {
-      this.selectedCategory = category
-    }
+  }
+
+  return {
+    isFetching,
+    categories,
+    isEmpty,
+    fetchCategories,
+    createCategory,
+    updateCategory,
+    deleteCategory,
+    selectedCategory,
+    selectedCategoryId,
+    selectedCategoryName,
+    selectCategory,
+    selectFirstCategoryAsDefault
   }
 })

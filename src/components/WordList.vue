@@ -2,7 +2,7 @@
   <div class="word-list">
     <table>
       <caption>
-        <h2>Category: {{ selectedCategoryName }}</h2>
+        <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
       </caption>
 
       <thead>
@@ -33,20 +33,11 @@
 <script setup>
 import AddWordRow from './AddWordRow.vue'
 import WordRow from './WordRow.vue'
-import { computed, watch } from 'vue'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
 
 const categoryStore = useCategoryStore()
-watch(() => categoryStore.selectedCategoryId, () => {
-  updateWords()
-})
-const selectedCategoryName = computed(() => categoryStore.selectedCategory?.name || 'No category')
-
 const wordStore = useWordStore()
-const updateWords = async () => {
-  await wordStore.fetchWords()
-}
 </script>
 
 <style scoped>
