@@ -1,25 +1,16 @@
 import { defineStore } from 'pinia'
 import { create, update, remove, getCategories } from '../api/category.js'
 import { computed, ref } from 'vue'
+import { useCustomFetch } from '../composables/useCustomFetch.js'
 
 export const useCategoryStore = defineStore('category', () => {
-  const isFetching = ref(false)
-  const hasError = ref(false)
-  const categories = ref([])
-  const isEmpty = computed(() => {
-    return !isFetching.value && (hasError.value || categories.value.length === 0)
-  })
-  const fetchCategories = async () => {
-    isFetching.value = true
-    hasError.value = false
-    try {
-      categories.value = await getCategories()
-    } catch {
-      hasError.value = true
-    } finally {
-      isFetching.value = false
-    }
-  }
+  const {
+    isFetching,
+    isEmpty,
+    data: categories,
+    fetchData: fetchCategories
+  } = useCustomFetch(getCategories)
+
   const createCategory = async (category) => {
     const newCategory = await create(category)
     await fetchCategories()
