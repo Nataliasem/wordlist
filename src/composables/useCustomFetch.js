@@ -8,10 +8,10 @@ export function useCustomFetch(apiMethod) {
     return !isFetching.value && (hasError.value || data.value.length === 0)
   })
 
-  const fetchData = async (params) => {
+  const fetchData = async (...params) => {
     isFetching.value = true
     try {
-      data.value = await apiMethod(params)
+      data.value = await apiMethod(...params)
     } catch  {
       hasError.value = true
     } finally {
