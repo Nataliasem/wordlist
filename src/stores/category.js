@@ -7,6 +7,7 @@ export const useCategoryStore = defineStore('category', () => {
   const {
     isFetching,
     isEmpty,
+    hasError,
     data: categories,
     fetchData: fetchCategories
   } = useCustomFetch(getCategories)
@@ -42,6 +43,7 @@ export const useCategoryStore = defineStore('category', () => {
     isFetching,
     categories,
     isEmpty,
+    hasError,
     fetchCategories,
     createCategory,
     updateCategory,

@@ -18,15 +18,21 @@
       :class="{ 'category-name__selected' : !categoryStore.selectedCategory }"
       @click="selectCategory(null)"
     >
-      no category
+      Words without category
     </div>
 
     <div class="divider" />
 
-    <div v-if="categoryStore.isFetching" class="fetching-message">Categories are fetching...</div>
-    <div v-else-if="categoryStore.isEmpty" class="fetching-message">
+    <div v-if="categoryStore.isFetching" class="fetching-message">
+      <p>Categories are fetching...</p>
+    </div>
+    <div v-else-if="categoryStore.hasError" class="fetching-message">
       <p>Something went wrong.</p>
       <p>Please <a @click="reloadPage">reload the page</a>.</p>
+    </div>
+    <div v-else-if="categoryStore.isEmpty" class="fetching-message">
+      <p>Category`s list is empty.</p>
+      <p>Add the first category</p>
     </div>
 
     <CategoryItem v-else />
