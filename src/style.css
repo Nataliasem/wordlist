@@ -66,13 +66,29 @@ button:focus-visible {
     border-color: purple;
 }
 
+.scrollable-table-container {
+    max-height: 95vh;
+    width: 75vw;
+    overflow-y: auto;
+}
+
 table, th, td {
+    width: 100%;
     border: 1px solid black;
     border-collapse: collapse;
 }
 
 th, td {
     padding: 4px;
+}
+
+th p, td p {
+    width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0;
+    margin: 0;
 }
 
 .td-action {

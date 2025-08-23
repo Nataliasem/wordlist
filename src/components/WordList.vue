@@ -1,44 +1,46 @@
 <template>
   <div class="word-list">
-    <table>
-      <caption>
-        <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
-      </caption>
+    <div class="scrollable-table-container">
+      <table>
+        <caption>
+          <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
+        </caption>
 
-      <thead>
-      <tr>
-        <th v-for="item in columnConfig" :key="item">{{ item }}</th>
-      </tr>
-      </thead>
+        <thead>
+        <tr>
+          <th v-for="item in columnConfig" :key="item">{{ item }}</th>
+        </tr>
+        </thead>
 
-      <tbody>
-      <AddWordRow />
-      <tr v-if="wordStore.isFetching">
-        <td :colspan="columnLength" class="table-message">
-          <p>Words are fetching...</p>
-        </td>
-      </tr>
+        <tbody>
+        <AddWordRow />
+        <tr v-if="wordStore.isFetching">
+          <td :colspan="columnLength" class="table-message fetching">
+            <p>Words are fetching...</p>
+          </td>
+        </tr>
 
-      <tr v-else-if="wordStore.hasError">
-        <td :colspan="columnLength" class="table-message">
-          <p>Something went wrong.</p>
-          <p>Please <a @click="reloadPage">reload the page</a>.</p>
-        </td>
-      </tr>
+        <tr v-else-if="wordStore.hasError">
+          <td :colspan="columnLength" class="table-message error">
+            <p>Something went wrong.</p>
+            <p>Please <a @click="reloadPage">reload the page</a>.</p>
+          </td>
+        </tr>
 
-      <tr v-else-if="wordStore.isEmpty">
-        <td :colspan="columnLength" class="table-message">
-          <p>No words in this category</p>
-        </td>
-      </tr>
+        <tr v-else-if="wordStore.isEmpty">
+          <td :colspan="columnLength" class="table-message empty">
+            <p>No words in this category</p>
+          </td>
+        </tr>
 
-      <WordRow
-        v-for="item in wordStore.words"
-        :key="item.id"
-        :word="item"
-      />
-      </tbody>
-    </table>
+        <WordRow
+          v-for="item in wordStore.words"
+          :key="item.id"
+          :word="item"
+        />
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -74,7 +76,20 @@ const columnLength = computed(() => columnConfig.length)
   align-items: baseline;
 }
 
-.table-message {
+.table-message p {
+  width: 100%;
   text-align: center;
+}
+
+.table-message.fetching {
+  color: purple;
+}
+
+.table-message.empty {
+  color: blue;
+}
+
+.table-message.error {
+  color: red;
 }
 </style>

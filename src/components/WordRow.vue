@@ -1,10 +1,10 @@
 <template>
   <tr>
-    <th scope="row">{{ word.word }}</th>
-    <td>{{ word.transcription }}</td>
-    <td>{{ word.definition }}</td>
-    <td>{{ word.translation }}</td>
-    <td>{{ word.category?.name || 'No category' }}</td>
+    <th scope="row"><p>{{ word.word }}</p></th>
+    <td><p>{{ word.transcription }}</p></td>
+    <td><p>{{ word.definition }}</p></td>
+    <td><p>{{ word.translation }}</p></td>
+    <td><p>{{ word.category?.name || 'No category' }}</p></td>
 
     <td class="td-action">
       <button class="icon-button_filled" @click="openModal">
