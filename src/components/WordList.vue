@@ -7,18 +7,30 @@
 
       <thead>
       <tr>
-        <th>Word</th>
-        <th>Transcription</th>
-        <th>Definition</th>
-        <th>Translation</th>
-        <th>Category</th>
-        <th>Add/edit</th>
-        <th>Clear</th>
+        <th v-for="item in columnConfig" :key="item">{{ item }}</th>
       </tr>
       </thead>
 
       <tbody>
       <AddWordRow />
+      <tr v-if="wordStore.isFetching">
+        <td :colspan="columnLength" class="table-message">
+          <p>Words are fetching...</p>
+        </td>
+      </tr>
+
+      <tr v-else-if="wordStore.hasError">
+        <td :colspan="columnLength" class="table-message">
+          <p>Something went wrong.</p>
+          <p>Please <a @click="reloadPage">reload the page</a>.</p>
+        </td>
+      </tr>
+
+      <tr v-else-if="wordStore.isEmpty">
+        <td :colspan="columnLength" class="table-message">
+          <p>No words in this category</p>
+        </td>
+      </tr>
 
       <WordRow
         v-for="item in wordStore.words"
@@ -35,9 +47,22 @@ import AddWordRow from './AddWordRow.vue'
 import WordRow from './WordRow.vue'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
+import { reloadPage } from '../utils/index.js'
+import { computed } from 'vue'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
+
+const columnConfig = [
+  'Word',
+  'Transcription',
+  'Definition',
+  'Translation',
+  'Category',
+  'Add/edit',
+  'Clear'
+]
+const columnLength = computed(() => columnConfig.length)
 </script>
 
 <style scoped>
@@ -47,5 +72,9 @@ const wordStore = useWordStore()
   display: flex;
   justify-content: center;
   align-items: baseline;
+}
+
+.table-message {
+  text-align: center;
 }
 </style>

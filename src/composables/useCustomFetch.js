@@ -21,6 +21,7 @@ export function useCustomFetch(apiMethod) {
 
   return {
     isFetching,
+    hasError,
     data,
     isEmpty,
     fetchData

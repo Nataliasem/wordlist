@@ -8,6 +8,7 @@ export const useWordStore = defineStore('word', () => {
   const {
     isFetching,
     isEmpty,
+    hasError,
     data: words,
     fetchData: fetchWords
   } = useCustomFetch(getWordlist)
@@ -34,6 +35,7 @@ export const useWordStore = defineStore('word', () => {
   return {
     words,
     isFetching,
+    hasError,
     isEmpty,
     createWord,
     updateWord,

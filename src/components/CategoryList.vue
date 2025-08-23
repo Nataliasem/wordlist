@@ -36,6 +36,7 @@
 import { onMounted, ref } from 'vue'
 import CategoryItem from './CategoryItem.vue'
 import { useCategoryStore } from '../stores/category.js'
+import { reloadPage } from '../utils/index.js'
 
 const categoryStore = useCategoryStore()
 const selectCategory = (category) => {
@@ -47,10 +48,6 @@ const addCategory = async () => {
   if (!category.value) return
   await categoryStore.createCategory(category.value)
   category.value = ''
-}
-
-const reloadPage = () => {
-  location.reload()
 }
 
 onMounted(async () => {
