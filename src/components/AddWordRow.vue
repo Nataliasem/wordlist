@@ -7,13 +7,12 @@
         select-name="category"
         :options="categoryStore.categories"
       />
-
-       <textarea
-         v-else
-         rows="1"
-         v-model="word[key]"
-         :name="key"
-       />
+      <textarea
+        v-else
+        rows="1"
+        v-model="word[key]"
+        :name="key"
+      />
     </td>
 
     <td class="td-action">
@@ -33,7 +32,6 @@
 <script setup>
 import AppSelect from './reusable/AppSelect.vue'
 import { ref, watch } from 'vue'
-import { createWord } from '../api/word.js'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
 
@@ -49,7 +47,7 @@ const word = ref({
 })
 
 watch(() => categoryStore.selectedCategoryId, () => {
-  word.value.category = categoryStore.selectedCategoryId || null
+  word.value.category = categoryStore.selectedCategoryId
 })
 
 const clearUserInput = () => {
@@ -58,14 +56,13 @@ const clearUserInput = () => {
     transcription: '',
     translation: '',
     definition: '',
-    category: null
+    category: categoryStore.selectedCategoryId
   }
 }
 
 const addWordToCategory = async () => {
   if (!word.value.word) return
-  await createWord(word.value)
-  await wordStore.fetchWords()
+  await wordStore.createWord(word.value)
   clearUserInput()
 }
 
@@ -80,7 +77,7 @@ tr:hover {
   background-color: mediumpurple;
 }
 
-tr:hover .icon-button_filled{
+tr:hover .icon-button_filled {
   background-color: white;
 }
 

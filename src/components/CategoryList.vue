@@ -13,24 +13,37 @@
 
     <div class="divider" />
 
-    <CategoryItem />
-
-    <div class="divider" />
     <div
       class="category-name"
       :class="{ 'category-name__selected' : !categoryStore.selectedCategory }"
       @click="selectCategory(null)"
     >
-      no category
+      Words without category
     </div>
+
+    <div class="divider" />
+
+    <div v-if="categoryStore.isFetching" class="fetching-message">
+      <p>Categories are fetching...</p>
+    </div>
+    <div v-else-if="categoryStore.hasError" class="fetching-message">
+      <p>Something went wrong.</p>
+      <p>Please <a @click="reloadPage">reload the page</a>.</p>
+    </div>
+    <div v-else-if="categoryStore.isEmpty" class="fetching-message">
+      <p>Category`s list is empty.</p>
+      <p>Add the first category</p>
+    </div>
+
+    <CategoryItem v-else />
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { createCategory } from '../api/category.js'
 import CategoryItem from './CategoryItem.vue'
 import { useCategoryStore } from '../stores/category.js'
+import { reloadPage } from '../utils/index.js'
 
 const categoryStore = useCategoryStore()
 const selectCategory = (category) => {
@@ -40,9 +53,7 @@ const selectCategory = (category) => {
 const category = ref('')
 const addCategory = async () => {
   if (!category.value) return
-  const newCategory = await createCategory(category.value)
-  selectCategory(newCategory)
-  await categoryStore.fetchCategories()
+  await categoryStore.createCategory(category.value)
   category.value = ''
 }
 
@@ -56,6 +67,7 @@ onMounted(async () => {
 
 <style>
 .category-list {
+  width: 256px;
   background-color: #f1f0f2;
   padding: 16px;
   -webkit-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
@@ -114,5 +126,12 @@ onMounted(async () => {
   background-color: #e7e6e9;
   margin: 8px 0;
   border-radius: 1px;
+}
+
+.fetching-message {
+  background-color: lavender;
+  padding: 8px;
+  border-radius: 4px;
+  border: 2px solid #e7e6e9;
 }
 </style>

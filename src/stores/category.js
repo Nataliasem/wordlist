@@ -1,22 +1,57 @@
 import { defineStore } from 'pinia'
-import { getCategories } from '../api/category.js'
+import { create, update, remove, getCategories } from '../api/category.js'
+import { computed, ref } from 'vue'
+import { useCustomFetch } from '../composables/useCustomFetch.js'
 
-export const useCategoryStore = defineStore('category', {
-  state: () => {
-    return {
-      categories: [],
-      selectedCategory: null
+export const useCategoryStore = defineStore('category', () => {
+  const {
+    isFetching,
+    isEmpty,
+    hasError,
+    data: categories,
+    fetchData: fetchCategories
+  } = useCustomFetch(getCategories)
+
+  const createCategory = async (category) => {
+    const newCategory = await create(category)
+    await fetchCategories()
+    selectCategory(newCategory)
+  }
+  const updateCategory = async (category) => {
+    await update(category)
+    await fetchCategories()
+    selectCategory(category)
+  }
+  const deleteCategory = async (id) => {
+    await remove(id)
+    await fetchCategories()
+  }
+
+  const selectedCategory = ref(null)
+  const selectedCategoryId = computed(() => selectedCategory.value?.id || null)
+  const selectedCategoryName = computed(() => selectedCategory.value?.name || '')
+  const selectCategory = (category) => {
+    selectedCategory.value= category
+  }
+  const selectFirstCategoryAsDefault = () => {
+    if(!isEmpty.value) {
+      selectCategory(categories.value[0])
     }
-  },
-  getters: {
-    selectedCategoryId: (state) => state?.selectedCategory?.id || null
-  },
-  actions: {
-    async fetchCategories() {
-      this.categories = await getCategories()
-    },
-    selectCategory(category) {
-      this.selectedCategory = category
-    }
+  }
+
+  return {
+    isFetching,
+    categories,
+    isEmpty,
+    hasError,
+    fetchCategories,
+    createCategory,
+    updateCategory,
+    deleteCategory,
+    selectedCategory,
+    selectedCategoryId,
+    selectedCategoryName,
+    selectCategory,
+    selectFirstCategoryAsDefault
   }
 })

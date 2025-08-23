@@ -1,17 +1,44 @@
 import { defineStore } from 'pinia'
-import { getWordlist } from '../api/word.js'
-import { useCategoryStore } from './category.js'
+import { getWordlist, create, update, remove } from '../api/word.js'
+import { watch } from 'vue'
+import { useCategoryStore } from './category'
+import { useCustomFetch } from '../composables/useCustomFetch.js'
 
+export const useWordStore = defineStore('word', () => {
+  const {
+    isFetching,
+    isEmpty,
+    hasError,
+    data: words,
+    fetchData: fetchWords
+  } = useCustomFetch(getWordlist)
 
-export const useWordStore = defineStore('word', {
-  state: () => {
-    return {
-      words: []
-    }
-  }, actions: {
-    async fetchWords() {
-      const categoryStore = useCategoryStore()
-      this.words = await getWordlist(categoryStore.selectedCategory?.id || null)
-    }
+  const categoryStore = useCategoryStore()
+  // watch full object, not only id
+  watch(() => categoryStore.selectedCategory, async () => {
+    await fetchWords(categoryStore.selectedCategoryId)
+  })
+
+  const createWord = async (word) => {
+    await create(word)
+    await fetchWords(categoryStore.selectedCategoryId)
+  }
+  const updateWord = async (word) => {
+    await update(word)
+    await fetchWords(categoryStore.selectedCategoryId)
+  }
+  const deleteWord = async (id) => {
+    await remove(id)
+    await fetchWords(categoryStore.selectedCategoryId)
+  }
+
+  return {
+    words,
+    isFetching,
+    hasError,
+    isEmpty,
+    createWord,
+    updateWord,
+    deleteWord
   }
 })

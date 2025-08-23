@@ -1,6 +1,6 @@
 import { WORD_URL } from '../constants.js'
 
-export const createWord = async (word) => {
+export const create = async (word) => {
   await fetch(`${WORD_URL}`, {
     method: 'POST',
     headers: {
@@ -10,7 +10,7 @@ export const createWord = async (word) => {
   })
 }
 
-export const updateWord = async (word) => {
+export const update = async (word) => {
   await fetch(`${WORD_URL}/${word.id}`, {
     method: 'PUT',
     headers: {
@@ -20,7 +20,7 @@ export const updateWord = async (word) => {
   })
 }
 
-export const deleteWord = async (wordId) => {
+export const remove = async (wordId) => {
   await fetch(`${WORD_URL}/${ wordId }`, {
     method: 'DELETE'
   })

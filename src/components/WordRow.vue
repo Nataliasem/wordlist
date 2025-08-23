@@ -1,10 +1,10 @@
 <template>
   <tr>
-    <th scope="row">{{ word.word }}</th>
-    <td>{{ word.transcription }}</td>
-    <td>{{ word.definition }}</td>
-    <td>{{ word.translation }}</td>
-    <td>{{ word.category?.name || 'No category' }}</td>
+    <th scope="row"><p>{{ word.word }}</p></th>
+    <td><p>{{ word.transcription }}</p></td>
+    <td><p>{{ word.definition }}</p></td>
+    <td><p>{{ word.translation }}</p></td>
+    <td><p>{{ word.category?.name || 'No category' }}</p></td>
 
     <td class="td-action">
       <button class="icon-button_filled" @click="openModal">
@@ -60,7 +60,6 @@
 import AppSelect from './reusable/AppSelect.vue'
 import AppModal from './reusable/AppModal.vue'
 import { ref, watch } from 'vue'
-import { deleteWord, updateWord } from '../api/word.js'
 import { useWordStore } from '../stores/word.js'
 import { useCategoryStore } from '../stores/category.js'
 import { useModal } from '../composables/useModal.js'
@@ -74,8 +73,7 @@ const { isModalOpen, closeModal, openModal } = useModal()
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
 const deleteWordFromCategory = async () => {
-  await deleteWord(props.word.id)
-  await wordStore.fetchWords()
+  await wordStore.deleteWord(props.word.id)
 }
 
 const updatedWord = ref(null)
@@ -91,8 +89,7 @@ watch(() => props.word, async () => {
 
 const save = async () => {
   if (!updatedWord.value.word) return
-  await updateWord(updatedWord.value)
-  await wordStore.fetchWords()
+  await wordStore.updateWord(updatedWord.value)
   closeModal()
 }
 </script>
