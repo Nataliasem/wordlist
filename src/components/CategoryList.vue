@@ -13,15 +13,6 @@
 
     <div class="divider" />
 
-    <div v-if="categoryStore.isFetching" class="fetching-message">Categories are fetching...</div>
-    <div v-else-if="categoryStore.isEmpty" class="fetching-message">
-      <p>Something went wrong.</p>
-      <p>Please <a @click="reloadPage">reload the page</a>.</p>
-    </div>
-
-    <CategoryItem v-else />
-
-    <div class="divider" />
     <div
       class="category-name"
       :class="{ 'category-name__selected' : !categoryStore.selectedCategory }"
@@ -29,6 +20,16 @@
     >
       no category
     </div>
+
+    <div class="divider" />
+
+    <div v-if="categoryStore.isFetching" class="fetching-message">Categories are fetching...</div>
+    <div v-else-if="categoryStore.isEmpty" class="fetching-message">
+      <p>Something went wrong.</p>
+      <p>Please <a @click="reloadPage">reload the page</a>.</p>
+    </div>
+
+    <CategoryItem v-else />
   </div>
 </template>
 
@@ -60,6 +61,7 @@ onMounted(async () => {
 
 <style>
 .category-list {
+  width: 256px;
   background-color: #f1f0f2;
   padding: 16px;
   -webkit-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);

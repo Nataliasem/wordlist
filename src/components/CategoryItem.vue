@@ -100,7 +100,9 @@ const deleteCategory = async () => {
 <style>
 .category-items__wrapper {
   overflow-y: scroll;
-  height: 75%;
+  height: 85%;
+  position: fixed;
+  top: 142px;
 }
 
 .category-actions {
@@ -111,12 +113,5 @@ const deleteCategory = async () => {
 .category-actions__selected {
   display: flex;
   gap: 4px;
-}
-
-.truncated {
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 </style>
