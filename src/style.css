@@ -66,6 +66,12 @@ button:focus-visible {
     border-color: purple;
 }
 
+.scrollable-table-container {
+    max-height: 95vh;
+    width: 70vw;
+    overflow-y: auto;
+}
+
 table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
