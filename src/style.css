@@ -18,6 +18,7 @@
 }
 
 a {
+    cursor: pointer;
     font-weight: 500;
     color: #646cff;
     text-decoration: inherit;
@@ -50,13 +51,25 @@ button {
     transition: border-color 0.25s;
 }
 
-button:hover {
-    border-color: #646cff;
-}
-
 button:focus,
 button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
+}
+
+.icon-button_filled {
+    border: 1px solid transparent;
+    transition: border 0.3s ease;
+}
+
+.icon-button_filled:hover {
+    background-color: lavender;
+    border-color: purple;
+}
+
+.scrollable-table-container {
+    max-height: 95vh;
+    width: 75vw;
+    overflow-y: auto;
 }
 
 table, th, td {
@@ -68,8 +81,24 @@ th, td {
     padding: 4px;
 }
 
+th p, td p {
+    width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0;
+    margin: 0;
+}
+
 .td-action {
     text-align: center;
+}
+
+.truncated {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 @media (prefers-color-scheme: light) {

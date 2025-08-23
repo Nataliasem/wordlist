@@ -14,8 +14,8 @@
           type="text"
           name="update-category"
         >
-        <button class="add-category__button" @click.stop="updateCategoryById">
-          <v-icon name="ri-checkbox-fill" title="Update category" fill="purple"></v-icon>
+        <button class="icon-button_filled" @click.stop="updateCategory">
+          <v-icon name="ri-checkbox-line" title="Update category"></v-icon>
         </button>
       </div>
 
@@ -26,12 +26,12 @@
           class="category-actions"
           :class="{ 'category-actions__selected' : item.id === categoryStore.selectedCategoryId }"
         >
-          <div class="category-actions__button" @click.stop="switchToUpdatingMode(item)">
+          <button class="icon-button_filled" @click.stop="switchToUpdatingMode(item)">
             <v-icon name="ri-pencil-line" title="Edit category"></v-icon>
-          </div>
-          <div class="category-actions__button" @click.stop="openModal">
+          </button>
+          <button class="icon-button_filled" @click.stop="openModal">
             <v-icon name="ri-delete-bin-2-line" title="Delete category"></v-icon>
-          </div>
+          </button>
         </div>
       </template>
     </div>
@@ -39,7 +39,7 @@
 
   <AppModal
     v-if="isModalOpen"
-    @confirm="deleteCategoryById"
+    @confirm="deleteCategory"
     @cancel="closeModal"
   >
     <template #header>
@@ -58,14 +58,11 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { deleteCategory, updateCategory } from '../api/category.js'
 import { useCategoryStore } from '../stores/category.js'
-import { useWordStore } from '../stores/word.js'
-import AppModal from './AppModal.vue'
+import AppModal from './reusable/AppModal.vue'
 import { useModal } from '../composables/useModal.js'
 
 const categoryStore = useCategoryStore()
-const wordStore = useWordStore()
 
 const { isModalOpen, closeModal, openModal } = useModal()
 
@@ -86,20 +83,15 @@ const switchToUpdatingMode = (category) => {
   updatedCategory.value = { ...category }
 }
 
-const updateCategoryById = async () => {
-  await updateCategory(updatedCategory.value)
-  await categoryStore.fetchCategories()
-  await wordStore.fetchWords()
+const updateCategory = async () => {
+  await categoryStore.updateCategory(updatedCategory.value)
   categoryStore.selectCategory(updatedCategory.value)
   updatedCategory.value = null
 }
 
-const deleteCategoryById = async () => {
-  await deleteCategory(categoryStore.selectedCategoryId)
-  await categoryStore.fetchCategories()
-  if (categoryStore.categories.length > 0) {
-    selectCategory(categoryStore.categories[0])
-  }
+const deleteCategory = async () => {
+  await categoryStore.deleteCategory(categoryStore.selectedCategoryId)
+  categoryStore.selectFirstCategoryAsDefault()
   closeModal()
 }
 
@@ -108,7 +100,9 @@ const deleteCategoryById = async () => {
 <style>
 .category-items__wrapper {
   overflow-y: scroll;
-  height: 75%;
+  height: 85%;
+  position: fixed;
+  top: 142px;
 }
 
 .category-actions {
@@ -118,20 +112,6 @@ const deleteCategoryById = async () => {
 
 .category-actions__selected {
   display: flex;
-}
-
-.category-actions__button {
-  padding: 0 8px;
-}
-
-.category-actions__button:first-child {
-  margin-right: 4px;
-}
-
-.truncated {
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  gap: 4px;
 }
 </style>
