@@ -11,18 +11,6 @@
       <button class="icon-button_filled" @click="addCategory">Add</button>
     </div>
 
-    <div class="divider" />
-
-    <div
-      class="category-name"
-      :class="{ 'category-name__selected' : !categoryStore.selectedCategory }"
-      @click="selectCategory(null)"
-    >
-      Words without category
-    </div>
-
-    <div class="divider" />
-
     <div v-if="categoryStore.isFetching" class="fetching-message">
       <p>Categories are fetching...</p>
     </div>
@@ -75,27 +63,6 @@ onMounted(async () => {
   box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
 }
 
-.category-name {
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 16px;
-  font-weight: bold;
-  border: 2px solid transparent;
-  width: 220px;
-}
-
-.category-name:hover {
-  background-color: #e7e6e9;
-}
-
-.category-name__selected {
-  background-color: lavender;
-  border-radius: 4px;
-  border: 2px solid purple;
-}
-
 .add-category__wrapper {
   display: flex;
   justify-content: space-between;
@@ -118,14 +85,6 @@ onMounted(async () => {
 
 .add-category__wrapper .category-input:hover {
   background-color: lavender;
-}
-
-.divider {
-  height: 2px;
-  min-width: 100%;
-  background-color: #e7e6e9;
-  margin: 8px 0;
-  border-radius: 1px;
 }
 
 .fetching-message {

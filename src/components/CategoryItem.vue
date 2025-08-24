@@ -1,11 +1,21 @@
 <template>
-  <div class="category-items__wrapper">
+  <div
+    class="category-items__wrapper"
+  >
     <div
-      v-for="item in categoryStore.categories"
+      v-for="(item, index) in categoryStore.categories"
       :key="item.id"
       class="category-name"
-      :class="{ 'category-name__selected' : item.id === categoryStore.selectedCategoryId }"
+      :class="{
+        'category-name__selected' : item.id === categoryStore.selectedCategoryId,
+        'category-name__divided': item.id === null,
+      }"
+      :id="String(item.id)"
+      :tabindex="index"
       @click="selectCategory(item)"
+      @focus="selectCategory(item)"
+      @keyup.up="navigateUp(index)"
+      @keyup.down="navigateDown(index)"
     >
       <div v-if="updatedCategory && updatedCategory.id === item.id">
         <input
@@ -57,7 +67,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, nextTick, onMounted } from 'vue'
 import { useCategoryStore } from '../stores/category.js'
 import AppModal from './reusable/AppModal.vue'
 import { useModal } from '../composables/useModal.js'
@@ -76,6 +86,7 @@ const selectCategory = (category) => {
 }
 watch(() => categoryStore.selectedCategoryId, () => {
   updatedCategory.value = null
+  document.getElementById(categoryStore.selectedCategoryId).focus()
 })
 
 const switchToUpdatingMode = (category) => {
@@ -95,6 +106,19 @@ const deleteCategory = async () => {
   closeModal()
 }
 
+const navigateUp = async (currentIndex) => {
+  const prevElId = categoryStore.categories[currentIndex - 1]?.id
+  await nextTick()
+  const prevEl = document.getElementById(prevElId)
+  prevEl.focus()
+}
+
+const navigateDown = async (currentIndex) => {
+  const nextElId = categoryStore.categories[currentIndex + 1]?.id
+  await nextTick()
+  const nextEl = document.getElementById(nextElId)
+  nextEl.focus()
+}
 </script>
 
 <style>
@@ -102,7 +126,7 @@ const deleteCategory = async () => {
   overflow-y: scroll;
   height: 85%;
   position: fixed;
-  top: 142px;
+  top: 64px;
 }
 
 .category-actions {
@@ -113,5 +137,41 @@ const deleteCategory = async () => {
 .category-actions__selected {
   display: flex;
   gap: 4px;
+}
+
+.category-name {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  width: 220px;
+}
+
+.category-name:hover {
+  background-color: #e7e6e9;
+}
+
+.category-name__selected {
+  font-weight: bold;
+  background-color: lavender;
+  border-radius: 4px;
+  border: 2px solid purple;
+}
+
+.category-name.category-name__divided:not(.category-name__selected) {
+  border-top: 2px solid  #e7e6e9;
+  border-bottom: 2px solid  #e7e6e9;
+}
+
+.category-name:focus-visible,
+.category-name:focus-within,
+.category-name:focus
+{
+  outline: none;
+  background-color: lavender;
+  border-color: purple;
 }
 </style>
