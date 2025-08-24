@@ -8,7 +8,7 @@
       class="category-name"
       :class="{
         'category-name__selected' : item.id === categoryStore.selectedCategoryId,
-        'category-name__divided': item.id === null,
+        'category-name__divided': item.id === null
       }"
       :id="String(item.id)"
       :tabindex="index"
