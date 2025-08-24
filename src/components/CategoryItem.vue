@@ -5,12 +5,12 @@
     <div
       v-for="(item, index) in categoryStore.categories"
       :key="item.id"
+      ref="categories"
       class="category-name"
       :class="{
         'category-name__selected' : item.id === categoryStore.selectedCategoryId,
         'category-name__divided': item.id === null
       }"
-      :id="String(item.id)"
       :tabindex="index"
       @click="selectCategory(item)"
       @focus="selectCategory(item)"
@@ -67,7 +67,7 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick, onMounted } from 'vue'
+import { ref, watch, useTemplateRef, onMounted } from 'vue'
 import { useCategoryStore } from '../stores/category.js'
 import AppModal from './reusable/AppModal.vue'
 import { useModal } from '../composables/useModal.js'
@@ -86,7 +86,6 @@ const selectCategory = (category) => {
 }
 watch(() => categoryStore.selectedCategoryId, () => {
   updatedCategory.value = null
-  document.getElementById(categoryStore.selectedCategoryId).focus()
 })
 
 const switchToUpdatingMode = (category) => {
@@ -106,19 +105,22 @@ const deleteCategory = async () => {
   closeModal()
 }
 
+const itemRefs = useTemplateRef('categories')
 const navigateUp = async (currentIndex) => {
   const prevElId = categoryStore.categories[currentIndex - 1]?.id
-  await nextTick()
-  const prevEl = document.getElementById(prevElId)
-  prevEl.focus()
+  const prevElIndex = categoryStore.categories.findIndex((item) => item.id === prevElId)
+  itemRefs.value[prevElIndex].focus()
 }
 
 const navigateDown = async (currentIndex) => {
   const nextElId = categoryStore.categories[currentIndex + 1]?.id
-  await nextTick()
-  const nextEl = document.getElementById(nextElId)
-  nextEl.focus()
+  const nextElIndex = categoryStore.categories.findIndex((item) => item.id === nextElId)
+  itemRefs.value[nextElIndex].focus()
 }
+
+onMounted(() => {
+  itemRefs.value[0].focus()
+})
 </script>
 
 <style>
