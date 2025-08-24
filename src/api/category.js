@@ -22,7 +22,7 @@ export const getCategories = async () => {
     return [{
       id: null,
       name: 'Words without category',
-    }].concat(res)
+    }].concat(res.sort())
   } else {
     return []
   }
