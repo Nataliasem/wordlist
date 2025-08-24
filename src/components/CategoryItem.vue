@@ -16,6 +16,7 @@
       @focus="selectCategory(item)"
       @keyup.up="navigateUp(index)"
       @keyup.down="navigateDown(index)"
+      @keyup.enter="switchToUpdatingMode(item)"
     >
       <div v-if="updatedCategory && updatedCategory.id === item.id">
         <input
@@ -23,6 +24,7 @@
           class="category-input"
           type="text"
           name="update-category"
+          :id="updatedCategory && `updated-category-${updatedCategory.id}`"
         >
         <button class="icon-button_filled" @click.stop="updateCategory">
           <v-icon name="ri-checkbox-line" title="Update category"></v-icon>
@@ -67,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref, watch, useTemplateRef, onMounted } from 'vue'
+import { ref, watch, useTemplateRef, onMounted, nextTick } from 'vue'
 import { useCategoryStore } from '../stores/category.js'
 import AppModal from './reusable/AppModal.vue'
 import { useModal } from '../composables/useModal.js'
@@ -75,35 +77,6 @@ import { useModal } from '../composables/useModal.js'
 const categoryStore = useCategoryStore()
 
 const { isModalOpen, closeModal, openModal } = useModal()
-
-const updatedCategory = ref(null)
-const selectCategory = (category) => {
-  // To avoid extra calling of "selectCategory" method when clicking on input in updating mode
-  if (updatedCategory.value?.id === category.id) {
-    return
-  }
-  categoryStore.selectCategory(category)
-}
-watch(() => categoryStore.selectedCategoryId, () => {
-  updatedCategory.value = null
-})
-
-const switchToUpdatingMode = (category) => {
-  // To avoid direct reference with categories in store
-  updatedCategory.value = { ...category }
-}
-
-const updateCategory = async () => {
-  await categoryStore.updateCategory(updatedCategory.value)
-  categoryStore.selectCategory(updatedCategory.value)
-  updatedCategory.value = null
-}
-
-const deleteCategory = async () => {
-  await categoryStore.deleteCategory(categoryStore.selectedCategoryId)
-  categoryStore.selectFirstCategoryAsDefault()
-  closeModal()
-}
 
 const itemRefs = useTemplateRef('categories')
 const navigateUp = async (currentIndex) => {
@@ -121,6 +94,42 @@ const navigateDown = async (currentIndex) => {
 onMounted(() => {
   itemRefs.value[0].focus()
 })
+
+const updatedCategory = ref(null)
+const selectCategory = (category) => {
+  // To avoid extra calling of "selectCategory" method when clicking on input in updating mode
+  if (updatedCategory.value?.id === category.id) {
+    return
+  }
+  categoryStore.selectCategory(category)
+}
+watch(() => categoryStore.selectedCategoryId, () => {
+  updatedCategory.value = null
+  const targetElIndex = categoryStore.categories.findIndex((item) => item.id === categoryStore.selectedCategoryId)
+  itemRefs.value[targetElIndex].focus()
+})
+
+const switchToUpdatingMode = async (category) => {
+  // To avoid direct reference with categories in store
+  updatedCategory.value = { ...category }
+  await nextTick()
+  // Cannot use template ref here, because input element is initially hidden
+  const updatedCategoryInput =
+    document.getElementById(`updated-category-${updatedCategory.value.id}`)
+  updatedCategoryInput && updatedCategoryInput.focus()
+}
+
+const updateCategory = async () => {
+  await categoryStore.updateCategory(updatedCategory.value)
+  categoryStore.selectCategory(updatedCategory.value)
+  updatedCategory.value = null
+}
+
+const deleteCategory = async () => {
+  await categoryStore.deleteCategory(categoryStore.selectedCategoryId)
+  categoryStore.selectFirstCategoryAsDefault()
+  closeModal()
+}
 </script>
 
 <style>
