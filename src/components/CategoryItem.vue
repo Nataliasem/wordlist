@@ -1,11 +1,20 @@
 <template>
-  <div class="category-items__wrapper">
+  <div
+    class="category-items__wrapper"
+  >
     <div
-      v-for="item in categoryStore.categories"
+      v-for="(item, index) in categoryStore.categories"
       :key="item.id"
       class="category-name"
-      :class="{ 'category-name__selected' : item.id === categoryStore.selectedCategoryId }"
+      :class="{
+        'category-name__selected' : item.id === categoryStore.selectedCategoryId
+      }"
+      :id="item.id"
+      :tabindex="index"
       @click="selectCategory(item)"
+      @focus="selectCategory(item)"
+      @keyup.up="navigateUp(index)"
+      @keyup.down="navigateDown(index)"
     >
       <div v-if="updatedCategory && updatedCategory.id === item.id">
         <input
@@ -57,7 +66,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, nextTick, onMounted } from 'vue'
 import { useCategoryStore } from '../stores/category.js'
 import AppModal from './reusable/AppModal.vue'
 import { useModal } from '../composables/useModal.js'
@@ -76,6 +85,7 @@ const selectCategory = (category) => {
 }
 watch(() => categoryStore.selectedCategoryId, () => {
   updatedCategory.value = null
+  document.getElementById(categoryStore.selectedCategoryId).focus()
 })
 
 const switchToUpdatingMode = (category) => {
@@ -95,6 +105,23 @@ const deleteCategory = async () => {
   closeModal()
 }
 
+const navigateUp = async (currentIndex) => {
+  const prevElId = categoryStore.categories[currentIndex - 1]?.id
+  if(prevElId) {
+    await nextTick()
+    const prevEl = document.getElementById(prevElId)
+    prevEl.focus()
+  }
+}
+
+const navigateDown = async (currentIndex) => {
+  const nextElId = categoryStore.categories[currentIndex + 1]?.id
+  if(nextElId) {
+    await nextTick()
+    const nextEl = document.getElementById(nextElId)
+    nextEl.focus()
+  }
+}
 </script>
 
 <style>
@@ -113,5 +140,14 @@ const deleteCategory = async () => {
 .category-actions__selected {
   display: flex;
   gap: 4px;
+}
+
+.category-name:focus-visible,
+.category-name:focus-within,
+.category-name:focus
+{
+  outline: none;
+  background-color: lavender;
+  border-color: purple;
 }
 </style>

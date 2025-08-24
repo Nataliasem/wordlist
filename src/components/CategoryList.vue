@@ -83,6 +83,7 @@ onMounted(async () => {
   padding: 8px 16px;
   font-weight: bold;
   border: 2px solid transparent;
+  border-radius: 4px;
   width: 220px;
 }
 
