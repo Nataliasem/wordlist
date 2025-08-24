@@ -18,7 +18,11 @@ export const create = async (category) => {
 export const getCategories = async () => {
   const response = await fetch(`${CATEGORY_URL}`)
   if (response.ok) {
-    return await response.json()
+    const res = await response.json()
+    return [{
+      id: null,
+      name: 'Words without category',
+    }].concat(res)
   } else {
     return []
   }
