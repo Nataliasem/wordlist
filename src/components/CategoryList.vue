@@ -34,9 +34,6 @@ import { useCategoryStore } from '../stores/category.js'
 import { reloadPage } from '../utils/index.js'
 
 const categoryStore = useCategoryStore()
-const selectCategory = (category) => {
-  categoryStore.selectCategory(category)
-}
 
 const category = ref('')
 const addCategory = async () => {
@@ -47,9 +44,6 @@ const addCategory = async () => {
 
 onMounted(async () => {
   await categoryStore.fetchCategories()
-  if (categoryStore.categories.length > 1) {
-    selectCategory(categoryStore.categories[0])
-  }
 })
 </script>
 
