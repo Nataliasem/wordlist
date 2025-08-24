@@ -69,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref, watch, useTemplateRef, onMounted, nextTick } from 'vue'
+import { ref, useTemplateRef, onMounted, nextTick } from 'vue'
 import { useCategoryStore } from '../stores/category.js'
 import AppModal from './reusable/AppModal.vue'
 import { useModal } from '../composables/useModal.js'
@@ -92,8 +92,15 @@ const navigateDown = async (currentIndex) => {
 
 const updatedCategory = ref(null)
 const selectCategory = (category) => {
+  if(!category.id) {
+    categoryStore.selectFirstCategoryAsDefault()
+  }
+  // To avoid extra calling of "selectCategory" method when focusing on current selected element
+  if(category.id === categoryStore.selectedCategoryId) {
+    return
+  }
   // To avoid extra calling of "selectCategory" method when clicking on input in updating mode
-  if (updatedCategory.value?.id === category.id) {
+  if (category.id === updatedCategory.value?.id) {
     return
   }
   updatedCategory.value = null
@@ -105,6 +112,11 @@ const switchToUpdatingMode = async (category) => {
   if(!category.id) {
     return
   }
+  // Cannot edit category twice
+  if(category.id === updatedCategory.value?.id) {
+    return
+  }
+
   // To avoid direct reference with categories in store
   updatedCategory.value = { ...category }
   await nextTick()
@@ -125,6 +137,15 @@ const deleteCategory = async () => {
   categoryStore.selectFirstCategoryAsDefault()
   closeModal()
 }
+
+onMounted(() => {
+  if(categoryStore.selectedCategoryId) {
+    const targetIndex = categoryStore.categories.findIndex((item) => item.id === categoryStore.selectedCategoryId)
+    itemRefs.value[targetIndex].focus()
+  } else {
+    itemRefs.value[0].focus()
+  }
+})
 </script>
 
 <style>
