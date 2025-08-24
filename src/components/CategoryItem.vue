@@ -38,10 +38,10 @@
           class="category-actions"
           :class="{ 'category-actions__selected' : item.id === categoryStore.selectedCategoryId }"
         >
-          <button class="icon-button_filled" @click.stop="switchToUpdatingMode(item)">
+          <button class="icon-button_filled" :disabled="!item.id" @click.stop="switchToUpdatingMode(item)">
             <v-icon name="ri-pencil-line" title="Edit category"></v-icon>
           </button>
-          <button class="icon-button_filled" @click.stop="openModal">
+          <button class="icon-button_filled" :disabled="!item.id" @click.stop="openModal">
             <v-icon name="ri-delete-bin-2-line" title="Delete category"></v-icon>
           </button>
         </div>
@@ -84,16 +84,11 @@ const navigateUp = async (currentIndex) => {
   const prevElIndex = categoryStore.categories.findIndex((item) => item.id === prevElId)
   itemRefs.value[prevElIndex].focus()
 }
-
 const navigateDown = async (currentIndex) => {
   const nextElId = categoryStore.categories[currentIndex + 1]?.id
   const nextElIndex = categoryStore.categories.findIndex((item) => item.id === nextElId)
   itemRefs.value[nextElIndex].focus()
 }
-
-onMounted(() => {
-  itemRefs.value[0].focus()
-})
 
 const updatedCategory = ref(null)
 const selectCategory = (category) => {
@@ -101,15 +96,15 @@ const selectCategory = (category) => {
   if (updatedCategory.value?.id === category.id) {
     return
   }
+  updatedCategory.value = null
   categoryStore.selectCategory(category)
 }
-watch(() => categoryStore.selectedCategoryId, () => {
-  updatedCategory.value = null
-  const targetElIndex = categoryStore.categories.findIndex((item) => item.id === categoryStore.selectedCategoryId)
-  itemRefs.value[targetElIndex].focus()
-})
 
 const switchToUpdatingMode = async (category) => {
+  // Cannot edit special category "Words without category"
+  if(!category.id) {
+    return
+  }
   // To avoid direct reference with categories in store
   updatedCategory.value = { ...category }
   await nextTick()
