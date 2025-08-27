@@ -2,6 +2,7 @@
   <ul>
     <li
       v-for="(item, index) in items"
+      :ref="(el) => { itemRefs[item.id] = el }"
       :key="item.id"
       ref="items"
       :tabindex="index"
@@ -11,38 +12,31 @@
       @keyup.up="navigateUp(index)"
       @keyup.down="navigateDown(index)"
     >
-      <slot :item="item"></slot>
+      <slot :item="item" :itemRef="itemRefs[item.id]" />
     </li>
   </ul>
 </template>
 
 <script setup>
-import { onMounted, useTemplateRef } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const props = defineProps({
   items: Array
 })
-
 defineEmits(['click', 'enter'])
 
-const itemRefs = useTemplateRef('items')
+const itemRefs = ref({})
 const navigateUp = async (currentIndex) => {
   const prevElId = props.items[currentIndex - 1]?.id
-  const prevElIndex = props.items.findIndex((item) => item.id === prevElId)
-  itemRefs.value[prevElIndex]?.focus()
+  itemRefs.value[prevElId]?.focus()
 }
 const navigateDown = async (currentIndex) => {
   const nextElId = props.items[currentIndex + 1]?.id
-  const nextElIndex = props.items.findIndex((item) => item.id === nextElId)
-  itemRefs.value[nextElIndex]?.focus()
+  itemRefs.value[nextElId]?.focus()
 }
 
 onMounted(() => {
-  itemRefs.value[0]?.focus()
+  const firstElId = props.items[0]?.id
+  itemRefs.value[firstElId]?.focus()
 })
-
 </script>
-
-<style scoped>
-
-</style>

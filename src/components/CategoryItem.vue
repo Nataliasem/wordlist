@@ -3,7 +3,7 @@
     class="category-items__wrapper"
   >
     <AppNavigation
-      v-slot="{ item }"
+      v-slot="{ item, itemRef }"
       :items="categories"
       @click="selectCategory"
       @enter="switchToUpdatingMode"
@@ -23,7 +23,7 @@
             name="update-category"
             :id="updatedCategory && `updated-category-${updatedCategory.id}`"
           >
-          <button class="icon-button_filled" @click.stop="updateCategory">
+          <button class="icon-button_filled" @click.stop="updateCategory(itemRef)">
             <v-icon name="ri-checkbox-line" title="Update category"></v-icon>
           </button>
         </div>
@@ -114,10 +114,11 @@ const switchToUpdatingMode = async (category) => {
   updatedCategoryInput && updatedCategoryInput.focus()
 }
 
-const updateCategory = async () => {
+const updateCategory = async (categoryRef) => {
   await categoryStore.updateCategory(updatedCategory.value)
   categoryStore.selectCategory(updatedCategory.value)
   updatedCategory.value = null
+  categoryRef && categoryRef.focus()
 }
 
 const deleteCategory = async () => {
