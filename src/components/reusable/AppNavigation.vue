@@ -12,16 +12,17 @@
       @keyup.up="navigateUp(index)"
       @keyup.down="navigateDown(index)"
     >
-      <slot :item="item" :itemRef="itemRefs[item.id]" />
+      <slot :item="item" />
     </li>
   </ul>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 
 const props = defineProps({
-  items: Array
+  items: Array,
+  selectedItemId: { type: [Number, String, null] },
 })
 defineEmits(['click', 'enter'])
 
@@ -35,8 +36,8 @@ const navigateDown = async (currentIndex) => {
   itemRefs.value[nextElId]?.focus()
 }
 
-onMounted(() => {
-  const firstElId = props.items[0]?.id
-  itemRefs.value[firstElId]?.focus()
+watch(() => props.items, async () => {
+  await nextTick() // nextTick is required
+  itemRefs.value[props.selectedItemId]?.focus()
 })
 </script>
