@@ -13,14 +13,12 @@ export const useCategoryStore = defineStore('category', () => {
   } = useCustomFetch(getCategories)
 
   const createCategory = async (category) => {
-    const newCategory = await create(category)
+    await create(category)
     await fetchCategories()
-    selectCategory(newCategory)
   }
   const updateCategory = async (category) => {
     await update(category)
     await fetchCategories()
-    selectCategory(category)
   }
   const deleteCategory = async (id) => {
     await remove(id)
