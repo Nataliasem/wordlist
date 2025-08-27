@@ -1,11 +1,22 @@
 <template>
-  <div class="category-items__wrapper">
+  <div
+    class="category-items__wrapper"
+  >
     <div
-      v-for="item in categoryStore.categories"
+      v-for="(item, index) in categoryStore.categories"
       :key="item.id"
+      ref="categories"
       class="category-name"
-      :class="{ 'category-name__selected' : item.id === categoryStore.selectedCategoryId }"
+      :class="{
+        'category-name__selected' : item.id === categoryStore.selectedCategoryId,
+        'category-name__divided': item.id === null
+      }"
+      :tabindex="index"
       @click="selectCategory(item)"
+      @focus="selectCategory(item)"
+      @keyup.up="navigateUp(index)"
+      @keyup.down="navigateDown(index)"
+      @keyup.enter="switchToUpdatingMode(item)"
     >
       <div v-if="updatedCategory && updatedCategory.id === item.id">
         <input
@@ -13,6 +24,7 @@
           class="category-input"
           type="text"
           name="update-category"
+          :id="updatedCategory && `updated-category-${updatedCategory.id}`"
         >
         <button class="icon-button_filled" @click.stop="updateCategory">
           <v-icon name="ri-checkbox-line" title="Update category"></v-icon>
@@ -26,10 +38,10 @@
           class="category-actions"
           :class="{ 'category-actions__selected' : item.id === categoryStore.selectedCategoryId }"
         >
-          <button class="icon-button_filled" @click.stop="switchToUpdatingMode(item)">
+          <button class="icon-button_filled" :disabled="!item.id" @click.stop="switchToUpdatingMode(item)">
             <v-icon name="ri-pencil-line" title="Edit category"></v-icon>
           </button>
-          <button class="icon-button_filled" @click.stop="openModal">
+          <button class="icon-button_filled" :disabled="!item.id" @click.stop="openModal">
             <v-icon name="ri-delete-bin-2-line" title="Delete category"></v-icon>
           </button>
         </div>
@@ -57,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, useTemplateRef, onMounted, nextTick } from 'vue'
 import { useCategoryStore } from '../stores/category.js'
 import AppModal from './reusable/AppModal.vue'
 import { useModal } from '../composables/useModal.js'
@@ -66,21 +78,52 @@ const categoryStore = useCategoryStore()
 
 const { isModalOpen, closeModal, openModal } = useModal()
 
+const itemRefs = useTemplateRef('categories')
+const navigateUp = async (currentIndex) => {
+  const prevElId = categoryStore.categories[currentIndex - 1]?.id
+  const prevElIndex = categoryStore.categories.findIndex((item) => item.id === prevElId)
+  itemRefs.value[prevElIndex].focus()
+}
+const navigateDown = async (currentIndex) => {
+  const nextElId = categoryStore.categories[currentIndex + 1]?.id
+  const nextElIndex = categoryStore.categories.findIndex((item) => item.id === nextElId)
+  itemRefs.value[nextElIndex].focus()
+}
+
 const updatedCategory = ref(null)
 const selectCategory = (category) => {
-  // To avoid extra calling of "selectCategory" method when clicking on input in updating mode
-  if (updatedCategory.value?.id === category.id) {
+  if(!category.id) {
+    categoryStore.selectFirstCategoryAsDefault()
+  }
+  // To avoid extra calling of "selectCategory" method when focusing on current selected element
+  if(category.id === categoryStore.selectedCategoryId) {
     return
   }
+  // To avoid extra calling of "selectCategory" method when clicking on input in updating mode
+  if (category.id === updatedCategory.value?.id) {
+    return
+  }
+  updatedCategory.value = null
   categoryStore.selectCategory(category)
 }
-watch(() => categoryStore.selectedCategoryId, () => {
-  updatedCategory.value = null
-})
 
-const switchToUpdatingMode = (category) => {
+const switchToUpdatingMode = async (category) => {
+  // Cannot edit special category "Words without category"
+  if(!category.id) {
+    return
+  }
+  // Cannot edit category twice
+  if(category.id === updatedCategory.value?.id) {
+    return
+  }
+
   // To avoid direct reference with categories in store
   updatedCategory.value = { ...category }
+  await nextTick()
+  // Cannot use template ref here, because input element is initially hidden
+  const updatedCategoryInput =
+    document.getElementById(`updated-category-${updatedCategory.value.id}`)
+  updatedCategoryInput && updatedCategoryInput.focus()
 }
 
 const updateCategory = async () => {
@@ -95,6 +138,14 @@ const deleteCategory = async () => {
   closeModal()
 }
 
+onMounted(() => {
+  if(categoryStore.selectedCategoryId) {
+    const targetIndex = categoryStore.categories.findIndex((item) => item.id === categoryStore.selectedCategoryId)
+    itemRefs.value[targetIndex].focus()
+  } else {
+    itemRefs.value[0].focus()
+  }
+})
 </script>
 
 <style>
@@ -102,7 +153,7 @@ const deleteCategory = async () => {
   overflow-y: scroll;
   height: 85%;
   position: fixed;
-  top: 142px;
+  top: 64px;
 }
 
 .category-actions {
@@ -113,5 +164,41 @@ const deleteCategory = async () => {
 .category-actions__selected {
   display: flex;
   gap: 4px;
+}
+
+.category-name {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  width: 220px;
+}
+
+.category-name:hover {
+  background-color: #e7e6e9;
+}
+
+.category-name__selected {
+  font-weight: bold;
+  background-color: lavender;
+  border-radius: 4px;
+  border: 2px solid purple;
+}
+
+.category-name.category-name__divided:not(.category-name__selected) {
+  border-top: 2px solid  #e7e6e9;
+  border-bottom: 2px solid  #e7e6e9;
+}
+
+.category-name:focus-visible,
+.category-name:focus-within,
+.category-name:focus
+{
+  outline: none;
+  background-color: lavender;
+  border-color: purple;
 }
 </style>

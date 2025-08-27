@@ -61,7 +61,7 @@ button:focus-visible {
     transition: border 0.3s ease;
 }
 
-.icon-button_filled:hover {
+.icon-button_filled:hover:not(:disabled) {
     background-color: lavender;
     border-color: purple;
 }
