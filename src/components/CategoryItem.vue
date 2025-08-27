@@ -3,7 +3,7 @@
     class="category-items__wrapper"
   >
     <div
-      v-for="(item, index) in categoryStore.categories"
+      v-for="(item, index) in categories"
       :key="item.id"
       ref="categories"
       class="category-name"
@@ -74,20 +74,24 @@ import { useCategoryStore } from '../stores/category.js'
 import AppModal from './reusable/AppModal.vue'
 import { useModal } from '../composables/useModal.js'
 
+const props = defineProps({
+  categories: Array
+})
+
 const categoryStore = useCategoryStore()
 
 const { isModalOpen, closeModal, openModal } = useModal()
 
 const itemRefs = useTemplateRef('categories')
 const navigateUp = async (currentIndex) => {
-  const prevElId = categoryStore.categories[currentIndex - 1]?.id
-  const prevElIndex = categoryStore.categories.findIndex((item) => item.id === prevElId)
-  itemRefs.value[prevElIndex].focus()
+  const prevElId = props.categories[currentIndex - 1]?.id
+  const prevElIndex = props.categories.findIndex((item) => item.id === prevElId)
+  itemRefs.value[prevElIndex]?.focus()
 }
 const navigateDown = async (currentIndex) => {
-  const nextElId = categoryStore.categories[currentIndex + 1]?.id
-  const nextElIndex = categoryStore.categories.findIndex((item) => item.id === nextElId)
-  itemRefs.value[nextElIndex].focus()
+  const nextElId = props.categories[currentIndex + 1]?.id
+  const nextElIndex = props.categories.findIndex((item) => item.id === nextElId)
+  itemRefs.value[nextElIndex]?.focus()
 }
 
 const updatedCategory = ref(null)
@@ -141,7 +145,7 @@ const deleteCategory = async () => {
 onMounted(() => {
   if(categoryStore.selectedCategoryId) {
     const targetIndex = categoryStore.categories.findIndex((item) => item.id === categoryStore.selectedCategoryId)
-    itemRefs.value[targetIndex].focus()
+    itemRefs.value[targetIndex]?.focus()
   } else {
     itemRefs.value[0].focus()
   }
