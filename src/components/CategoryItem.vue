@@ -2,51 +2,49 @@
   <div
     class="category-items__wrapper"
   >
-    <div
-      v-for="(item, index) in categories"
-      :key="item.id"
-      ref="categories"
-      class="category-name"
-      :class="{
+    <AppNavigation
+      v-slot="{ item }"
+      :items="categories"
+      @click="selectCategory"
+      @enter="switchToUpdatingMode"
+    >
+      <div
+        class="category-name"
+        :class="{
         'category-name__selected' : item.id === categoryStore.selectedCategoryId,
         'category-name__divided': item.id === null
       }"
-      :tabindex="index"
-      @click="selectCategory(item)"
-      @focus="selectCategory(item)"
-      @keyup.up="navigateUp(index)"
-      @keyup.down="navigateDown(index)"
-      @keyup.enter="switchToUpdatingMode(item)"
-    >
-      <div v-if="updatedCategory && updatedCategory.id === item.id">
-        <input
-          v-model="updatedCategory.name"
-          class="category-input"
-          type="text"
-          name="update-category"
-          :id="updatedCategory && `updated-category-${updatedCategory.id}`"
-        >
-        <button class="icon-button_filled" @click.stop="updateCategory">
-          <v-icon name="ri-checkbox-line" title="Update category"></v-icon>
-        </button>
-      </div>
-
-      <template v-else>
-        <div class="truncated">{{ item.name }}</div>
-
-        <div
-          class="category-actions"
-          :class="{ 'category-actions__selected' : item.id === categoryStore.selectedCategoryId }"
-        >
-          <button class="icon-button_filled" :disabled="!item.id" @click.stop="switchToUpdatingMode(item)">
-            <v-icon name="ri-pencil-line" title="Edit category"></v-icon>
-          </button>
-          <button class="icon-button_filled" :disabled="!item.id" @click.stop="openModal">
-            <v-icon name="ri-delete-bin-2-line" title="Delete category"></v-icon>
+      >
+        <div v-if="updatedCategory && updatedCategory.id === item.id">
+          <input
+            v-model="updatedCategory.name"
+            class="category-input"
+            type="text"
+            name="update-category"
+            :id="updatedCategory && `updated-category-${updatedCategory.id}`"
+          >
+          <button class="icon-button_filled" @click.stop="updateCategory">
+            <v-icon name="ri-checkbox-line" title="Update category"></v-icon>
           </button>
         </div>
-      </template>
-    </div>
+
+        <template v-else>
+          <div class="truncated">{{ item.name }}</div>
+
+          <div
+            class="category-actions"
+            :class="{ 'category-actions__selected' : item.id === categoryStore.selectedCategoryId }"
+          >
+            <button class="icon-button_filled" :disabled="!item.id" @click.stop="switchToUpdatingMode(item)">
+              <v-icon name="ri-pencil-line" title="Edit category"></v-icon>
+            </button>
+            <button class="icon-button_filled" :disabled="!item.id" @click.stop="openModal">
+              <v-icon name="ri-delete-bin-2-line" title="Delete category"></v-icon>
+            </button>
+          </div>
+        </template>
+      </div>
+    </AppNavigation>
   </div>
 
   <AppModal
@@ -69,12 +67,13 @@
 </template>
 
 <script setup>
-import { ref, useTemplateRef, onMounted, nextTick } from 'vue'
+import { ref, nextTick } from 'vue'
 import { useCategoryStore } from '../stores/category.js'
+import AppNavigation from './reusable/AppNavigation.vue'
 import AppModal from './reusable/AppModal.vue'
 import { useModal } from '../composables/useModal.js'
 
-const props = defineProps({
+defineProps({
   categories: Array
 })
 
@@ -82,28 +81,16 @@ const categoryStore = useCategoryStore()
 
 const { isModalOpen, closeModal, openModal } = useModal()
 
-const itemRefs = useTemplateRef('categories')
-const navigateUp = async (currentIndex) => {
-  const prevElId = props.categories[currentIndex - 1]?.id
-  const prevElIndex = props.categories.findIndex((item) => item.id === prevElId)
-  itemRefs.value[prevElIndex]?.focus()
-}
-const navigateDown = async (currentIndex) => {
-  const nextElId = props.categories[currentIndex + 1]?.id
-  const nextElIndex = props.categories.findIndex((item) => item.id === nextElId)
-  itemRefs.value[nextElIndex]?.focus()
-}
-
 const updatedCategory = ref(null)
 const selectCategory = (category) => {
   if(!category.id) {
     categoryStore.selectFirstCategoryAsDefault()
   }
-  // To avoid extra calling of "selectCategory" method when focusing on current selected element
+  // To avoid extra calling of the "selectCategory" method when focusing on the current selected element
   if(category.id === categoryStore.selectedCategoryId) {
     return
   }
-  // To avoid extra calling of "selectCategory" method when clicking on input in updating mode
+  // To avoid extra calling of the "selectCategory" method when clicking on input in updating mode
   if (category.id === updatedCategory.value?.id) {
     return
   }
@@ -112,19 +99,16 @@ const selectCategory = (category) => {
 }
 
 const switchToUpdatingMode = async (category) => {
-  // Cannot edit special category "Words without category"
-  if(!category.id) {
-    return
-  }
-  // Cannot edit category twice
-  if(category.id === updatedCategory.value?.id) {
-    return
-  }
+  // Cannot edit a special category "Words without category"
+  if(!category.id) return
+
+  // Cannot edit a category which is already in editing mode
+  if(category.id === updatedCategory.value?.id) return
 
   // To avoid direct reference with categories in store
   updatedCategory.value = { ...category }
   await nextTick()
-  // Cannot use template ref here, because input element is initially hidden
+  // Cannot use template ref here, because an input element is initially hidden
   const updatedCategoryInput =
     document.getElementById(`updated-category-${updatedCategory.value.id}`)
   updatedCategoryInput && updatedCategoryInput.focus()
@@ -141,15 +125,6 @@ const deleteCategory = async () => {
   categoryStore.selectFirstCategoryAsDefault()
   closeModal()
 }
-
-onMounted(() => {
-  if(categoryStore.selectedCategoryId) {
-    const targetIndex = categoryStore.categories.findIndex((item) => item.id === categoryStore.selectedCategoryId)
-    itemRefs.value[targetIndex]?.focus()
-  } else {
-    itemRefs.value[0].focus()
-  }
-})
 </script>
 
 <style>
