@@ -5,16 +5,13 @@
         v-model="category"
         class="category-input"
         type="text"
-        placeholder="New category"
+        placeholder="Find or add category"
         name="add-category"
       >
-      <button class="icon-button_filled" @click="addCategory">Add</button>
+      <button class="icon-button_filled" :disabled="!emptyCategories" @click="addCategory">Add</button>
     </div>
 
-    <div v-if="categoryStore.isFetching" class="fetching-message">
-      <p>Categories are fetching...</p>
-    </div>
-    <div v-else-if="categoryStore.hasError" class="fetching-message">
+    <div v-if="categoryStore.hasError" class="fetching-message">
       <p>Something went wrong.</p>
       <p>Please <a @click="reloadPage">reload the page</a>.</p>
     </div>
@@ -23,12 +20,12 @@
       <p>Add the first category</p>
     </div>
 
-    <CategoryItem v-else />
+    <CategoryItem v-else :categories="filteredCategories" />
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import CategoryItem from './CategoryItem.vue'
 import { useCategoryStore } from '../stores/category.js'
 import { reloadPage } from '../utils/index.js'
@@ -36,6 +33,12 @@ import { reloadPage } from '../utils/index.js'
 const categoryStore = useCategoryStore()
 
 const category = ref('')
+const filteredCategories = computed(() => {
+  return categoryStore.categories.filter(item => (item.name.toLowerCase()).includes(category.value.toLowerCase()))
+})
+const emptyCategories = computed(() => {
+  return filteredCategories.value.length === 0
+})
 const addCategory = async () => {
   if (!category.value) return
   await categoryStore.createCategory(category.value)
@@ -44,6 +47,7 @@ const addCategory = async () => {
 
 onMounted(async () => {
   await categoryStore.fetchCategories()
+  categoryStore.selectFirstCategoryAsDefault()
 })
 </script>
 
