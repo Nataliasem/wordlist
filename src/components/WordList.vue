@@ -59,6 +59,7 @@ const columnConfig = [
   'Word',
   'Transcription',
   'Definition',
+  'Examples',
   'Translation',
   'Category',
   'Add/edit',

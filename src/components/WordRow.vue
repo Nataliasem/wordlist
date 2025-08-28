@@ -3,6 +3,11 @@
     <th scope="row"><p>{{ word.word }}</p></th>
     <td><p>{{ word.transcription }}</p></td>
     <td><p>{{ word.definition }}</p></td>
+    <td>
+      <ol>
+        <li v-for="item in word.examples" :key="item">{{ item }}</li>
+      </ol>
+    </td>
     <td><p>{{ word.translation }}</p></td>
     <td><p>{{ word.category?.name || 'No category' }}</p></td>
 

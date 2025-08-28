@@ -42,6 +42,7 @@ const word = ref({
   word: '',
   transcription: '',
   definition: '',
+  examples: '',
   translation: '',
   category: null
 })
@@ -54,15 +55,19 @@ const clearUserInput = () => {
   word.value = {
     word: '',
     transcription: '',
-    translation: '',
     definition: '',
+    examples: '',
+    translation: '',
     category: categoryStore.selectedCategoryId
   }
 }
 
 const addWordToCategory = async () => {
   if (!word.value.word) return
-  await wordStore.createWord(word.value)
+  await wordStore.createWord({
+    ...word.value,
+    examples: [word.value.examples],
+  })
   clearUserInput()
 }
 
