@@ -26,6 +26,7 @@ const props = defineProps({
 })
 defineEmits(['click', 'enter'])
 
+// Use function template refs because of re-rendering items when props changes
 const itemRefs = ref({})
 const navigateUp = async (currentIndex) => {
   const prevElId = props.items[currentIndex - 1]?.id

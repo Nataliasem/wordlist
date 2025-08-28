@@ -7,7 +7,7 @@
       :items="categories"
       :selected-item-id="categoryStore.selectedCategoryId"
       @click="selectCategory"
-      @enter="switchToUpdatingMode"
+      @enter="toggleUpdatingMode"
     >
       <div
         class="category-name"
@@ -23,6 +23,7 @@
             type="text"
             name="update-category"
             :id="updatedCategory && `updated-category-${updatedCategory.id}`"
+            :ref="(el) => updatedCategoryInputRef = el"
           >
           <button class="icon-button_filled" @click.stop="updateCategory">
             <v-icon name="ri-checkbox-line" title="Update category"></v-icon>
@@ -36,7 +37,7 @@
             class="category-actions"
             :class="{ 'category-actions__selected' : item.id === categoryStore.selectedCategoryId }"
           >
-            <button class="icon-button_filled" :disabled="!item.id" @click.stop="switchToUpdatingMode(item)">
+            <button class="icon-button_filled" :disabled="!item.id" @click.stop="toggleUpdatingMode(item)">
               <v-icon name="ri-pencil-line" title="Edit category"></v-icon>
             </button>
             <button class="icon-button_filled" :disabled="!item.id" @click.stop="openModal">
@@ -84,35 +85,29 @@ const { isModalOpen, closeModal, openModal } = useModal()
 
 const updatedCategory = ref(null)
 const selectCategory = (category) => {
-  if(!category.id) {
-    categoryStore.selectFirstCategoryAsDefault()
-  }
-  // To avoid extra calling of the "selectCategory" method when focusing on the current selected element
-  if(category.id === categoryStore.selectedCategoryId) {
-    return
-  }
-  // To avoid extra calling of the "selectCategory" method when clicking on input in updating mode
-  if (category.id === updatedCategory.value?.id) {
-    return
-  }
-  updatedCategory.value = null
+  // Cannot select a category if it's already selected or updating
+  if([categoryStore.selectedCategoryId, updatedCategory.value?.id].includes(category.id)) return
+
+  toggleUpdatingMode(null)
   categoryStore.selectCategory(category)
 }
 
-const switchToUpdatingMode = async (category) => {
-  // Cannot edit a special category "Words without category"
-  if(!category.id) return
+const updatedCategoryInputRef = ref(null)
+const toggleUpdatingMode = async (category) => {
+  if(!category?.id) {
+    updatedCategory.value = null
+    return
+  }
 
-  // Cannot edit a category which is already in editing mode
+  // Cannot edit a category if it's already in updating mode
   if(category.id === updatedCategory.value?.id) return
 
   // To avoid direct reference with categories in store
-  updatedCategory.value = { ...category }
+  updatedCategory.value = {...category}
+
+  // Use function template refs because an input element is initially hidden
   await nextTick()
-  // Cannot use template ref here, because an input element is initially hidden
-  const updatedCategoryInput =
-    document.getElementById(`updated-category-${updatedCategory.value.id}`)
-  updatedCategoryInput && updatedCategoryInput.focus()
+  updatedCategoryInputRef.value.focus()
 }
 
 const updateCategory = async () => {
