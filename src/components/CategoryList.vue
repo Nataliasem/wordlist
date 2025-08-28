@@ -11,10 +11,7 @@
       <button class="icon-button_filled" :disabled="!emptyCategories" @click="addCategory">Add</button>
     </div>
 
-    <div v-if="categoryStore.isFetching" class="fetching-message">
-      <p>Categories are fetching...</p>
-    </div>
-    <div v-else-if="categoryStore.hasError" class="fetching-message">
+    <div v-if="categoryStore.hasError" class="fetching-message">
       <p>Something went wrong.</p>
       <p>Please <a @click="reloadPage">reload the page</a>.</p>
     </div>
@@ -50,6 +47,7 @@ const addCategory = async () => {
 
 onMounted(async () => {
   await categoryStore.fetchCategories()
+  categoryStore.selectFirstCategoryAsDefault()
 })
 </script>
 
