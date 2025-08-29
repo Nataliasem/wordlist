@@ -1,11 +1,11 @@
 <template>
   <tr class="add-word-row">
     <td v-for="(_, key) in word">
-      <textarea
+      <AppTextarea
         v-model="word[key]"
-        rows="1"
-        :name="key"
-        :class="{'invalid-field': key === 'word' && hasError }"
+        :required="key === 'word'"
+        :has-error="hasError"
+        :id="key"
         @focus="hasError = false"
         @blur="hasError = false"
       />
@@ -26,6 +26,7 @@
 </template>
 
 <script setup>
+import AppTextarea from './reusable/AppTextarea.vue'
 import { ref } from 'vue'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'

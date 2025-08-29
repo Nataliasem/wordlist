@@ -11,7 +11,7 @@
       <form @submit.prevent class="word-form">
         <template v-for="key in FORM_CONFIG">
           <div v-if="key === 'category'" class="form-field">
-            <label :for="key" class="word-form__label">{{ key }}: </label>
+            <label :for="key" class="form-field__label">{{ key }}: </label>
             <AppSelect
               v-model="updatedWord.category"
               :select-name="key"
@@ -20,23 +20,23 @@
           </div>
 
           <div v-else-if="key === 'examples'" class="form-field">
-            <label :for="key" class="word-form__label">{{ key }}: </label>
-            <ol v-if="hasExamples">
-              <li v-for="(item, index) in updatedWord[key]" class="example-item">
-                <button class="icon-button_filled" @click="deleteExample(index)">
-                  <v-icon name="ri-delete-bin-2-line" title="Delete from category" />
-                </button>
-                <span>{{ item }}</span>
-              </li>
-            </ol>
-
             <div class="add-example__wrapper">
-              <textarea
+              <AppTextarea
                 v-model="example"
-                rows="10"
-                :name="key"
+                :label="key"
+                :rows="10"
                 :id="key"
-              />
+              >
+                <ol v-if="hasExamples">
+                  <li v-for="(item, index) in updatedWord[key]" class="example-item">
+                    <button class="icon-button_filled" @click="deleteExample(index)">
+                      <v-icon name="ri-delete-bin-2-line" title="Delete from category" />
+                    </button>
+                    <span>{{ item }}</span>
+                  </li>
+                </ol>
+              </AppTextarea>
+
               <button class="icon-button_filled add-example-button" type="button" @click="addExample">
                 <v-icon name="ri-play-list-add-fill" title="Add to wordlist" fill="purple" />
                 <span>Add example</span>
@@ -45,15 +45,13 @@
           </div>
 
           <div v-else class="form-field">
-            <label :for="key" class="word-form__label">
-              <span :class="{'required-field': key === 'word'}">{{ key }}:</span>
-            </label>
-            <textarea
+            <AppTextarea
               v-model="updatedWord[key]"
-              rows="5"
-              :name="key"
+              :label="key"
               :id="key"
-              :class="{'invalid-field': key === 'word' && hasError}"
+              :rows="5"
+              :required="key === 'word'"
+              :has-error="hasError"
               @focus="hasError = false"
               @blur="hasError = false"
             />
@@ -69,6 +67,7 @@
 <script setup>
 import AppSelect from './reusable/AppSelect.vue'
 import AppModal from './reusable/AppModal.vue'
+import AppTextarea from './reusable/AppTextarea.vue'
 import { computed, ref, watch } from 'vue'
 import { useWordStore } from '../stores/word.js'
 import { useCategoryStore } from '../stores/category.js'
@@ -77,19 +76,19 @@ import cloneDeep from 'lodash/cloneDeep'
 const props = defineProps({
   word: Object
 })
-const emit = defineEmits(['closeModal'])
+const emit = defineEmits([ 'closeModal' ])
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
 
 const FORM_CONFIG = [
-    'category',
-    'word',
-    'transcription',
-    'definition',
-    'translation',
-    'examples'
-  ]
+  'category',
+  'word',
+  'transcription',
+  'definition',
+  'translation',
+  'examples'
+]
 
 const updatedWord = ref(null)
 watch(() => props.word, async () => {
@@ -127,7 +126,7 @@ const save = async () => {
 }
 </script>
 
-<style scoped>
+<style>
 .word-form {
   display: flex;
   flex-direction: column;
@@ -140,7 +139,7 @@ const save = async () => {
   flex-direction: column;
 }
 
-.word-form__label {
+.form-field__label {
   font-weight: bold;
   margin-bottom: 6px;
 }

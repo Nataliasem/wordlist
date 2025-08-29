@@ -133,10 +133,6 @@ tr:hover:not(thead tr) {
     font-size: 0.8em;
 }
 
-textarea {
-    border-radius: 2px;
-}
-
 .invalid-field {
     border-color: red;
     background-color: rgba(255, 0, 0, 0.2);
