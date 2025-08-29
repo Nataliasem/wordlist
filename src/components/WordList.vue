@@ -1,11 +1,23 @@
 <template>
   <div class="word-list">
     <div class="scrollable-table-container">
-      <table>
-        <caption>
-          <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
-        </caption>
+      <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
 
+      <div class="search-word-input__wrapper">
+        <input
+          v-model="searchWord"
+          id="search-word-input"
+          type="text"
+          class="search-word-input"
+          placeholder="Enter a word here..."
+        >
+
+        <button class="icon-button_filled" type="button">
+          <v-icon name="ri-play-list-add-fill" :scale="1.3" title="Add new word" fill="purple" />
+        </button>
+      </div>
+
+      <table>
         <thead>
         <tr>
           <th v-for="item in columnConfig" :key="item">{{ item }}</th>
@@ -33,8 +45,14 @@
           </td>
         </tr>
 
+        <tr v-else-if="!foundedWords.length">
+          <td :colspan="columnLength" class="table-message empty">
+            <p>No such word was found. Try changing the search criteria or add a new word.</p>
+          </td>
+        </tr>
+
         <WordRow
-          v-for="item in wordStore.words"
+          v-for="item in foundedWords"
           :key="item.id"
           :word="item"
         />
@@ -49,8 +67,8 @@ import AddWordRow from './AddWordRow.vue'
 import WordRow from './WordRow.vue'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
-import { reloadPage } from '../utils/index.js'
-import { computed } from 'vue'
+import { reloadPage, filterBySearchString } from '../utils/index.js'
+import { computed, ref } from 'vue'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
@@ -64,6 +82,11 @@ const columnConfig = [
   'Clear/delete'
 ]
 const columnLength = computed(() => columnConfig.length)
+
+const searchWord = ref('')
+const foundedWords = computed(() => {
+  return filterBySearchString(wordStore.words, 'word', searchWord.value)
+})
 </script>
 
 <style scoped>
@@ -90,5 +113,17 @@ const columnLength = computed(() => columnConfig.length)
 
 .table-message.error {
   color: red;
+}
+
+.search-word-input__wrapper {
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.search-word-input {
+  padding: 8px;
+  min-width: 300px;
+  margin-right: 8px;
 }
 </style>
