@@ -1,5 +1,5 @@
 <template>
-  <select v-model="model" :name="selectName">
+  <select v-model="model" :name="selectName" :id="selectName" class="app-select">
     <option
       v-for="item in options"
       :key="item[valueProp]"
@@ -17,20 +17,25 @@ const model = defineModel({ required: true })
 defineProps({
   selectName: {
     type: String,
-    required: true,
+    required: true
   },
   options: {
     type: Array,
-    required: true,
+    required: true
   },
   valueProp: {
     type: String,
-    default: 'id',
+    default: 'id'
   },
   nameProp: {
     type: String,
-    default: 'name',
+    default: 'name'
   }
 })
 </script>
 
+<style scoped>
+.app-select {
+  min-height: 32px;
+}
+</style>
