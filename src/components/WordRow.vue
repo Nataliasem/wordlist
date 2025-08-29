@@ -20,7 +20,7 @@
   <AppModal
     v-if="isModalOpen"
     @confirm="save"
-    @cancel="closeModal"
+    @cancel="cancel"
   >
     <template #header>
       Edit the word <span class="word-name">{{ word.word }}</span>
@@ -39,13 +39,38 @@
           </div>
           <div v-if="!['id', 'examples', 'category'].includes(key)" class="form-field">
             <label :for="key" class="word-form__label">{{ key }}: </label>
-            <input
+            <textarea
               v-model="updatedWord[key]"
-              type="text"
+              rows="5"
               :name="key"
               :id="key"
               :required="key === 'word'"
             />
+          </div>
+          <div v-if="['examples'].includes(key)" class="form-field">
+            <label :for="key" class="word-form__label">{{ key }}: </label>
+            <ol v-if="hasExamples">
+              <li v-for="(item, index) in updatedWord[key]" class="example-item">
+                <button class="icon-button_filled" @click="deleteExample(index)">
+                  <v-icon name="ri-delete-bin-2-line" title="Delete from category" />
+                </button>
+                <span>{{ item }}</span>
+              </li>
+            </ol>
+
+            <div class="add-example__wrapper">
+              <textarea
+                v-model="example"
+                rows="10"
+                :name="key"
+                :id="key"
+                :required="key === 'word'"
+              />
+              <button class="icon-button_filled add-example-button" type="button" @click="addExample">
+                <v-icon name="ri-play-list-add-fill" title="Add to wordlist" fill="purple" />
+                <span>Add example</span>
+              </button>
+            </div>
           </div>
         </template>
       </form>
@@ -58,10 +83,11 @@
 <script setup>
 import AppSelect from './reusable/AppSelect.vue'
 import AppModal from './reusable/AppModal.vue'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useWordStore } from '../stores/word.js'
 import { useCategoryStore } from '../stores/category.js'
 import { useModal } from '../composables/useModal.js'
+import cloneDeep from 'lodash/cloneDeep'
 
 const props = defineProps({
   word: Object
@@ -78,17 +104,38 @@ const deleteWordFromCategory = async () => {
 const updatedWord = ref(null)
 watch(() => props.word, async () => {
   updatedWord.value = {
-    ...props.word,
-    category: props.word?.category?.id || null
+    category: props.word?.category?.id || null,
+    ...cloneDeep(props.word)
   }
 }, {
   immediate: true,
   deep: true
 })
 
+const example = ref('')
+const addExample = () => {
+  if (!example.value) return
+  updatedWord.value.examples.unshift(example.value)
+  example.value = ''
+}
+const deleteExample = (indexToRemove) => {
+  updatedWord.value.examples.splice(indexToRemove, 1)
+}
+const hasExamples = computed(() => {
+  return updatedWord.value.examples.length
+})
+
 const save = async () => {
   if (!updatedWord.value.word) return
   await wordStore.updateWord(updatedWord.value)
+  closeModal()
+}
+
+const cancel = () => {
+  updatedWord.value = {
+    category: props.word?.category?.id || null,
+    ...cloneDeep(props.word)
+  }
   closeModal()
 }
 </script>
@@ -113,5 +160,35 @@ const save = async () => {
 .word-name {
   font-style: italic;
   font-weight: normal;
+}
+
+.add-example__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.add-example__wrapper textarea {
+  flex-grow: 1;
+}
+
+.add-example__wrapper button {
+  align-self: flex-start;
+}
+
+li.example-item {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+li.example-item button {
+  align-self: start;
+}
+
+.icon-button_filled.add-example-button {
+  color: purple;
+  display: flex;
+  gap: 8px;
 }
 </style>
