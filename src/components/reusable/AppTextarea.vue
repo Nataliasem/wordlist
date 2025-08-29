@@ -7,6 +7,7 @@
 
   <textarea
     v-model="model"
+    ref="app-textarea"
     :rows="rows"
     :name="id"
     :id="id"
@@ -17,7 +18,11 @@
 </template>
 
 <script setup>
+import { onClickOutside } from '@vueuse/core'
+import { useTemplateRef } from 'vue'
+
 const model = defineModel({ required: true })
+const emit = defineEmits(['blur'])
 
 defineProps({
   id: String,
@@ -38,6 +43,9 @@ defineProps({
     default: false
   }
 })
+
+const target = useTemplateRef('app-textarea')
+onClickOutside(target, () => emit('blur'))
 </script>
 
 <style scoped>
