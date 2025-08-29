@@ -1,14 +1,7 @@
 <template>
   <tr class="add-word-row">
     <td v-for="(_, key) in word">
-      <AppSelect
-        v-if="key === 'category'"
-        v-model="word.category"
-        select-name="category"
-        :options="categoryStore.categories"
-      />
       <textarea
-        v-else
         rows="1"
         v-model="word[key]"
         :name="key"
@@ -30,8 +23,7 @@
 </template>
 
 <script setup>
-import AppSelect from './reusable/AppSelect.vue'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
 
@@ -42,13 +34,7 @@ const word = ref({
   word: '',
   transcription: '',
   definition: '',
-  examples: '',
   translation: '',
-  category: null
-})
-
-watch(() => categoryStore.selectedCategoryId, () => {
-  word.value.category = categoryStore.selectedCategoryId
 })
 
 const clearUserInput = () => {
@@ -56,9 +42,7 @@ const clearUserInput = () => {
     word: '',
     transcription: '',
     definition: '',
-    examples: '',
     translation: '',
-    category: categoryStore.selectedCategoryId
   }
 }
 
@@ -66,11 +50,10 @@ const addWordToCategory = async () => {
   if (!word.value.word) return
   await wordStore.createWord({
     ...word.value,
-    examples: [word.value.examples],
+    category: categoryStore.selectedCategoryId
   })
   clearUserInput()
 }
-
 </script>
 
 <style scoped>

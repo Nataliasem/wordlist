@@ -59,11 +59,9 @@ const columnConfig = [
   'Word',
   'Transcription',
   'Definition',
-  'Examples',
   'Translation',
-  'Category',
   'Add/edit',
-  'Clear'
+  'Clear/delete'
 ]
 const columnLength = computed(() => columnConfig.length)
 </script>

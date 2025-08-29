@@ -3,13 +3,7 @@
     <th scope="row"><p>{{ word.word }}</p></th>
     <td><p>{{ word.transcription }}</p></td>
     <td><p>{{ word.definition }}</p></td>
-    <td>
-      <ol>
-        <li v-for="item in word.examples" :key="item">{{ item }}</li>
-      </ol>
-    </td>
     <td><p>{{ word.translation }}</p></td>
-    <td><p>{{ word.category?.name || 'No category' }}</p></td>
 
     <td class="td-action">
       <button class="icon-button_filled" @click="openModal">
@@ -100,14 +94,6 @@ const save = async () => {
 </script>
 
 <style scoped>
-tr {
-  transition: background-color 0.3s ease;
-}
-
-tr:hover {
-  background-color: lavenderblush;
-}
-
 .word-form {
   display: flex;
   flex-direction: column;
