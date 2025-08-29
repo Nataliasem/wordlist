@@ -1,10 +1,26 @@
 <template>
   <div class="word-list">
     <div class="scrollable-table-container">
+      <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
+
+      <div class="search-word-input__wrapper">
+<!--        <label for="search-word-input">-->
+<!--          Search word or add new one-->
+<!--        </label>-->
+        <input v-model="searchWord" id="search-word-input" type="text" class="search-word-input">
+
+        <button v-if="isEmptySearch" class="icon-button_filled" type="button">
+          <v-icon name="ri-play-list-add-fill" title="Add new word" fill="purple" />
+        </button>
+        <button v-else class="icon-button_filled" type="button">
+          <v-icon name="ri-file-search-line" title="Search word" fill="purple" />
+        </button>
+      </div>
+
       <table>
-        <caption>
-          <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
-        </caption>
+<!--        <caption>-->
+<!--          <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>-->
+<!--        </caption>-->
 
         <thead>
         <tr>
@@ -33,8 +49,14 @@
           </td>
         </tr>
 
+        <tr v-else-if="isEmptySearch">
+          <td :colspan="columnLength" class="table-message empty">
+            <p>No such word was found. Try changing the search criteria or adding a new word.</p>
+          </td>
+        </tr>
+
         <WordRow
-          v-for="item in wordStore.words"
+          v-for="item in filteredWords"
           :key="item.id"
           :word="item"
         />
@@ -50,7 +72,7 @@ import WordRow from './WordRow.vue'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
 import { reloadPage } from '../utils/index.js'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
@@ -66,6 +88,14 @@ const columnConfig = [
   'Clear'
 ]
 const columnLength = computed(() => columnConfig.length)
+
+const searchWord = ref('')
+const filteredWords = computed(() => {
+  return wordStore.words.filter(word => (word.word.toLowerCase().includes(searchWord.value.toLowerCase())))
+})
+const isEmptySearch = computed(() => {
+  return filteredWords.value.length === 0
+})
 </script>
 
 <style scoped>
@@ -92,5 +122,15 @@ const columnLength = computed(() => columnConfig.length)
 
 .table-message.error {
   color: red;
+}
+
+.search-word-input__wrapper {
+  margin-bottom: 32px;
+}
+
+.search-word-input {
+  padding: 8px;
+  min-width: 300px;
+  margin-right: 8px;
 }
 </style>

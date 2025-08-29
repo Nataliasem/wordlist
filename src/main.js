@@ -8,10 +8,11 @@ import {
   RiDeleteBack2Line,
   RiPlayListAddFill,
   RiDeleteBin2Line,
-  RiCheckboxLine
+  RiCheckboxLine,
+  RiFileSearchLine
 } from 'oh-vue-icons/icons'
 
-addIcons(RiCheckboxLine, RiDeleteBin2Line, RiPencilLine, RiDeleteBack2Line, RiPlayListAddFill)
+addIcons(RiCheckboxLine, RiDeleteBin2Line, RiPencilLine, RiDeleteBack2Line, RiPlayListAddFill, RiFileSearchLine)
 
 const pinia = createPinia()
 const app = createApp(App)
