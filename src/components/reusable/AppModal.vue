@@ -3,7 +3,7 @@
     <Transition name="modal">
       <div class="modal-mask">
         <div class="modal-body">
-          <h2>
+          <h2 class="modal-body__header">
             <slot name="header" />
           </h2>
 
@@ -11,7 +11,7 @@
             <slot name="content" />
           </div>
 
-          <div class="modal-actions">
+          <div class="modal-body__footer">
             <button
               type="button"
               class="modal-button modal-button__confirm"
@@ -53,10 +53,12 @@ const emit = defineEmits([ 'confirm', 'cancel' ])
 
 .modal-body {
   background-color: white;
-  min-height: 250px;
-  min-width: 500px;
+  min-height: 30%;
+  max-height: 80%;
+  width: 40%;
+  overflow: scroll;
   border-radius: 4px;
-  padding: 32px;
+  padding: 0 32px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
   display: flex;
@@ -79,10 +81,21 @@ const emit = defineEmits([ 'confirm', 'cancel' ])
   transform: scale(1.1);
 }
 
-.modal-actions {
+.modal-body__header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  padding-top: 32px
+}
+
+.modal-body__footer {
   display: flex;
   gap: 16px;
   justify-content: end;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  padding-bottom: 32px;
 }
 
 .modal-button {

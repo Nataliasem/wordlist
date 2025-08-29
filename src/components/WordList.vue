@@ -60,9 +60,8 @@ const columnConfig = [
   'Transcription',
   'Definition',
   'Translation',
-  'Category',
   'Add/edit',
-  'Clear'
+  'Clear/delete'
 ]
 const columnLength = computed(() => columnConfig.length)
 </script>
