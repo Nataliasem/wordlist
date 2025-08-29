@@ -2,9 +2,12 @@
   <tr class="add-word-row">
     <td v-for="(_, key) in word">
       <textarea
-        rows="1"
         v-model="word[key]"
+        rows="1"
         :name="key"
+        :class="{'invalid-field': key === 'word' && hasError }"
+        @focus="hasError = false"
+        @blur="hasError = false"
       />
     </td>
 
@@ -30,24 +33,24 @@ import { useWordStore } from '../stores/word.js'
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
 
-const word = ref({
+const EMPTY_WORD = {
   word: '',
   transcription: '',
   definition: '',
   translation: ''
-})
-
+}
+const word = ref({...EMPTY_WORD})
 const clearUserInput = () => {
-  word.value = {
-    word: '',
-    transcription: '',
-    definition: '',
-    translation: ''
-  }
+  hasError.value = false
+  word.value = {...EMPTY_WORD}
 }
 
+const hasError = ref(false)
 const addWordToCategory = async () => {
-  if (!word.value.word) return
+  if (!word.value.word) {
+    hasError.value = true
+    return
+  }
   await wordStore.createWord({
     ...word.value,
     category: categoryStore.selectedCategoryId
@@ -57,20 +60,20 @@ const addWordToCategory = async () => {
 </script>
 
 <style scoped>
-tr {
-  transition: background-color 0.3s ease;
-}
-
-tr:hover {
-  background-color: mediumpurple;
-}
-
-tr:hover .icon-button_filled {
-  background-color: white;
+.add-word-row {
+  background-color: lavender;
 }
 
 .add-word-row {
-  background-color: lavender;
+  transition: background-color 0.3s ease;
+}
+
+.add-word-row:hover {
+  background-color: rgba(147, 112, 219, 0.4);
+}
+
+.add-word-row:hover .icon-button_filled {
+  background-color: white;
 }
 </style>
 

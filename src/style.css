@@ -1,6 +1,5 @@
 :root {
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
     font-weight: 400;
 
     color-scheme: light dark;
@@ -109,7 +108,7 @@ tr {
     transition: background-color 0.3s ease;
 }
 
-tr:hover {
+tr:hover:not(thead tr) {
     background-color: lavenderblush;
 }
 
@@ -118,6 +117,30 @@ tr:hover {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.required-field {
+    position: relative;
+}
+
+.required-field::before {
+    content: "*";
+    color: red;
+    position: absolute;
+    top: -2px;
+    right: -12px;
+    transform: translateX(-50%);
+    font-size: 0.8em;
+}
+
+textarea {
+    border-radius: 2px;
+}
+
+.invalid-field {
+    border-color: red;
+    background-color: rgba(255, 0, 0, 0.2);
+
 }
 
 @media (prefers-color-scheme: light) {

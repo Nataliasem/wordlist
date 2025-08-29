@@ -45,13 +45,17 @@
           </div>
 
           <div v-else class="form-field">
-            <label :for="key" class="word-form__label">{{ key }}: </label>
+            <label :for="key" class="word-form__label">
+              <span :class="{'required-field': key === 'word'}">{{ key }}:</span>
+            </label>
             <textarea
               v-model="updatedWord[key]"
               rows="5"
               :name="key"
               :id="key"
-              :required="key === 'word'"
+              :class="{'invalid-field': key === 'word' && hasError}"
+              @focus="hasError = false"
+              @blur="hasError = false"
             />
           </div>
         </template>
@@ -108,8 +112,12 @@ const hasExamples = computed(() => {
   return updatedWord.value.examples.length
 })
 
+const hasError = ref(false)
 const save = async () => {
-  if (!updatedWord.value?.word) return
+  if (!updatedWord.value?.word) {
+    hasError.value = true
+    return
+  }
 
   await updatedWord.value.id
     ? wordStore.updateWord(updatedWord.value)
@@ -134,6 +142,7 @@ const save = async () => {
 
 .word-form__label {
   font-weight: bold;
+  margin-bottom: 6px;
 }
 
 .word-name {

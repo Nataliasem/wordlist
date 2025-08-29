@@ -20,7 +20,9 @@
       <table>
         <thead>
         <tr>
-          <th v-for="item in columnConfig" :key="item">{{ item }}</th>
+          <th v-for="item in columnConfig" :key="item">
+            <span :class="{'required-field': item === 'Word'}">{{ item }}</span>
+          </th>
         </tr>
         </thead>
 
