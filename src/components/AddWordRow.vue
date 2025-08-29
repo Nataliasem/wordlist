@@ -34,7 +34,7 @@ const word = ref({
   word: '',
   transcription: '',
   definition: '',
-  translation: '',
+  translation: ''
 })
 
 const clearUserInput = () => {
@@ -42,7 +42,7 @@ const clearUserInput = () => {
     word: '',
     transcription: '',
     definition: '',
-    translation: '',
+    translation: ''
   }
 }
 

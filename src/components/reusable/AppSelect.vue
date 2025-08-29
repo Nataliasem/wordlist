@@ -17,19 +17,19 @@ const model = defineModel({ required: true })
 defineProps({
   selectName: {
     type: String,
-    required: true,
+    required: true
   },
   options: {
     type: Array,
-    required: true,
+    required: true
   },
   valueProp: {
     type: String,
-    default: 'id',
+    default: 'id'
   },
   nameProp: {
     type: String,
-    default: 'name',
+    default: 'name'
   }
 })
 </script>
@@ -38,5 +38,4 @@ defineProps({
 .app-select {
   min-height: 32px;
 }
-
 </style>
