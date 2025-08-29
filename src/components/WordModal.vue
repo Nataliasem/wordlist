@@ -1,7 +1,7 @@
 <template>
   <AppModal
     @confirm="save"
-    @cancel="cancel"
+    @cancel="$emit('close-modal')"
   >
     <template #header>
       Edit the word <span class="word-name">{{ word.word }}</span>
@@ -88,12 +88,8 @@ const FORM_CONFIG = [
   ]
 
 const updatedWord = ref(null)
-const formatUpdatedWord = () => {
-  updatedWord.value = cloneDeep(props.word)
-  updatedWord.value.category = updatedWord.value.category?.id
-}
 watch(() => props.word, async () => {
-  formatUpdatedWord()
+  updatedWord.value = cloneDeep(props.word)
 }, {
   immediate: true,
   deep: true
@@ -113,14 +109,13 @@ const hasExamples = computed(() => {
 })
 
 const save = async () => {
-  if (!updatedWord.value.word) return
-  await wordStore.updateWord(updatedWord.value)
-  emit('closeModal')
-}
+  if (!updatedWord.value?.word) return
 
-const cancel = () => {
-  formatUpdatedWord()
-  emit('closeModal')
+  await updatedWord.value.id
+    ? wordStore.updateWord(updatedWord.value)
+    : wordStore.createWord(updatedWord.value)
+
+  emit('close-modal')
 }
 </script>
 

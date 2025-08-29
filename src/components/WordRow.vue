@@ -6,33 +6,22 @@
     <td><p>{{ word.translation }}</p></td>
 
     <td class="td-action">
-      <button class="icon-button_filled" @click="openModal">
+      <button class="icon-button_filled" @click="$emit('update-word')">
         <v-icon name="ri-pencil-line" title="Edit word" />
       </button>
     </td>
     <td class="td-action">
-      <button class="icon-button_filled" @click="deleteWordFromCategory">
+      <button class="icon-button_filled" @click="$emit('delete-word')">
         <v-icon name="ri-delete-bin-2-line" title="Delete from category" />
       </button>
     </td>
   </tr>
-
-  <WordModal v-if="isModalOpen" :word="word" @closeModal="closeModal" />
 </template>
 
 <script setup>
-import WordModal from './WordModal.vue'
-import { useWordStore } from '../stores/word.js'
-import { useModal } from '../composables/useModal.js'
-
-const props = defineProps({
+defineProps({
   word: Object
 })
 
-const { isModalOpen, closeModal, openModal } = useModal()
-
-const wordStore = useWordStore()
-const deleteWordFromCategory = async () => {
-  await wordStore.deleteWord(props.word.id)
-}
+defineEmits(['update-word', 'delete-word'])
 </script>
