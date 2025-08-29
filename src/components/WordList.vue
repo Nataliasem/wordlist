@@ -12,7 +12,7 @@
           placeholder="Enter a word here..."
         >
 
-        <button class="icon-button_filled" type="button">
+        <button class="icon-button_filled" type="button" @click="addWord">
           <v-icon name="ri-play-list-add-fill" :scale="1.3" title="Add new word" fill="purple" />
         </button>
       </div>
@@ -55,23 +55,31 @@
           v-for="item in foundedWords"
           :key="item.id"
           :word="item"
+          @update-word="updateWord(item)"
+          @delete-word="deleteWord(item.id)"
         />
         </tbody>
       </table>
     </div>
   </div>
+
+  <WordModal v-if="isModalOpen" :word="updatedWord" @closeModal="closeModal" />
 </template>
 
 <script setup>
+import WordModal from './WordModal.vue'
 import AddWordRow from './AddWordRow.vue'
 import WordRow from './WordRow.vue'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
 import { reloadPage, filterBySearchString } from '../utils/index.js'
 import { computed, ref } from 'vue'
+import { useModal } from '../composables/useModal.js'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
+
+const { isModalOpen, openModal, closeModal } = useModal()
 
 const columnConfig = [
   'Word',
@@ -87,6 +95,32 @@ const searchWord = ref('')
 const foundedWords = computed(() => {
   return filterBySearchString(wordStore.words, 'word', searchWord.value)
 })
+
+const updatedWord = ref(null)
+const addWord = () => {
+  updatedWord.value = {
+    word: searchWord.value,
+    transcription: '',
+    definition: '',
+    translation: '',
+    examples: [],
+    category: categoryStore.selectedCategoryId
+  }
+  searchWord.value = ''
+  openModal()
+}
+
+const updateWord = (word) => {
+  updatedWord.value = {
+    ...word,
+    category: categoryStore.selectedCategoryId
+  }
+  openModal()
+}
+
+const deleteWord = async (id) => {
+  await wordStore.deleteWord(id)
+}
 </script>
 
 <style scoped>
