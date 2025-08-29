@@ -47,7 +47,7 @@
 
         <tr v-else-if="!foundedWords.length">
           <td :colspan="columnLength" class="table-message empty">
-            <p>No such word was found. Try changing the search criteria or adding a new word.</p>
+            <p>No such word was found. Try changing the search criteria or add a new word.</p>
           </td>
         </tr>
 
@@ -67,7 +67,7 @@ import AddWordRow from './AddWordRow.vue'
 import WordRow from './WordRow.vue'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
-import { reloadPage } from '../utils/index.js'
+import { reloadPage, filterBySearchString } from '../utils/index.js'
 import { computed, ref } from 'vue'
 
 const categoryStore = useCategoryStore()
@@ -85,7 +85,7 @@ const columnLength = computed(() => columnConfig.length)
 
 const searchWord = ref('')
 const foundedWords = computed(() => {
-  return wordStore.words.filter(word => (word.word.toLowerCase().includes(searchWord.value.toLowerCase())))
+  return filterBySearchString(wordStore.words, 'word', searchWord.value)
 })
 </script>
 
