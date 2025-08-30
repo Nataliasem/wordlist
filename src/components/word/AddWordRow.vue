@@ -24,10 +24,10 @@
 </template>
 
 <script setup>
-import AppTextarea from './reusable/AppTextarea.vue'
+import AppTextarea from '../common/AppTextarea.vue'
 import { ref } from 'vue'
-import { useCategoryStore, useWordStore } from '../stores/index.js'
-import { useFormValidation } from '../composables/index.js'
+import { useCategoryStore, useWordStore } from '../../stores/index.js'
+import { useFormValidation } from '../../composables/index.js'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()

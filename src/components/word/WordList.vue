@@ -72,10 +72,10 @@
 import WordModal from './WordModal.vue'
 import AddWordRow from './AddWordRow.vue'
 import WordRow from './WordRow.vue'
-import { useCategoryStore, useWordStore } from '../stores/index.js'
-import { reloadPage, filterBySearchString } from '../utils/index.js'
+import { useCategoryStore, useWordStore } from '../../stores/index.js'
+import { reloadPage, filterBySearchString } from '../../utils/index.js'
 import { computed, ref } from 'vue'
-import { useModal } from '../composables/index.js'
+import { useModal } from '../../composables/index.js'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()

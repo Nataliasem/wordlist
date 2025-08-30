@@ -44,14 +44,14 @@
 </template>
 
 <script setup>
-import AppSelect from './reusable/AppSelect.vue'
-import AppModal from './reusable/AppModal.vue'
-import AppTextarea from './reusable/AppTextarea.vue'
+import AppSelect from '../common/AppSelect.vue'
+import AppModal from '../common/AppModal.vue'
+import AppTextarea from '../common/AppTextarea.vue'
 import WordExamplesInput from './WordExamplesInput.vue'
 import { ref, watch } from 'vue'
-import { useWordStore, useCategoryStore } from '../stores/index.js'
+import { useWordStore, useCategoryStore } from '../../stores/index.js'
 import cloneDeep from 'lodash/cloneDeep'
-import { useFormValidation } from '../composables/index.js'
+import { useFormValidation } from '../../composables/index.js'
 
 const props = defineProps({
   word: Object

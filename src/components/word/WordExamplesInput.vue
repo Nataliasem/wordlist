@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import AppTextarea from './reusable/AppTextarea.vue'
+import AppTextarea from '../common/AppTextarea.vue'
 import { computed, ref } from 'vue'
 
 const model = defineModel({
