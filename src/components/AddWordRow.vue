@@ -3,11 +3,9 @@
     <td v-for="(_, key) in word">
       <AppTextarea
         v-model="word[key]"
-        :required="key === 'word'"
-        :has-error="hasError"
         :id="key"
-        @focus="hasError = false"
-        @blur="hasError = false"
+        :required="key === 'word'"
+        :ref="(el) => { inputRefs[key] = el }"
       />
     </td>
 
@@ -30,6 +28,7 @@ import AppTextarea from './reusable/AppTextarea.vue'
 import { ref } from 'vue'
 import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
+import { useFormValidation } from '../composables/useFormValidation.js'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
@@ -42,16 +41,15 @@ const EMPTY_WORD = {
 }
 const word = ref({...EMPTY_WORD})
 const clearUserInput = () => {
-  hasError.value = false
   word.value = {...EMPTY_WORD}
 }
 
-const hasError = ref(false)
+const inputRefs = ref({})
+const { validateForm, hasFormError } = useFormValidation(inputRefs)
 const addWordToCategory = async () => {
-  if (!word.value.word) {
-    hasError.value = true
-    return
-  }
+  validateForm()
+  if (hasFormError.value) return
+
   await wordStore.createWord({
     ...word.value,
     category: categoryStore.selectedCategoryId

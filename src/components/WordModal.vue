@@ -4,7 +4,8 @@
     @cancel="$emit('close-modal')"
   >
     <template #header>
-      Edit the word <span class="word-name">{{ word.word }}</span>
+      <span v-if="word.word">Edit the word <span class="word-name">{{ word.word }}</span></span>
+      <span v-else>Add a new word</span>
     </template>
 
     <template #content>
@@ -26,6 +27,7 @@
                 :label="key"
                 :rows="10"
                 :id="key"
+                :ref="(el) => { inputRefs[key] = el }"
               >
                 <ol v-if="hasExamples">
                   <li v-for="(item, index) in updatedWord[key]" class="example-item">
@@ -51,9 +53,7 @@
               :id="key"
               :rows="5"
               :required="key === 'word'"
-              :has-error="hasError"
-              @focus="hasError = false"
-              @blur="hasError = false"
+              :ref="(el) => { inputRefs[key] = el }"
             />
           </div>
         </template>
@@ -72,6 +72,7 @@ import { computed, ref, watch } from 'vue'
 import { useWordStore } from '../stores/word.js'
 import { useCategoryStore } from '../stores/category.js'
 import cloneDeep from 'lodash/cloneDeep'
+import { useFormValidation } from '../composables/useFormValidation.js'
 
 const props = defineProps({
   word: Object
@@ -111,12 +112,11 @@ const hasExamples = computed(() => {
   return updatedWord.value.examples.length
 })
 
-const hasError = ref(false)
+const inputRefs = ref({})
+const { validateForm, hasFormError } = useFormValidation(inputRefs)
 const save = async () => {
-  if (!updatedWord.value?.word) {
-    hasError.value = true
-    return
-  }
+  validateForm()
+  if (hasFormError.value) return
 
   await updatedWord.value.id
     ? wordStore.updateWord(updatedWord.value)

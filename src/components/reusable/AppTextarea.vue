@@ -19,12 +19,16 @@
 
 <script setup>
 import { onClickOutside } from '@vueuse/core'
-import { useTemplateRef } from 'vue'
+import { ref, useTemplateRef, defineExpose, watch } from 'vue'
 
-const model = defineModel({ required: true })
-const emit = defineEmits(['focus', 'blur'])
+const model = defineModel({
+  type: String,
+  required: true
+})
 
-defineProps({
+defineEmits(['focus', 'blur'])
+
+const props = defineProps({
   id: String,
   name: {
     type: String,
@@ -41,15 +45,32 @@ defineProps({
   required: {
     type: Boolean,
     default: false
-  },
-  hasError: {
-    type: Boolean,
-    default: false
   }
 })
 
+const hasError = ref(false)
+const validate = () => {
+  hasError.value = props.required && !model.value.length
+}
+const clearError = () => {
+  hasError.value = false
+}
+
 const target = useTemplateRef('app-textarea')
-onClickOutside(target, () => emit('blur'))
+onClickOutside(target, () => {
+  clearError()
+})
+
+watch(() => model.value, (newValue, oldValue) => {
+  if(!oldValue.length && newValue.length) {
+    clearError()
+  }
+})
+
+defineExpose({
+  validate,
+  hasError
+})
 </script>
 
 <style scoped>
