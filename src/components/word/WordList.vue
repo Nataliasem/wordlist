@@ -20,7 +20,9 @@
       <table>
         <thead>
         <tr>
-          <th v-for="item in columnConfig" :key="item">{{ item }}</th>
+          <th v-for="item in columnConfig" :key="item">
+            <span :class="{'required-field': item === 'Word'}">{{ item }}</span>
+          </th>
         </tr>
         </thead>
 
@@ -70,11 +72,10 @@
 import WordModal from './WordModal.vue'
 import AddWordRow from './AddWordRow.vue'
 import WordRow from './WordRow.vue'
-import { useCategoryStore } from '../stores/category.js'
-import { useWordStore } from '../stores/word.js'
-import { reloadPage, filterBySearchString } from '../utils/index.js'
+import { useCategoryStore, useWordStore } from '../../stores/index.js'
+import { reloadPage, filterBySearchString } from '../../utils/index.js'
 import { computed, ref } from 'vue'
-import { useModal } from '../composables/useModal.js'
+import { useModal } from '../../composables/index.js'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()

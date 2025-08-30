@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { getWordlist, create, update, remove } from '../api/word.js'
 import { watch } from 'vue'
 import { useCategoryStore } from './category'
-import { useCustomFetch } from '../composables/useCustomFetch.js'
+import { useCustomFetch } from '../composables/index.js'
 
 export const useWordStore = defineStore('word', () => {
   const {

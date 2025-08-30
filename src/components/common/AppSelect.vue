@@ -1,5 +1,6 @@
 <template>
-  <select v-model="model" :name="selectName" :id="selectName" class="app-select">
+  <label v-if="label" :for="id" class="form-field__label">{{ label }}: </label>
+  <select v-model="model" :name="name" :id="id" class="app-select">
     <option
       v-for="item in options"
       :key="item[valueProp]"
@@ -15,7 +16,8 @@
 const model = defineModel({ required: true })
 
 defineProps({
-  selectName: {
+  id: String,
+  name: {
     type: String,
     required: true
   },
@@ -30,6 +32,10 @@ defineProps({
   nameProp: {
     type: String,
     default: 'name'
+  },
+  label: {
+    type: String,
+    default: ''
   }
 })
 </script>
