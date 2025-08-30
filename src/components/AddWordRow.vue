@@ -26,8 +26,7 @@
 <script setup>
 import AppTextarea from './reusable/AppTextarea.vue'
 import { ref } from 'vue'
-import { useCategoryStore } from '../stores/category.js'
-import { useWordStore } from '../stores/word.js'
+import { useCategoryStore, useWordStore } from '../stores/index.js'
 import { useFormValidation } from '../composables/index.js'
 
 const categoryStore = useCategoryStore()

@@ -70,7 +70,7 @@
 
 <script setup>
 import { ref, nextTick } from 'vue'
-import { useCategoryStore } from '../stores/category.js'
+import { useCategoryStore } from '../stores/index.js'
 import AppNavigation from './reusable/AppNavigation.vue'
 import AppModal from './reusable/AppModal.vue'
 import { useModal } from '../composables/index.js'
