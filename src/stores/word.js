@@ -27,7 +27,7 @@ export const useWordStore = defineStore('word', () => {
     await update(word)
     await fetchWords(categoryStore.selectedCategoryId)
   }
-  const deleteWord = async (id) => {
+  const removeWord = async (id) => {
     await remove(id)
     await fetchWords(categoryStore.selectedCategoryId)
   }
@@ -39,6 +39,6 @@ export const useWordStore = defineStore('word', () => {
     isEmpty,
     createWord,
     updateWord,
-    deleteWord
+    removeWord
   }
 })
