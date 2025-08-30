@@ -52,7 +52,7 @@ import { ref, watch } from 'vue'
 import { useWordStore } from '../stores/word.js'
 import { useCategoryStore } from '../stores/category.js'
 import cloneDeep from 'lodash/cloneDeep'
-import { useFormValidation } from '../composables/useFormValidation.js'
+import { useFormValidation } from '../composables/index.js'
 
 const props = defineProps({
   word: Object

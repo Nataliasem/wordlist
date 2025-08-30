@@ -76,7 +76,7 @@ import { useCategoryStore } from '../stores/category.js'
 import { useWordStore } from '../stores/word.js'
 import { reloadPage, filterBySearchString } from '../utils/index.js'
 import { computed, ref } from 'vue'
-import { useModal } from '../composables/useModal.js'
+import { useModal } from '../composables/index.js'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()

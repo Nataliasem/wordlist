@@ -73,7 +73,7 @@ import { ref, nextTick } from 'vue'
 import { useCategoryStore } from '../stores/category.js'
 import AppNavigation from './reusable/AppNavigation.vue'
 import AppModal from './reusable/AppModal.vue'
-import { useModal } from '../composables/useModal.js'
+import { useModal } from '../composables/index.js'
 
 defineProps({
   categories: Array
