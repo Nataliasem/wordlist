@@ -76,7 +76,7 @@ import cloneDeep from 'lodash/cloneDeep'
 const props = defineProps({
   word: Object
 })
-const emit = defineEmits([ 'closeModal' ])
+const emit = defineEmits([ 'close-modal' ])
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()

@@ -8,9 +8,9 @@
   <textarea
     v-model="model"
     ref="app-textarea"
-    :rows="rows"
-    :name="id"
     :id="id"
+    :rows="rows"
+    :name="name"
     :class="{'invalid-field': required && hasError }"
     @focus="$emit('focus')"
     @blur="$emit('blur')"
@@ -22,10 +22,14 @@ import { onClickOutside } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
 
 const model = defineModel({ required: true })
-const emit = defineEmits(['blur'])
+const emit = defineEmits(['focus', 'blur'])
 
 defineProps({
   id: String,
+  name: {
+    type: String,
+    default: '',
+  },
   rows: {
     type: Number,
     default: 1,
