@@ -12,38 +12,17 @@
       <form @submit.prevent class="word-form">
         <template v-for="key in FORM_CONFIG">
           <div v-if="key === 'category'" class="form-field">
-            <label :for="key" class="form-field__label">{{ key }}: </label>
             <AppSelect
               v-model="updatedWord.category"
-              :select-name="key"
+              :id="key"
+              :name="key"
+              :label="key"
               :options="categoryStore.categories"
             />
           </div>
 
           <div v-else-if="key === 'examples'" class="form-field">
-            <div class="add-example__wrapper">
-              <AppTextarea
-                v-model="example"
-                :label="key"
-                :rows="10"
-                :id="key"
-                :ref="(el) => { inputRefs[key] = el }"
-              >
-                <ol v-if="hasExamples">
-                  <li v-for="(item, index) in updatedWord[key]" class="example-item">
-                    <button class="icon-button_filled" @click="deleteExample(index)">
-                      <v-icon name="ri-delete-bin-2-line" title="Delete from category" />
-                    </button>
-                    <span>{{ item }}</span>
-                  </li>
-                </ol>
-              </AppTextarea>
-
-              <button class="icon-button_filled add-example-button" type="button" @click="addExample">
-                <v-icon name="ri-play-list-add-fill" title="Add to wordlist" fill="purple" />
-                <span>Add example</span>
-              </button>
-            </div>
+            <WordExamplesInput v-model="updatedWord.examples" />
           </div>
 
           <div v-else class="form-field">
@@ -68,7 +47,8 @@
 import AppSelect from './reusable/AppSelect.vue'
 import AppModal from './reusable/AppModal.vue'
 import AppTextarea from './reusable/AppTextarea.vue'
-import { computed, ref, watch } from 'vue'
+import WordExamplesInput from './WordExamplesInput.vue'
+import { ref, watch } from 'vue'
 import { useWordStore } from '../stores/word.js'
 import { useCategoryStore } from '../stores/category.js'
 import cloneDeep from 'lodash/cloneDeep'
@@ -97,19 +77,6 @@ watch(() => props.word, async () => {
 }, {
   immediate: true,
   deep: true
-})
-
-const example = ref('')
-const addExample = () => {
-  if (!example.value) return
-  updatedWord.value.examples.unshift(example.value)
-  example.value = ''
-}
-const deleteExample = (indexToRemove) => {
-  updatedWord.value.examples.splice(indexToRemove, 1)
-}
-const hasExamples = computed(() => {
-  return updatedWord.value.examples.length
 })
 
 const inputRefs = ref({})
@@ -147,35 +114,5 @@ const save = async () => {
 .word-name {
   font-style: italic;
   font-weight: normal;
-}
-
-.add-example__wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.add-example__wrapper textarea {
-  flex-grow: 1;
-}
-
-.add-example__wrapper button {
-  align-self: flex-start;
-}
-
-li.example-item {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-li.example-item button {
-  align-self: start;
-}
-
-.icon-button_filled.add-example-button {
-  color: purple;
-  display: flex;
-  gap: 8px;
 }
 </style>
