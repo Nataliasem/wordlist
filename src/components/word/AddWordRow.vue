@@ -1,10 +1,11 @@
 <template>
   <tr class="add-word-row">
     <td v-for="(_, key) in word">
-      <textarea
-        rows="1"
+      <AppTextarea
         v-model="word[key]"
-        :name="key"
+        :id="key"
+        :required="key === 'word'"
+        :ref="(el) => { inputRefs[key] = el }"
       />
     </td>
 
@@ -23,31 +24,31 @@
 </template>
 
 <script setup>
+import AppTextarea from '../common/AppTextarea.vue'
 import { ref } from 'vue'
-import { useCategoryStore } from '../stores/category.js'
-import { useWordStore } from '../stores/word.js'
+import { useCategoryStore, useWordStore } from '../../stores/index.js'
+import { useFormValidation } from '../../composables/index.js'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
 
-const word = ref({
+const EMPTY_WORD = {
   word: '',
   transcription: '',
   definition: '',
   translation: ''
-})
-
+}
+const word = ref({...EMPTY_WORD})
 const clearUserInput = () => {
-  word.value = {
-    word: '',
-    transcription: '',
-    definition: '',
-    translation: ''
-  }
+  word.value = {...EMPTY_WORD}
 }
 
+const inputRefs = ref({})
+const { validateForm, hasFormError } = useFormValidation(inputRefs)
 const addWordToCategory = async () => {
-  if (!word.value.word) return
+  validateForm()
+  if (hasFormError.value) return
+
   await wordStore.createWord({
     ...word.value,
     category: categoryStore.selectedCategoryId
@@ -57,20 +58,20 @@ const addWordToCategory = async () => {
 </script>
 
 <style scoped>
-tr {
-  transition: background-color 0.3s ease;
-}
-
-tr:hover {
-  background-color: mediumpurple;
-}
-
-tr:hover .icon-button_filled {
-  background-color: white;
+.add-word-row {
+  background-color: lavender;
 }
 
 .add-word-row {
-  background-color: lavender;
+  transition: background-color 0.3s ease;
+}
+
+.add-word-row:hover {
+  background-color: rgba(147, 112, 219, 0.4);
+}
+
+.add-word-row:hover .icon-button_filled {
+  background-color: white;
 }
 </style>
 

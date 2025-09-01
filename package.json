@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vueuse/core": "^13.8.0",
     "lodash": "^4.17.21",
     "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^3.0.3",

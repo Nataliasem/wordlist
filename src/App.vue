@@ -6,8 +6,8 @@
 </template>
 
 <script setup>
-import CategoryList from './components/CategoryList.vue'
-import WordList from './components/WordList.vue'
+import CategoryList from './components/category/CategoryList.vue'
+import WordList from './components/word/WordList.vue'
 </script>
 
 <style scoped>

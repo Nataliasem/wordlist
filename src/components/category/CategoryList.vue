@@ -27,14 +27,14 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import CategoryItem from './CategoryItem.vue'
-import { useCategoryStore } from '../stores/category.js'
-import { reloadPage } from '../utils/index.js'
+import { useCategoryStore } from '../../stores/index.js'
+import { reloadPage, filterBySearchString } from '../../utils/index.js'
 
 const categoryStore = useCategoryStore()
 
 const category = ref('')
 const filteredCategories = computed(() => {
-  return categoryStore.categories.filter(item => (item.name.toLowerCase()).includes(category.value.toLowerCase()))
+  return filterBySearchString(categoryStore.categories, 'name', category.value)
 })
 const emptyCategories = computed(() => {
   return filteredCategories.value.length === 0
