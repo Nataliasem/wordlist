@@ -3,21 +3,34 @@
     <div class="scrollable-table-container">
       <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
 
-      <div class="search-word-input__wrapper">
-        <input
-          v-model="searchWord"
-          id="search-word-input"
-          type="text"
-          class="search-word-input"
-          placeholder="Enter a word here..."
-        >
+      <div class="table-actions__wrapper">
+        <div class="search-word-input__wrapper">
+          <input
+            v-model="searchWord"
+            id="search-word-input"
+            type="text"
+            class="search-word-input"
+            placeholder="Enter a word here..."
+          >
 
-        <button class="icon-button_filled" type="button" @click="addWord">
-          <v-icon name="ri-play-list-add-fill" :scale="1.3" title="Add new word" fill="purple" />
-        </button>
+          <button class="icon-button_filled" type="button" @click="addWord">
+            <v-icon name="ri-play-list-add-fill" :scale="1.3" title="Add new word" fill="purple" />
+          </button>
+        </div>
+
+
+        <div v-if="readyForRemovalWords.length">
+          <button  class="remove-button" type="button" @click="removeAll">
+            Remove selected words
+          </button>
+
+          <button class="remove-button cancel" type="button" @click="cancelRemoval">
+            Cancel
+          </button>
+        </div>
       </div>
 
-      <table>
+      <table class="word-table" ref="word-table">
         <thead>
         <tr>
           <th v-for="item in columnConfig" :key="item">
@@ -55,10 +68,11 @@
 
         <WordRow
           v-for="item in foundedWords"
+          v-model:readyForRemovalWords="readyForRemovalWords"
           :key="item.id"
           :word="item"
           @update-word="updateWord(item)"
-          @delete-word="deleteWord(item.id)"
+          @remove-word="removeWord(item.id)"
         />
         </tbody>
       </table>
@@ -119,8 +133,18 @@ const updateWord = (word) => {
   openModal()
 }
 
-const deleteWord = async (id) => {
-  await wordStore.deleteWord(id)
+const readyForRemovalWords = ref([])
+const removeWord = async (id) => {
+  await wordStore.removeWord(id)
+}
+const removeAll = () => {
+  readyForRemovalWords.value.forEach((wordId) => {
+    removeWord(wordId)
+  })
+  cancelRemoval()
+}
+const cancelRemoval = () => {
+  readyForRemovalWords.value = []
 }
 </script>
 
@@ -131,6 +155,10 @@ const deleteWord = async (id) => {
   display: flex;
   justify-content: center;
   align-items: baseline;
+}
+
+.word-table {
+  width: 100%;
 }
 
 .table-message p {
@@ -150,15 +178,37 @@ const deleteWord = async (id) => {
   color: red;
 }
 
-.search-word-input__wrapper {
+.table-actions__wrapper {
   margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-word-input__wrapper {
   display: flex;
   align-items: center;
 }
 
 .search-word-input {
-  padding: 8px;
+  padding: 9px;
   min-width: 300px;
   margin-right: 8px;
+  border: 2px solid lavender;
+  border-radius: 4px;
+}
+
+.table-actions__wrapper .icon-button_filled {
+  border: 2px solid lavender;
+  padding: 4px 8px;
+}
+
+.remove-button {
+  margin-left: 8px;
+  border: 2px solid orange;
+  padding: 8px;
+}
+.remove-button.cancel {
+  background-color: orange;
 }
 </style>
