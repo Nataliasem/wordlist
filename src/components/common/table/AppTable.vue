@@ -8,8 +8,8 @@
         class="search-row-input"
         placeholder="Enter a word here..."
       >
-      <button class="icon-button_filled" type="button" @click="$emit('add-row', searchRow)">
-        <v-icon name="ri-play-list-add-fill" :scale="1.3" title="Add new word" fill="purple" />
+      <button class="icon-button_filled" type="button" @click="openAddRowModal">
+        <v-icon name="ri-play-list-add-fill" :scale="1.3" title="Add new" fill="purple" />
       </button>
     </div>
 
@@ -34,7 +34,27 @@
     </thead>
 
     <tbody>
-    <AddTableRow />
+    <tr class="add-table-row">
+      <td v-for="(_, key) in model">
+        <AppTextarea
+          v-model="model[key]"
+          :id="key"
+          :ref="(el) => { inputRefs[key] = el }"
+        />
+      </td>
+
+      <td class="table-row-action">
+        <button class="icon-button_filled" type="button" @click="addRow">
+          <v-icon name="ri-play-list-add-fill" title="Add row" fill="purple" />
+        </button>
+      </td>
+
+      <td class="table-row-action">
+        <button class="icon-button_filled" type="button" @click="clearUserInput">
+          <v-icon name="ri-delete-back-2-line" title="Clear inputs" fill="purple" />
+        </button>
+      </td>
+    </tr>
 
     <tr v-if="$slots.fetching">
       <td :colspan="columnLength" class="table-message fetching">
@@ -64,10 +84,10 @@
     </tr>
 
     <TableRow
-      v-for="row in foundedRows"
       v-model:readyForRemovalRows="readyForRemovalRows"
+      v-for="row in foundedRows"
       :key="row.id"
-      :row-config="rowConfig"
+      :column-config="columnConfig"
       :row-data="row"
       @edit-row="$emit('edit-row', row)"
     >
@@ -77,19 +97,21 @@
 </template>
 
 <script setup>
-import AddTableRow from './AddTableRow.vue'
 import TableRow from './TableRow.vue'
 import { computed, ref } from 'vue'
 import { filterBySearchString, reloadPage } from '../../../utils/index.js'
+import AppTextarea from '../AppTextarea.vue'
+import { useFormValidation } from '../../../composables/index.js'
+
+const model = defineModel({ required: true })
 
 const props = defineProps({
   tableData: Array,
   columnConfig: Array,
-  rowConfig: Array,
   searchCriteria: String,
 })
 
-const emit = defineEmits(['add-row', 'edit-row', 'remove-rows'])
+const emit = defineEmits(['add-row', 'edit-row', 'remove-rows', 'open-add-row-modal'])
 
 const columnLength = computed(() => props.columnConfig.length)
 
@@ -97,6 +119,9 @@ const searchRow = ref('')
 const foundedRows = computed(() => {
   return filterBySearchString(props.tableData, props.searchCriteria, searchRow.value)
 })
+const openAddRowModal = () => {
+  emit('open-add-row-modal', searchRow.value)
+}
 
 const readyForRemovalRows = ref([])
 const removeSelectedRows = () => {
@@ -107,6 +132,19 @@ const clearRemovalRowsList = () => {
   readyForRemovalRows.value = []
 }
 
+const clearUserInput = () => {
+  for (const key in model.value) {
+    model.value[key] = ''
+  }
+}
+const inputRefs = ref({})
+const { validateForm, hasFormError } = useFormValidation(inputRefs)
+const addRow = () => {
+  validateForm()
+  if (hasFormError.value) return
+  clearUserInput()
+  emit('add-row')
+}
 </script>
 
 <style>

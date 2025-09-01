@@ -1,6 +1,8 @@
 <template>
   <tr :class="{'ready-to-deletion': isReadyForRemoval}">
-    <td v-for="row in rowConfig"><p>{{ rowData[row] }}</p></td>
+    <template v-for="item in columnConfig">
+      <td v-if="item.display" ><p>{{ rowData[item.key] }}</p></td>
+    </template>
 
     <td class="table-row-action">
       <button class="icon-button_filled" @click="prepareToUpdate">
@@ -24,7 +26,7 @@ const readyForRemovalRows = defineModel('readyForRemovalRows', {
 })
 
 const props = defineProps({
-  rowConfig: Array,
+  columnConfig: Array,
   rowData: Object
 })
 

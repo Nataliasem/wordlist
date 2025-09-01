@@ -4,10 +4,11 @@
       <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
 
       <AppTable
+        v-model="word"
         search-criteria="word"
         :column-config="columnConfig"
-        :row-config="rowConfig"
         :table-data="wordStore.words"
+        @open-add-row-modal="openAddWordModal"
         @add-row="addWord"
         @edit-row="updateWord"
         @remove-rows="removeWords"
@@ -47,23 +48,16 @@ const wordStore = useWordStore()
 const { isModalOpen, openModal, closeModal } = useModal()
 
 const columnConfig = [
-  {title: 'Word', isRequired: true},
-  {title: 'Transcription', isRequired: false},
-  {title: 'Definition', isRequired: false},
-  {title: 'Translation', isRequired: false},
-  {title: 'Add/edit', isRequired: false},
-  {title: 'Clear/delete', isRequired: false},
-]
-
-const rowConfig = [
-  'word',
-  'transcription',
-  'definition',
-  'translation'
+  {title: 'Word', key: 'word', isRequired: true, display: true},
+  {title: 'Transcription', key: 'transcription', isRequired: false, display: true},
+  {title: 'Definition', key: 'definition', isRequired: false, display: true},
+  {title: 'Translation', key: 'translation', isRequired: false, display: true},
+  {title: 'Add/edit', key: '', isRequired: false, display: false},
+  {title: 'Clear/delete', key: '', isRequired: false, display: false},
 ]
 
 const updatedWord = ref(null)
-const addWord = (word) => {
+const openAddWordModal = (word) => {
   updatedWord.value = {
     word: word,
     transcription: '',
@@ -73,6 +67,19 @@ const addWord = (word) => {
     category: categoryStore.selectedCategoryId
   }
   openModal()
+}
+
+const word = ref({
+  word: '',
+  transcription: '',
+  definition: '',
+  translation: ''
+})
+const addWord = async () => {
+  await wordStore.createWord({
+    ...word.value,
+    category: categoryStore.selectedCategoryId
+  })
 }
 
 const updateWord = (word) => {
