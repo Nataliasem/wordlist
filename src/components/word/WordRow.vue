@@ -43,7 +43,9 @@ const switchToRemove = (id) => {
 }
 
 const prepareToUpdate = (id) => {
-  switchToRemove(id)
+  if(isReadyForRemoval.value) {
+    switchToRemove(id)
+  }
   emit('update-word')
 }
 </script>
