@@ -26,6 +26,7 @@
 
     <tbody>
     <TableRowAdding
+      :row-model="rowModel"
       :column-config="columnConfig"
       @add-row="addRow"
     />
@@ -57,6 +58,7 @@ import { computed, ref } from 'vue'
 import { reloadPage } from '../../../utils/index.js'
 
 const props = defineProps({
+  rowModel: Object,
   tableData: Array,
   columnConfig: Array,
   userMessage: Object

@@ -29,18 +29,18 @@
 import AppTextarea from '../../common/AppTextarea.vue'
 import { ref } from 'vue'
 import { useFormValidation } from '../../../composables/index.js'
-import { EMPTY_WORD } from '../../../constants.js'
 import cloneDeep from 'lodash/cloneDeep'
 
-defineProps({
-  columnConfig: Object,
+const props = defineProps({
+  rowModel: Object,
+  columnConfig: Object
 })
 
 const emit = defineEmits(['add-row'])
 
-const localRowModel = ref(cloneDeep(EMPTY_WORD))
+const localRowModel = ref(cloneDeep(props.rowModel))
 const clearUserInput = () => {
-  localRowModel.value = cloneDeep(EMPTY_WORD)
+  localRowModel.value = cloneDeep(props.rowModel)
 }
 
 const inputRefs = ref({})
@@ -66,10 +66,6 @@ const addWordToCategory = async () => {
 
 .add-table-row:hover .icon-button_filled {
   background-color: white;
-}
-
-.table-row-action {
-  text-align: center;
 }
 </style>
 

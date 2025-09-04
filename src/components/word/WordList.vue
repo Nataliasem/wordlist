@@ -4,6 +4,7 @@
       <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
 
       <AppTable
+        :row-model="EMPTY_WORD"
         :column-config="WORD_TABLE_CONFIG"
         :table-data="foundedWords"
         :user-message="userMessage"
