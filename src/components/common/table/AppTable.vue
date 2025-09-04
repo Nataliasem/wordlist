@@ -56,24 +56,10 @@
       </td>
     </tr>
 
-    <tr v-if="$slots.fetching">
-      <td :colspan="columnLength" class="table-message fetching">
-        <slot name="fetching"><p>Fetching data...</p></slot>
-      </td>
-    </tr>
-
-    <tr v-else-if="$slots.fetchingError">
-      <td :colspan="columnLength" class="table-message error">
-        <slot name="fetchingError"><p>Something went wrong.</p></slot>
-        <p>Please <a @click="reloadPage">reload the page</a>.</p>
-      </td>
-    </tr>
-
-    <tr v-else-if="$slots.emptyData">
-      <td :colspan="columnLength" class="table-message empty">
-        <slot name="emptyData">
-          <p>No data.</p>
-        </slot>
+    <tr v-if="userMessage">
+      <td :colspan="columnLength" class="table-message">
+        <p :class="userMessage.type">{{ userMessage.text }}</p>
+        <p v-if="userMessage.type === 'error'">Please <a @click="reloadPage">reload the page</a>.</p>
       </td>
     </tr>
 
@@ -109,6 +95,7 @@ const props = defineProps({
   tableData: Array,
   columnConfig: Array,
   searchCriteria: String,
+  userMessage: Object
 })
 
 const emit = defineEmits(['add-row', 'edit-row', 'remove-rows', 'open-add-row-modal'])
@@ -213,15 +200,15 @@ tr:hover:not(thead tr) {
   text-align: center;
 }
 
-.table-message.fetching {
+.table-message .fetching {
   color: purple;
 }
 
-.table-message.empty {
+.table-message .empty {
   color: blue;
 }
 
-.table-message.error {
+.table-message .error {
   color: red;
 }
 

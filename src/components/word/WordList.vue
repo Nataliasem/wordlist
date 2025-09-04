@@ -8,23 +8,12 @@
         search-criteria="word"
         :column-config="columnConfig"
         :table-data="wordStore.words"
+        :user-message="userMessage"
         @open-add-row-modal="openAddWordModal"
         @add-row="addWord"
         @edit-row="updateWord"
         @remove-rows="removeWords"
       >
-        <template v-if="wordStore.isFetching" #fetching >
-          <p>Words are fetching...</p>
-        </template>
-
-        <template v-else-if="wordStore.hasError" #fetchingError>
-          <p>Something went wrong fetching words.</p>
-        </template>
-
-        <template v-else-if="wordStore.isEmpty" #emptyData>
-          <p>No words in this category</p>
-        </template>
-
         <template #emptySearch>
           <p>No such word was found. Try changing the search criteria or add a new word.</p>
         </template>
@@ -38,20 +27,45 @@
 <script setup>
 import WordModal from './WordModal.vue'
 import AppTable from '../common/table/AppTable.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useModal } from '../../composables/index.js'
 import { useCategoryStore, useWordStore } from '../../stores/index.js'
+
+const { isModalOpen, openModal, closeModal } = useModal()
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
 
-const { isModalOpen, openModal, closeModal } = useModal()
+const userMessage = computed(() => {
+ if(wordStore.isFetching) {
+   return {
+     type: 'fetching',
+     text: 'Words are fetching...'
+   }
+ }
+
+ if(wordStore.hasError) {
+   return {
+     type: 'error',
+     text: 'Something went wrong fetching words.'
+   }
+ }
+
+  if(wordStore.isEmpty) {
+    return {
+      type: 'empty',
+      text: 'No words in this category.'
+    }
+  }
+  return null
+})
+
 
 const columnConfig = [
-  {title: 'Word', key: 'word', isRequired: true, display: true},
-  {title: 'Transcription', key: 'transcription', isRequired: false, display: true},
-  {title: 'Definition', key: 'definition', isRequired: false, display: true},
-  {title: 'Translation', key: 'translation', isRequired: false, display: true},
+  { title: 'Word', key: 'word', isRequired: true, display: true },
+  { title: 'Transcription', key: 'transcription', isRequired: false, display: true },
+  { title: 'Definition', key: 'definition', isRequired: false, display: true },
+  { title: 'Translation', key: 'translation', isRequired: false, display: true},
   {title: 'Add/edit', key: '', isRequired: false, display: false},
   {title: 'Clear/delete', key: '', isRequired: false, display: false},
 ]
