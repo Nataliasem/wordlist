@@ -5,17 +5,24 @@
 
       <AppTable
         v-model="word"
-        search-criteria="word"
         :column-config="columnConfig"
-        :table-data="wordStore.words"
+        :table-data="foundedWords"
         :user-message="userMessage"
-        @open-add-row-modal="openAddWordModal"
         @add-row="addWord"
         @edit-row="updateWord"
         @remove-rows="removeWords"
       >
-        <template #emptySearch>
-          <p>No such word was found. Try changing the search criteria or add a new word.</p>
+        <template #search>
+          <input
+            v-model="searchWord"
+            id="search-row-input"
+            type="text"
+            class="search-row-input"
+            placeholder="Enter a word here..."
+          >
+          <button class="icon-button_filled" type="button" @click="openAddRowModal">
+            <v-icon name="ri-play-list-add-fill" :scale="1.3" title="Add new" fill="purple" />
+          </button>
         </template>
       </AppTable>
     </div>
@@ -30,36 +37,12 @@ import AppTable from '../common/table/AppTable.vue'
 import { computed, ref } from 'vue'
 import { useModal } from '../../composables/index.js'
 import { useCategoryStore, useWordStore } from '../../stores/index.js'
+import { filterBySearchString } from '../../utils/index.js'
 
 const { isModalOpen, openModal, closeModal } = useModal()
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
-
-const userMessage = computed(() => {
- if(wordStore.isFetching) {
-   return {
-     type: 'fetching',
-     text: 'Words are fetching...'
-   }
- }
-
- if(wordStore.hasError) {
-   return {
-     type: 'error',
-     text: 'Something went wrong fetching words.'
-   }
- }
-
-  if(wordStore.isEmpty) {
-    return {
-      type: 'empty',
-      text: 'No words in this category.'
-    }
-  }
-  return null
-})
-
 
 const columnConfig = [
   { title: 'Word', key: 'word', isRequired: true, display: true },
@@ -109,6 +92,46 @@ const removeWords = (wordsIds) => {
    await wordStore.removeWord(wordId)
   })
 }
+
+const searchWord = ref('')
+const foundedWords = computed(() => {
+  return filterBySearchString(wordStore.words, 'word', searchWord.value)
+})
+const openAddRowModal = () => {
+  openAddWordModal(searchWord.value)
+}
+
+const userMessage = computed(() => {
+  if(wordStore.isFetching) {
+    return {
+      type: 'fetching',
+      text: 'Words are fetching...'
+    }
+  }
+
+  if(wordStore.hasError) {
+    return {
+      type: 'error',
+      text: 'Something went wrong fetching words.'
+    }
+  }
+
+  if(wordStore.isEmpty) {
+    return {
+      type: 'empty',
+      text: 'No words in this category.'
+    }
+  }
+
+  if(foundedWords.value.length === 0) {
+    return {
+      type: 'empty',
+      text: 'No such word was found. Try changing the search criteria or add a new word.'
+    }
+  }
+
+  return null
+})
 </script>
 
 <style scoped>

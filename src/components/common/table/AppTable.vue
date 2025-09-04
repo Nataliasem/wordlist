@@ -1,16 +1,7 @@
 <template>
   <div class="table-actions__wrapper">
-    <div class="search-row-input__wrapper">
-      <input
-        v-model="searchRow"
-        id="search-row-input"
-        type="text"
-        class="search-row-input"
-        placeholder="Enter a word here..."
-      >
-      <button class="icon-button_filled" type="button" @click="openAddRowModal">
-        <v-icon name="ri-play-list-add-fill" :scale="1.3" title="Add new" fill="purple" />
-      </button>
+    <div v-if="$slots.search" class="search-row-input__wrapper">
+      <slot name="search" />
     </div>
 
     <div v-if="readyForRemovalRows.length">
@@ -63,15 +54,9 @@
       </td>
     </tr>
 
-    <tr v-else-if="foundedRows.length === 0">
-      <td :colspan="columnLength" class="table-message empty">
-        <slot name="emptySearch"><p>Nothing was found. Try changing the search criteria.</p></slot>
-      </td>
-    </tr>
-
     <TableRow
       v-model:readyForRemovalRows="readyForRemovalRows"
-      v-for="row in foundedRows"
+      v-for="row in tableData"
       :key="row.id"
       :column-config="columnConfig"
       :row-data="row"
@@ -85,7 +70,7 @@
 <script setup>
 import TableRow from './TableRow.vue'
 import { computed, ref } from 'vue'
-import { filterBySearchString, reloadPage } from '../../../utils/index.js'
+import { reloadPage } from '../../../utils/index.js'
 import AppTextarea from '../AppTextarea.vue'
 import { useFormValidation } from '../../../composables/index.js'
 
@@ -94,21 +79,12 @@ const model = defineModel({ required: true })
 const props = defineProps({
   tableData: Array,
   columnConfig: Array,
-  searchCriteria: String,
   userMessage: Object
 })
 
 const emit = defineEmits(['add-row', 'edit-row', 'remove-rows', 'open-add-row-modal'])
 
 const columnLength = computed(() => props.columnConfig.length)
-
-const searchRow = ref('')
-const foundedRows = computed(() => {
-  return filterBySearchString(props.tableData, props.searchCriteria, searchRow.value)
-})
-const openAddRowModal = () => {
-  emit('open-add-row-modal', searchRow.value)
-}
 
 const readyForRemovalRows = ref([])
 const removeSelectedRows = () => {
