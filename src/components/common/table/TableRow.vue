@@ -1,7 +1,7 @@
 <template>
   <tr :class="{'ready-to-deletion': isReadyForRemoval}">
     <template v-for="item in columnConfig">
-      <td v-if="item.display" ><p>{{ rowData[item.key] }}</p></td>
+      <td v-if="item.display"><p>{{ rowData[item.key] }}</p></td>
     </template>
 
     <td class="table-row-action">

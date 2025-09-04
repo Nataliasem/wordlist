@@ -1,13 +1,15 @@
 <template>
   <tr class="add-table-row">
-    <td v-for="(_, key) in word">
-      <AppTextarea
-        v-model="word[key]"
-        :id="key"
-        :required="key === 'word'"
-        :ref="(el) => { inputRefs[key] = el }"
-      />
-    </td>
+    <template v-for="item in columnConfig">
+      <td v-if="item.display">
+        <AppTextarea
+          v-model="localRowModel[item.key]"
+          :id="item.key"
+          :ref="(el) => { inputRefs[item.key] = el }"
+          :required="item.required"
+        />
+      </td>
+    </template>
 
     <td class="table-row-action">
       <button class="icon-button_filled" type="button" @click="addWordToCategory">
@@ -26,21 +28,19 @@
 <script setup>
 import AppTextarea from '../../common/AppTextarea.vue'
 import { ref } from 'vue'
-import { useCategoryStore, useWordStore } from '../../../stores/index.js'
 import { useFormValidation } from '../../../composables/index.js'
+import { EMPTY_WORD } from '../../../constants.js'
+import cloneDeep from 'lodash/cloneDeep'
 
-const categoryStore = useCategoryStore()
-const wordStore = useWordStore()
+defineProps({
+  columnConfig: Object,
+})
 
-const EMPTY_WORD = {
-  word: '',
-  transcription: '',
-  definition: '',
-  translation: ''
-}
-const word = ref({...EMPTY_WORD})
+const emit = defineEmits(['add-row'])
+
+const localRowModel = ref(cloneDeep(EMPTY_WORD))
 const clearUserInput = () => {
-  word.value = {...EMPTY_WORD}
+  localRowModel.value = cloneDeep(EMPTY_WORD)
 }
 
 const inputRefs = ref({})
@@ -49,10 +49,7 @@ const addWordToCategory = async () => {
   validateForm()
   if (hasFormError.value) return
 
-  await wordStore.createWord({
-    ...word.value,
-    category: categoryStore.selectedCategoryId
-  })
+  emit('add-row', localRowModel.value)
   clearUserInput()
 }
 </script>

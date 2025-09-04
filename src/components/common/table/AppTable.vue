@@ -1,6 +1,6 @@
 <template>
   <div class="table-actions__wrapper">
-    <div v-if="$slots.search" class="search-row-input__wrapper">
+    <div v-if="$slots.search" class="table-search__wrapper">
       <slot name="search" />
     </div>
 
@@ -19,33 +19,16 @@
     <thead>
     <tr>
       <th v-for="item in columnConfig" :key="item.title">
-        <span :class="{'required-field': item.isRequired}">{{ item.title }}</span>
+        <span :class="{'required-field': item.required}">{{ item.title }}</span>
       </th>
     </tr>
     </thead>
 
     <tbody>
-    <tr class="add-table-row">
-      <td v-for="(_, key) in model">
-        <AppTextarea
-          v-model="model[key]"
-          :id="key"
-          :ref="(el) => { inputRefs[key] = el }"
-        />
-      </td>
-
-      <td class="table-row-action">
-        <button class="icon-button_filled" type="button" @click="addRow">
-          <v-icon name="ri-play-list-add-fill" title="Add row" fill="purple" />
-        </button>
-      </td>
-
-      <td class="table-row-action">
-        <button class="icon-button_filled" type="button" @click="clearUserInput">
-          <v-icon name="ri-delete-back-2-line" title="Clear inputs" fill="purple" />
-        </button>
-      </td>
-    </tr>
+    <TableRowAdding
+      :column-config="columnConfig"
+      @add-row="addRow"
+    />
 
     <tr v-if="userMessage">
       <td :colspan="columnLength" class="table-message">
@@ -69,12 +52,9 @@
 
 <script setup>
 import TableRow from './TableRow.vue'
+import TableRowAdding from './TableRowAdding.vue'
 import { computed, ref } from 'vue'
 import { reloadPage } from '../../../utils/index.js'
-import AppTextarea from '../AppTextarea.vue'
-import { useFormValidation } from '../../../composables/index.js'
-
-const model = defineModel({ required: true })
 
 const props = defineProps({
   tableData: Array,
@@ -82,7 +62,7 @@ const props = defineProps({
   userMessage: Object
 })
 
-const emit = defineEmits(['add-row', 'edit-row', 'remove-rows', 'open-add-row-modal'])
+const emit = defineEmits(['add-row', 'edit-row', 'remove-rows'])
 
 const columnLength = computed(() => props.columnConfig.length)
 
@@ -95,18 +75,8 @@ const clearRemovalRowsList = () => {
   readyForRemovalRows.value = []
 }
 
-const clearUserInput = () => {
-  for (const key in model.value) {
-    model.value[key] = ''
-  }
-}
-const inputRefs = ref({})
-const { validateForm, hasFormError } = useFormValidation(inputRefs)
-const addRow = () => {
-  validateForm()
-  if (hasFormError.value) return
-  clearUserInput()
-  emit('add-row')
+const addRow = (row) => {
+  emit('add-row', row)
 }
 </script>
 
@@ -118,24 +88,11 @@ const addRow = () => {
   justify-content: space-between;
 }
 
-.search-row-input__wrapper {
+.table-search__wrapper {
   display: flex;
   align-items: center;
+  gap: 8px;
 }
-
-.search-row-input {
-  padding: 9px;
-  min-width: 300px;
-  margin-right: 8px;
-  border: 2px solid lavender;
-  border-radius: 4px;
-}
-
-.table-actions__wrapper .icon-button_filled {
-  border: 2px solid lavender;
-  padding: 4px 8px;
-}
-
 
 .app-table {
   width: 100%;
