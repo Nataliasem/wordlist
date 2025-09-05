@@ -8,7 +8,7 @@
         placeholder="Find or add category"
         name="add-category"
       >
-      <button class="icon-button_filled" :disabled="!isFilteredDataEmpty" @click="addCategory">Add</button>
+      <button class="icon-button_filled" :disabled="!isFoundedCategoriesEmpty" @click="addCategory">Add</button>
     </div>
 
     <div v-if="categoryStore.hasError" class="fetching-message">
@@ -20,7 +20,7 @@
       <p>Add the first category</p>
     </div>
 
-    <CategoryItem v-else :categories="categories" />
+    <CategoryItem v-else :categories="foundedCategories" />
   </div>
 </template>
 
@@ -33,7 +33,7 @@ import { onMounted } from 'vue'
 
 const categoryStore = useCategoryStore()
 
-const { searchString: searchCategory, filteredData: categories, clearSearch, isFilteredDataEmpty } = useFilterBySearch(categoryStore, 'name')
+const { searchString: searchCategory, filteredData: foundedCategories, clearSearch, isFilteredDataEmpty: isFoundedCategoriesEmpty } = useFilterBySearch(categoryStore, 'name')
 
 const addCategory = async () => {
   if (!searchCategory.value) return

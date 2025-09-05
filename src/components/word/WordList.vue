@@ -56,7 +56,7 @@ const openWordModal = (word) => {
   openModal()
 }
 
-const { searchString: searchWord, filteredData: foundedWords, clearSearch, isFilteredDataEmpty } = useFilterBySearch(wordStore, 'word')
+const { searchString: searchWord, filteredData: foundedWords, clearSearch, isFilteredDataEmpty: isFoundedWordsEmpty } = useFilterBySearch(wordStore, 'word')
 const addSearchWord = () => {
   openWordModal({
       ...EMPTY_WORD,
@@ -82,7 +82,7 @@ const userMessage = computed(() => {
   if(wordStore.isFetching) return WORD_TABLE_MESSAGE.fetching
   if(wordStore.hasError) return WORD_TABLE_MESSAGE.error
   if(wordStore.isEmpty) return WORD_TABLE_MESSAGE.empty
-  if(isFilteredDataEmpty.value) return WORD_TABLE_MESSAGE.emptySearch
+  if(isFoundedWordsEmpty.value) return WORD_TABLE_MESSAGE.emptySearch
 
   return null
 })
