@@ -10,7 +10,7 @@
 
     <template #content>
       <form @submit.prevent class="word-form">
-        <template v-for="key in FORM_CONFIG">
+        <template v-for="key in WORD_FORM_CONFIG">
           <div v-if="key === 'category'" class="form-field">
             <AppSelect
               v-model="updatedWord.category"
@@ -52,6 +52,7 @@ import { ref, watch } from 'vue'
 import { useWordStore, useCategoryStore } from '../../stores/index.js'
 import cloneDeep from 'lodash/cloneDeep'
 import { useFormValidation } from '../../composables/index.js'
+import { WORD_FORM_CONFIG } from '../../constants.js'
 
 const props = defineProps({
   word: Object
@@ -60,15 +61,6 @@ const emit = defineEmits([ 'close-modal' ])
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
-
-const FORM_CONFIG = [
-  'category',
-  'word',
-  'transcription',
-  'definition',
-  'translation',
-  'examples'
-]
 
 const updatedWord = ref(null)
 watch(() => props.word, async () => {

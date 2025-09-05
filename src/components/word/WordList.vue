@@ -3,149 +3,96 @@
     <div class="scrollable-table-container">
       <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
 
-      <div class="table-actions__wrapper">
-        <div class="search-word-input__wrapper">
+      <AppTable
+        :row-model="EMPTY_WORD"
+        :column-config="WORD_TABLE_CONFIG"
+        :table-data="foundedWords"
+        :user-message="userMessage"
+        @add-row="addWord"
+        @edit-row="openWordModal"
+        @remove-rows="removeWords"
+      >
+        <template #search>
           <input
             v-model="searchWord"
-            id="search-word-input"
+            id="table-search__input"
             type="text"
-            class="search-word-input"
+            class="table-search__input"
             placeholder="Enter a word here..."
           >
-
-          <button class="icon-button_filled" type="button" @click="addWord">
-            <v-icon name="ri-play-list-add-fill" :scale="1.3" title="Add new word" fill="purple" />
-          </button>
-        </div>
-
-
-        <div v-if="readyForRemovalWords.length">
-          <button  class="remove-button" type="button" @click="removeAll">
-            Remove selected words
+          <button class="icon-button_filled table-search__button" type="button" @click="addSearchWord">
+            <v-icon name="ri-play-list-add-fill" :scale="1.3" title="Add new" fill="purple" />
           </button>
 
-          <button class="remove-button cancel" type="button" @click="cancelRemoval">
-            Cancel
+          <button class="icon-button_filled table-search__button" type="button" @click="clearSearch">
+            <v-icon name="ri-delete-back-2-line" :scale="1.3" title="Clear input" fill="purple" />
           </button>
-        </div>
-      </div>
-
-      <table class="word-table" ref="word-table">
-        <thead>
-        <tr>
-          <th v-for="item in columnConfig" :key="item">
-            <span :class="{'required-field': item === 'Word'}">{{ item }}</span>
-          </th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <AddWordRow />
-        <tr v-if="wordStore.isFetching">
-          <td :colspan="columnLength" class="table-message fetching">
-            <p>Words are fetching...</p>
-          </td>
-        </tr>
-
-        <tr v-else-if="wordStore.hasError">
-          <td :colspan="columnLength" class="table-message error">
-            <p>Something went wrong.</p>
-            <p>Please <a @click="reloadPage">reload the page</a>.</p>
-          </td>
-        </tr>
-
-        <tr v-else-if="wordStore.isEmpty">
-          <td :colspan="columnLength" class="table-message empty">
-            <p>No words in this category</p>
-          </td>
-        </tr>
-
-        <tr v-else-if="!foundedWords.length">
-          <td :colspan="columnLength" class="table-message empty">
-            <p>No such word was found. Try changing the search criteria or add a new word.</p>
-          </td>
-        </tr>
-
-        <WordRow
-          v-for="item in foundedWords"
-          v-model:readyForRemovalWords="readyForRemovalWords"
-          :key="item.id"
-          :word="item"
-          @update-word="updateWord(item)"
-          @remove-word="removeWord(item.id)"
-        />
-        </tbody>
-      </table>
+        </template>
+      </AppTable>
     </div>
   </div>
 
-  <WordModal v-if="isModalOpen" :word="updatedWord" @closeModal="closeModal" />
+  <WordModal v-if="isModalOpen" :word="wordModel" @closeModal="closeModal" />
 </template>
 
 <script setup>
 import WordModal from './WordModal.vue'
-import AddWordRow from './AddWordRow.vue'
-import WordRow from './WordRow.vue'
-import { useCategoryStore, useWordStore } from '../../stores/index.js'
-import { reloadPage, filterBySearchString } from '../../utils/index.js'
+import AppTable from '../common/table/AppTable.vue'
 import { computed, ref } from 'vue'
 import { useModal } from '../../composables/index.js'
+import { useCategoryStore, useWordStore } from '../../stores/index.js'
+import { filterBySearchString } from '../../utils/index.js'
+import { WORD_TABLE_CONFIG, EMPTY_WORD, WORD_TABLE_MESSAGE } from '../../constants.js'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
 
 const { isModalOpen, openModal, closeModal } = useModal()
-
-const columnConfig = [
-  'Word',
-  'Transcription',
-  'Definition',
-  'Translation',
-  'Add/edit',
-  'Clear/delete'
-]
-const columnLength = computed(() => columnConfig.length)
-
-const searchWord = ref('')
-const foundedWords = computed(() => {
-  return filterBySearchString(wordStore.words, 'word', searchWord.value)
-})
-
-const updatedWord = ref(null)
-const addWord = () => {
-  updatedWord.value = {
-    word: searchWord.value,
-    transcription: '',
-    definition: '',
-    translation: '',
-    examples: [],
-    category: categoryStore.selectedCategoryId
-  }
-  searchWord.value = ''
-  openModal()
-}
-
-const updateWord = (word) => {
-  updatedWord.value = {
+const wordModel = ref(EMPTY_WORD)
+const openWordModal = (word) => {
+  wordModel.value = {
     ...word,
     category: categoryStore.selectedCategoryId
   }
   openModal()
 }
 
-const readyForRemovalWords = ref([])
-const removeWord = async (id) => {
-  await wordStore.removeWord(id)
+const searchWord = ref('')
+const foundedWords = computed(() => {
+  return filterBySearchString(wordStore.words, 'word', searchWord.value)
+})
+const clearSearch = () => {
+  searchWord.value = ''
 }
-const removeAll = () => {
-  readyForRemovalWords.value.forEach((wordId) => {
-    removeWord(wordId)
+const addSearchWord = () => {
+  openWordModal({
+      ...EMPTY_WORD,
+      word: searchWord.value
+    })
+  clearSearch()
+}
+
+const removeWords = (wordsIds) => {
+  wordsIds.forEach(async (wordId) => {
+    await wordStore.removeWord(wordId)
   })
-  cancelRemoval()
 }
-const cancelRemoval = () => {
-  readyForRemovalWords.value = []
+
+const addWord = async (word) => {
+  await wordStore.createWord({
+    ...word,
+    category: categoryStore.selectedCategoryId
+  })
 }
+
+const userMessage = computed(() => {
+  if(wordStore.isFetching) return WORD_TABLE_MESSAGE.fetching
+  if(wordStore.hasError) return WORD_TABLE_MESSAGE.error
+  if(wordStore.isEmpty) return WORD_TABLE_MESSAGE.empty
+  if(foundedWords.value.length === 0) return WORD_TABLE_MESSAGE.emptySearch
+
+  return null
+})
 </script>
 
 <style scoped>
@@ -157,40 +104,13 @@ const cancelRemoval = () => {
   align-items: baseline;
 }
 
-.word-table {
-  width: 100%;
+.scrollable-table-container {
+  max-height: 95vh;
+  width: 75vw;
+  overflow-y: auto;
 }
 
-.table-message p {
-  width: 100%;
-  text-align: center;
-}
-
-.table-message.fetching {
-  color: purple;
-}
-
-.table-message.empty {
-  color: blue;
-}
-
-.table-message.error {
-  color: red;
-}
-
-.table-actions__wrapper {
-  margin-bottom: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.search-word-input__wrapper {
-  display: flex;
-  align-items: center;
-}
-
-.search-word-input {
+.table-search__input {
   padding: 9px;
   min-width: 300px;
   margin-right: 8px;
@@ -198,17 +118,9 @@ const cancelRemoval = () => {
   border-radius: 4px;
 }
 
-.table-actions__wrapper .icon-button_filled {
+.table-search__button  {
   border: 2px solid lavender;
   padding: 4px 8px;
 }
 
-.remove-button {
-  margin-left: 8px;
-  border: 2px solid orange;
-  padding: 8px;
-}
-.remove-button.cancel {
-  background-color: orange;
-}
 </style>
