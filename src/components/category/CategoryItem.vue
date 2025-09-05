@@ -69,11 +69,10 @@
 </template>
 
 <script setup>
+import { AppNavigation, AppModal } from '@/components/common'
 import { ref, nextTick } from 'vue'
-import { useCategoryStore } from '../../stores/index.js'
-import AppNavigation from '../common/AppNavigation.vue'
-import AppModal from '../common/AppModal.vue'
-import { useModal } from '../../composables/index.js'
+import { useCategoryStore } from '@/stores/index.js'
+import { useModal } from '@/composables/index.js'
 
 defineProps({
   categories: Array
