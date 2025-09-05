@@ -18,7 +18,7 @@
               :id="key"
               :name="key"
               :label="key"
-              :options="categoryStore.categories"
+              :options="categoryStore.data"
             />
           </div>
 

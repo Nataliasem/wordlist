@@ -39,9 +39,8 @@
 import WordModal from './WordModal.vue'
 import { AppTable } from '@/components/common'
 import { computed, ref } from 'vue'
-import { useModal } from '@/composables/index.js'
+import { useModal, useFilterBySearch } from '@/composables/index.js'
 import { useCategoryStore, useWordStore } from '@/stores/index.js'
-import { filterBySearchString } from '@/utils/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD, WORD_TABLE_MESSAGE } from '@/constants.js'
 
 const categoryStore = useCategoryStore()
@@ -57,13 +56,7 @@ const openWordModal = (word) => {
   openModal()
 }
 
-const searchWord = ref('')
-const foundedWords = computed(() => {
-  return filterBySearchString(wordStore.words, 'word', searchWord.value)
-})
-const clearSearch = () => {
-  searchWord.value = ''
-}
+const { searchString: searchWord, filteredData: foundedWords, clearSearch, isFilteredDataEmpty } = useFilterBySearch(wordStore, 'word')
 const addSearchWord = () => {
   openWordModal({
       ...EMPTY_WORD,
@@ -89,7 +82,7 @@ const userMessage = computed(() => {
   if(wordStore.isFetching) return WORD_TABLE_MESSAGE.fetching
   if(wordStore.hasError) return WORD_TABLE_MESSAGE.error
   if(wordStore.isEmpty) return WORD_TABLE_MESSAGE.empty
-  if(foundedWords.value.length === 0) return WORD_TABLE_MESSAGE.emptySearch
+  if(isFilteredDataEmpty.value) return WORD_TABLE_MESSAGE.emptySearch
 
   return null
 })

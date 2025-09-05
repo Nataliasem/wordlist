@@ -9,32 +9,33 @@ export const useWordStore = defineStore('word', () => {
     isFetching,
     isEmpty,
     hasError,
-    data: words,
-    fetchData: fetchWords
+    data,
+    fetchData
   } = useCustomFetch(getWordlist)
 
   const categoryStore = useCategoryStore()
   // watch full object, not only id
   watch(() => categoryStore.selectedCategory, async () => {
-    await fetchWords(categoryStore.selectedCategoryId)
+    await fetchData(categoryStore.selectedCategoryId)
   })
 
   const createWord = async (word) => {
     await create(word)
-    await fetchWords(categoryStore.selectedCategoryId)
+    await fetchData(categoryStore.selectedCategoryId)
   }
   const updateWord = async (word) => {
     await update(word)
-    await fetchWords(categoryStore.selectedCategoryId)
+    await fetchData(categoryStore.selectedCategoryId)
   }
   const removeWord = async (id) => {
     await remove(id)
-    await fetchWords(categoryStore.selectedCategoryId)
+    await fetchData(categoryStore.selectedCategoryId)
   }
 
   return {
-    words,
+    data,
     isFetching,
+    fetchData,
     hasError,
     isEmpty,
     createWord,
