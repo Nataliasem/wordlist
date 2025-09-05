@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick } from 'vue'
+import { ref } from 'vue'
 
 const props = defineProps({
   items: Array,
@@ -36,9 +36,4 @@ const navigateDown = async (currentIndex) => {
   const nextElId = props.items[currentIndex + 1]?.id
   itemRefs.value[nextElId]?.focus()
 }
-
-watch(() => props.items, async () => {
-  await nextTick() // nextTick is required
-  itemRefs.value[props.selectedItemId]?.focus()
-})
 </script>
