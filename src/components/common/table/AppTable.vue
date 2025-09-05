@@ -18,8 +18,18 @@
   <table class="app-table">
     <thead>
     <tr>
-      <th v-for="item in columnConfig" :key="item.title">
+      <th v-for="item in columnConfig" :key="item.key">
         <span :class="{'required-field': item.required}">{{ item.title }}</span>
+
+        <span v-if="item.display" class="display-icon__wrapper">
+          <button v-if="hiddenColumns[item.key]" type="button" @click="toggleColumnVisibility(item.key)">
+            <v-icon name="ri-eye-line" title="Display column data" fill="orange" />
+          </button>
+
+          <button v-else type="button" @click="toggleColumnVisibility(item.key)">
+            <v-icon name="ri-eye-off-line" title="Hide column data" fill="purple" />
+          </button>
+        </span>
       </th>
     </tr>
     </thead>
@@ -44,6 +54,7 @@
       :key="row.id"
       :column-config="columnConfig"
       :row-data="row"
+      :hidden-columns="hiddenColumns"
       @edit-row="$emit('edit-row', row)"
     >
     </TableRow>
@@ -67,6 +78,13 @@ const props = defineProps({
 const emit = defineEmits(['add-row', 'edit-row', 'remove-rows'])
 
 const columnLength = computed(() => props.columnConfig.length)
+
+const hiddenColumns = ref({})
+const toggleColumnVisibility = (columnKey) => {
+  hiddenColumns.value[columnKey]
+    ? delete hiddenColumns.value[columnKey]
+    : hiddenColumns.value[columnKey] = true
+}
 
 const readyForRemovalRows = ref([])
 const removeSelectedRows = () => {
@@ -152,7 +170,12 @@ tr:hover:not(thead tr) {
   border: 2px solid orange;
   padding: 8px;
 }
+
 .remove-button.cancel {
   background-color: orange;
+}
+
+.display-icon__wrapper {
+  padding: 4px;
 }
 </style>

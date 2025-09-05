@@ -1,7 +1,7 @@
 <template>
   <tr :class="{'ready-to-deletion': isReadyForRemoval}">
     <template v-for="item in columnConfig">
-      <td v-if="item.display"><p>{{ rowData[item.key] }}</p></td>
+      <td v-if="item.display"><p :class="{ blurred: hiddenColumns[item.key] }">{{ rowData[item.key] }}</p></td>
     </template>
 
     <td class="table-row-action">
@@ -27,7 +27,8 @@ const readyForRemovalRows = defineModel('readyForRemovalRows', {
 
 const props = defineProps({
   columnConfig: Array,
-  rowData: Object
+  rowData: Object,
+  hiddenColumns: Object
 })
 
 const emit = defineEmits(['edit-row'])
@@ -64,5 +65,9 @@ tr.ready-to-deletion {
 
 tr.ready-to-deletion:hover {
   background-color: darkorange;
+}
+
+.blurred {
+  filter: blur(3px);
 }
 </style>
