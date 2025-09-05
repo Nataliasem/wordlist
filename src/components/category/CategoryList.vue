@@ -26,10 +26,10 @@
 
 <script setup>
 import CategoryItem from './CategoryItem.vue'
+import { onMounted } from 'vue'
 import { useCategoryStore } from '@/stores/index.js'
 import { reloadPage } from '@/utils/index.js'
 import { useFilterBySearch } from '@/composables/index.js'
-import { onMounted } from 'vue'
 
 const categoryStore = useCategoryStore()
 
