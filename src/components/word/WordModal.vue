@@ -1,5 +1,6 @@
 <template>
   <AppModal
+    :show="show"
     @confirm="save"
     @cancel="$emit('close-modal')"
   >
@@ -53,6 +54,7 @@ import { useFormValidation } from '@/composables/index.js'
 import { WORD_FORM_CONFIG } from '@/constants.js'
 
 const props = defineProps({
+  show: Boolean,
   word: Object
 })
 const emit = defineEmits([ 'close-modal' ])

@@ -50,7 +50,7 @@
   </div>
 
   <AppModal
-    v-if="isModalOpen"
+    :show="isModalOpen"
     @confirm="deleteCategory"
     @cancel="closeModal"
   >

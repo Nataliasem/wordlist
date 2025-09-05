@@ -32,7 +32,7 @@
     </div>
   </div>
 
-  <WordModal v-if="isModalOpen" :word="wordModel" @closeModal="closeModal" />
+  <WordModal :show="isModalOpen" :word="wordModel" @closeModal="closeModal" />
 </template>
 
 <script setup>
