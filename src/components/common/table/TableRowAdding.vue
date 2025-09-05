@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import AppTextarea from '@/components/common/AppTextarea.vue'
+import { AppTextarea } from '@/components/common'
 import { ref } from 'vue'
 import { useFormValidation } from '@/composables/index.js'
 import cloneDeep from 'lodash/cloneDeep'

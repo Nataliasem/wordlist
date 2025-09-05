@@ -44,9 +44,7 @@
 </template>
 
 <script setup>
-import AppSelect from '@/components/common/AppSelect.vue'
-import AppModal from '@/components/common/AppModal.vue'
-import AppTextarea from '@/components/common/AppTextarea.vue'
+import { AppSelect, AppModal, AppTextarea } from '@/components/common'
 import WordExamplesInput from './WordExamplesInput.vue'
 import { ref, watch } from 'vue'
 import { useWordStore, useCategoryStore } from '@/stores/index.js'

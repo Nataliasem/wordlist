@@ -37,7 +37,7 @@
 
 <script setup>
 import WordModal from './WordModal.vue'
-import AppTable from '@/components/common/table/AppTable.vue'
+import { AppTable } from '@/components/common'
 import { computed, ref } from 'vue'
 import { useModal } from '@/composables/index.js'
 import { useCategoryStore, useWordStore } from '@/stores/index.js'
