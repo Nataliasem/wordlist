@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <Transition name="modal">
-      <div class="modal-mask">
+      <div v-if="show" class="modal-mask">
         <div class="modal-body">
           <h2 class="modal-body__header">
             <slot name="header" />
@@ -34,6 +34,9 @@
 </template>
 
 <script setup>
+defineProps({
+  show: Boolean
+})
 const emit = defineEmits([ 'confirm', 'cancel' ])
 </script>
 
