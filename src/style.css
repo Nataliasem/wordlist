@@ -76,42 +76,6 @@ button:focus-visible {
     border-color: purple;
 }
 
-.scrollable-table-container {
-    max-height: 95vh;
-    width: 75vw;
-    overflow-y: auto;
-}
-
-table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 4px;
-}
-
-th p, td p {
-    width: 160px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0;
-    margin: 0;
-}
-
-.td-action {
-    text-align: center;
-}
-
-tr {
-    transition: background-color 0.3s ease;
-}
-
-tr:hover:not(thead tr) {
-    background-color: lavenderblush;
-}
-
 .truncated {
     width: 100%;
     white-space: nowrap;
