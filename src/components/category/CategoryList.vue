@@ -27,8 +27,8 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import CategoryItem from './CategoryItem.vue'
-import { useCategoryStore } from '../../stores/index.js'
-import { reloadPage, filterBySearchString } from '../../utils/index.js'
+import { useCategoryStore } from '@/stores/index.js'
+import { reloadPage, filterBySearchString } from '@/utils/index.js'
 
 const categoryStore = useCategoryStore()
 

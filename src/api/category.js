@@ -1,4 +1,4 @@
-import { CATEGORY_URL } from '../constants.js'
+import { CATEGORY_URL } from '@/constants.js'
 
 export const create = async (category) => {
   const response = await fetch(`${CATEGORY_URL}`, {

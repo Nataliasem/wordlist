@@ -55,7 +55,7 @@
 import TableRow from './TableRow.vue'
 import TableRowAdding from './TableRowAdding.vue'
 import { computed, ref } from 'vue'
-import { reloadPage } from '../../../utils/index.js'
+import { reloadPage } from '@/utils/index.js'
 
 const props = defineProps({
   rowModel: Object,

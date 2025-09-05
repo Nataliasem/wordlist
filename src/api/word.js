@@ -1,4 +1,4 @@
-import { WORD_URL } from '../constants.js'
+import { WORD_URL } from '@/constants.js'
 
 export const create = async (word) => {
   await fetch(`${WORD_URL}`, {
