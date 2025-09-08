@@ -3,23 +3,39 @@
     <template v-for="item in columnConfig">
       <td v-if="item.display">
         <AppTextarea
-          v-model="localRowModel[item.key]"
           :id="item.key"
           :ref="(el) => { inputRefs[item.key] = el }"
+          v-model="localRowModel[item.key]"
           :required="item.required"
         />
       </td>
     </template>
 
     <td class="table-row-action">
-      <button class="icon-button_filled" type="button" @click="addWordToCategory">
-        <v-icon name="ri-play-list-add-fill" title="Add to wordlist" fill="purple" />
+      <button
+        class="icon-button_filled"
+        type="button"
+        @click="addWordToCategory"
+      >
+        <v-icon
+          name="ri-play-list-add-fill"
+          title="Add to wordlist"
+          fill="purple"
+        />
       </button>
     </td>
 
     <td class="table-row-action">
-      <button class="icon-button_filled" type="button" @click="clearUserInput">
-        <v-icon name="ri-delete-back-2-line" title="Clear inputs" fill="purple" />
+      <button
+        class="icon-button_filled"
+        type="button"
+        @click="clearUserInput"
+      >
+        <v-icon
+          name="ri-delete-back-2-line"
+          title="Clear inputs"
+          fill="purple"
+        />
       </button>
     </td>
   </tr>

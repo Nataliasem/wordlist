@@ -1,6 +1,15 @@
 <template>
-  <label v-if="label" :for="id" class="form-field__label">{{ label }}: </label>
-  <select v-model="model" :name="name" :id="id" class="app-select">
+  <label
+    v-if="label"
+    :for="id"
+    class="form-field__label"
+  >{{ label }}: </label>
+  <select
+    :id="id"
+    v-model="model"
+    :name="name"
+    class="app-select"
+  >
     <option
       v-for="item in options"
       :key="item[valueProp]"

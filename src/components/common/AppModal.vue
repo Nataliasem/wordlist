@@ -1,7 +1,10 @@
 <template>
   <Teleport to="body">
     <Transition name="modal">
-      <div v-if="show" class="modal-mask">
+      <div
+        v-if="show"
+        class="modal-mask"
+      >
         <div class="modal-body">
           <h2 class="modal-body__header">
             <slot name="header" />
@@ -24,7 +27,9 @@
               class="modal-button modal-button__cancel"
               @click="emit('cancel')"
             >
-              <slot name="cancel-text">Cancel</slot>
+              <slot name="cancel-text">
+                Cancel
+              </slot>
             </button>
           </div>
         </div>

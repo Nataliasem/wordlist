@@ -1,15 +1,26 @@
 <template>
   <div class="table-actions__wrapper">
-    <div v-if="$slots.search" class="table-search__wrapper">
+    <div
+      v-if="$slots.search"
+      class="table-search__wrapper"
+    >
       <slot name="search" />
     </div>
 
     <div v-if="readyForRemovalRows.length">
-      <button  class="remove-button" type="button" @click="removeSelectedRows">
+      <button
+        class="remove-button"
+        type="button"
+        @click="removeSelectedRows"
+      >
         Remove selected words
       </button>
 
-      <button class="remove-button cancel" type="button" @click="clearRemovalRowsList">
+      <button
+        class="remove-button cancel"
+        type="button"
+        @click="clearRemovalRowsList"
+      >
         Cancel
       </button>
     </div>
@@ -17,47 +28,75 @@
 
   <table class="app-table">
     <thead>
-    <tr>
-      <th v-for="item in columnConfig" :key="item.key">
-        <span :class="{'required-field': item.required}">{{ item.title }}</span>
+      <tr>
+        <th
+          v-for="item in columnConfig"
+          :key="item.key"
+        >
+          <span :class="{'required-field': item.required}">{{ item.title }}</span>
 
-        <span v-if="item.display" class="display-icon__wrapper">
-          <button v-if="hiddenColumns[item.key]" type="button" @click="toggleColumnVisibility(item.key)">
-            <v-icon name="ri-eye-line" title="Display column data" fill="orange" />
-          </button>
+          <span
+            v-if="item.display"
+            class="display-icon__wrapper"
+          >
+            <button
+              v-if="hiddenColumns[item.key]"
+              type="button"
+              @click="toggleColumnVisibility(item.key)"
+            >
+              <v-icon
+                name="ri-eye-line"
+                title="Display column data"
+                fill="orange"
+              />
+            </button>
 
-          <button v-else type="button" @click="toggleColumnVisibility(item.key)">
-            <v-icon name="ri-eye-off-line" title="Hide column data" fill="purple" />
-          </button>
-        </span>
-      </th>
-    </tr>
+            <button
+              v-else
+              type="button"
+              @click="toggleColumnVisibility(item.key)"
+            >
+              <v-icon
+                name="ri-eye-off-line"
+                title="Hide column data"
+                fill="purple"
+              />
+            </button>
+          </span>
+        </th>
+      </tr>
     </thead>
 
     <tbody>
-    <TableRowAdding
-      :row-model="rowModel"
-      :column-config="columnConfig"
-      @add-row="addRow"
-    />
+      <TableRowAdding
+        :row-model="rowModel"
+        :column-config="columnConfig"
+        @add-row="addRow"
+      />
 
-    <tr v-if="userMessage">
-      <td :colspan="columnLength" class="table-message">
-        <p :class="userMessage.type">{{ userMessage.text }}</p>
-        <p v-if="userMessage.type === 'error'">Please <a @click="reloadPage">reload the page</a>.</p>
-      </td>
-    </tr>
+      <tr v-if="userMessage">
+        <td
+          :colspan="columnLength"
+          class="table-message"
+        >
+          <p :class="userMessage.type">
+            {{ userMessage.text }}
+          </p>
+          <p v-if="userMessage.type === 'error'">
+            Please <a @click="reloadPage">reload the page</a>.
+          </p>
+        </td>
+      </tr>
 
-    <TableRow
-      v-model:readyForRemovalRows="readyForRemovalRows"
-      v-for="row in tableData"
-      :key="row.id"
-      :column-config="columnConfig"
-      :row-data="row"
-      :hidden-columns="hiddenColumns"
-      @edit-row="$emit('edit-row', row)"
-    >
-    </TableRow>
+      <TableRow
+        v-for="row in tableData"
+        :key="row.id"
+        v-model:ready-for-removal-rows="readyForRemovalRows"
+        :column-config="columnConfig"
+        :row-data="row"
+        :hidden-columns="hiddenColumns"
+        @edit-row="$emit('edit-row', row)"
+      />
     </tbody>
   </table>
 </template>

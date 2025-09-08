@@ -10,37 +10,51 @@
     </template>
 
     <template #content>
-      <form @submit.prevent class="word-form">
+      <form
+        class="word-form"
+        @submit.prevent
+      >
         <template v-for="key in WORD_FORM_CONFIG">
-          <div v-if="key === 'category'" class="form-field">
+          <div
+            v-if="key === 'category'"
+            class="form-field"
+          >
             <AppSelect
-              v-model="updatedWord.category"
               :id="key"
+              v-model="updatedWord.category"
               :name="key"
               :label="key"
               :options="categoryStore.data"
             />
           </div>
 
-          <div v-else-if="key === 'examples'" class="form-field">
+          <div
+            v-else-if="key === 'examples'"
+            class="form-field"
+          >
             <WordExamplesInput v-model="updatedWord.examples" />
           </div>
 
-          <div v-else class="form-field">
+          <div
+            v-else
+            class="form-field"
+          >
             <AppTextarea
+              :id="key"
+              :ref="(el) => { inputRefs[key] = el }"
               v-model="updatedWord[key]"
               :label="key"
-              :id="key"
               :rows="5"
               :required="key === 'word'"
-              :ref="(el) => { inputRefs[key] = el }"
             />
           </div>
         </template>
       </form>
     </template>
 
-    <template #confirm-text>Save</template>
+    <template #confirm-text>
+      Save
+    </template>
   </AppModal>
 </template>
 
