@@ -1,7 +1,10 @@
 <template>
   <tr :class="{'ready-to-deletion': isReadyForRemoval}">
     <template v-for="item in columnConfig">
-      <td v-if="item.display">
+      <td
+        v-if="item.display"
+        :key="item.key"
+      >
         <p :class="{ blurred: hiddenColumns[item.key] }">
           {{ rowData[item.key] }}
         </p>

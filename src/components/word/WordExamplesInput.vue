@@ -9,6 +9,7 @@
       <ol v-if="hasExamples">
         <li
           v-for="(item, index) in model"
+          :key="item"
           class="example-item"
         >
           <button

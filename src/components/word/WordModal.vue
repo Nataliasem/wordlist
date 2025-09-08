@@ -14,22 +14,25 @@
         class="word-form"
         @submit.prevent
       >
-        <template v-for="key in WORD_FORM_CONFIG">
+        <template
+          v-for="item in WORD_FORM_CONFIG"
+          :key="item"
+        >
           <div
-            v-if="key === 'category'"
+            v-if="item === 'category'"
             class="form-field"
           >
             <AppSelect
-              :id="key"
+              :id="item"
               v-model="updatedWord.category"
-              :name="key"
-              :label="key"
+              :name="item"
+              :label="item"
               :options="categoryStore.data"
             />
           </div>
 
           <div
-            v-else-if="key === 'examples'"
+            v-else-if="item === 'examples'"
             class="form-field"
           >
             <WordExamplesInput v-model="updatedWord.examples" />
@@ -40,12 +43,12 @@
             class="form-field"
           >
             <AppTextarea
-              :id="key"
-              :ref="(el) => { inputRefs[key] = el }"
-              v-model="updatedWord[key]"
-              :label="key"
+              :id="item"
+              :ref="(el) => { inputRefs[item] = el }"
+              v-model="updatedWord[item]"
+              :label="item"
               :rows="5"
-              :required="key === 'word'"
+              :required="item === 'word'"
             />
           </div>
         </template>

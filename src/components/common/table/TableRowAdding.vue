@@ -1,7 +1,10 @@
 <template>
   <tr class="add-table-row">
     <template v-for="item in columnConfig">
-      <td v-if="item.display">
+      <td
+        v-if="item.display"
+        :key="item.key"
+      >
         <AppTextarea
           :id="item.key"
           :ref="(el) => { inputRefs[item.key] = el }"
