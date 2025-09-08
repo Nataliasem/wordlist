@@ -14,7 +14,7 @@
       </td>
     </template>
 
-    <td class="table-row-action">
+    <td class="text-center">
       <button
         class="icon-button_filled"
         type="button"
@@ -28,7 +28,7 @@
       </button>
     </td>
 
-    <td class="table-row-action">
+    <td class="text-center">
       <button
         class="icon-button_filled"
         type="button"

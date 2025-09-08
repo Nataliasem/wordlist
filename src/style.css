@@ -103,6 +103,14 @@ button:focus-visible {
 
 }
 
+.text-center {
+    text-align: center;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
 @media (prefers-color-scheme: light) {
     :root {
         color: #213547;

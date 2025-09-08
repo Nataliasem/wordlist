@@ -1,9 +1,13 @@
 <template>
-  <tr :class="{'ready-to-deletion': isReadyForRemoval}">
+  <tr
+    class="table-row cursor-pointer"
+    :class="{'ready-to-deletion': isReadyForRemoval}"
+  >
     <template v-for="item in columnConfig">
       <td
         v-if="item.display"
         :key="item.key"
+        @click="$emit('click-row')"
       >
         <p :class="{ blurred: hiddenColumns[item.key] }">
           {{ rowData[item.key] }}
@@ -11,7 +15,7 @@
       </td>
     </template>
 
-    <td class="table-row-action">
+    <td class="text-center">
       <button
         class="icon-button_filled"
         @click="prepareToUpdate"
@@ -22,7 +26,7 @@
         />
       </button>
     </td>
-    <td class="table-row-action">
+    <td class="text-center">
       <button
         class="icon-button_filled"
         @click="switchToRemove"
@@ -59,7 +63,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['edit-row'])
+const emit = defineEmits(['edit-row', 'click-row'])
 
 const isReadyForRemoval = computed(() => {
   return readyForRemovalRows.value.includes(props.rowData.id)
@@ -87,15 +91,15 @@ const prepareToUpdate = () => {
 
 
 <style>
-tr.ready-to-deletion {
+.table-row.ready-to-deletion {
   background-color: orange;
 }
 
-tr.ready-to-deletion:hover {
+.table-row.ready-to-deletion:hover {
   background-color: darkorange;
 }
 
-.blurred {
+.table-row .blurred {
   filter: blur(3px);
 }
 </style>

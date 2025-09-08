@@ -95,6 +95,7 @@
         :column-config="columnConfig"
         :row-data="row"
         :hidden-columns="hiddenColumns"
+        @click-row="$emit('click-row', row)"
         @edit-row="$emit('edit-row', row)"
       />
     </tbody>
@@ -126,7 +127,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['add-row', 'edit-row', 'remove-rows'])
+const emit = defineEmits(['click-row', 'add-row', 'edit-row', 'remove-rows'])
 
 const columnLength = computed(() => props.columnConfig.length)
 
@@ -185,10 +186,6 @@ th p, td p {
   text-overflow: ellipsis;
   padding: 0;
   margin: 0;
-}
-
-.table-row-action {
-  text-align: center;
 }
 
 tr {
