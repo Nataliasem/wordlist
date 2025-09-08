@@ -23,9 +23,7 @@
     "@types/lodash": "^4.17.20",
     "@vitejs/plugin-vue": "^5.2.3",
     "eslint": "^9.35.0",
-    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "^10.4.0",
-    "prettier": "3.6.2",
     "vite": "^6.3.5"
   }
 }
