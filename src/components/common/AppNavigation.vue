@@ -4,7 +4,6 @@
       v-for="(item, index) in items"
       :ref="(el) => { itemRefs[item.id] = el }"
       :key="item.id"
-      ref="items"
       :tabindex="index"
       @click="$emit('click', item)"
       @focus="$emit('click', item)"
@@ -18,11 +17,17 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick } from 'vue'
+import { ref } from 'vue'
 
 const props = defineProps({
-  items: Array,
-  selectedItemId: { type: [Number, String, null] },
+  items: {
+    type: Array,
+    required: true
+  },
+  selectedItemId: {
+    type: [Number, String, null],
+    required: true
+  },
 })
 defineEmits(['click', 'enter'])
 
@@ -36,9 +41,4 @@ const navigateDown = async (currentIndex) => {
   const nextElId = props.items[currentIndex + 1]?.id
   itemRefs.value[nextElId]?.focus()
 }
-
-watch(() => props.items, async () => {
-  await nextTick() // nextTick is required
-  itemRefs.value[props.selectedItemId]?.focus()
-})
 </script>

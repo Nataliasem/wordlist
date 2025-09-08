@@ -12,36 +12,58 @@
       <div
         class="category-name"
         :class="{
-        'category-name__selected' : item.id === categoryStore.selectedCategoryId,
-        'category-name__divided': item.id === null
-      }"
+          'category-name__selected' : item.id === categoryStore.selectedCategoryId,
+          'category-name__divided': item.id === null
+        }"
       >
         <div v-if="updatedCategory && updatedCategory.id === item.id">
           <input
+            :id="updatedCategory && `updated-category-${updatedCategory.id}`"
+            :ref="(el) => updatedCategoryInputRef = el"
             v-model="updatedCategory.name"
             class="category-input"
             type="text"
             name="update-category"
-            :id="updatedCategory && `updated-category-${updatedCategory.id}`"
-            :ref="(el) => updatedCategoryInputRef = el"
           >
-          <button class="icon-button_filled" @click.stop="updateCategory">
-            <v-icon name="ri-checkbox-line" title="Update category"></v-icon>
+          <button
+            class="icon-button_filled"
+            @click.stop="updateCategory"
+          >
+            <v-icon
+              name="ri-checkbox-line"
+              title="Update category"
+            />
           </button>
         </div>
 
         <template v-else>
-          <div class="truncated">{{ item.name }}</div>
+          <div class="truncated">
+            {{ item.name }}
+          </div>
 
           <div
             class="category-actions"
             :class="{ 'category-actions__selected' : item.id === categoryStore.selectedCategoryId }"
           >
-            <button class="icon-button_filled" :disabled="!item.id" @click.stop="toggleUpdatingMode(item)">
-              <v-icon name="ri-pencil-line" title="Edit category"></v-icon>
+            <button
+              class="icon-button_filled"
+              :disabled="!item.id"
+              @click.stop="toggleUpdatingMode(item)"
+            >
+              <v-icon
+                name="ri-pencil-line"
+                title="Edit category"
+              />
             </button>
-            <button class="icon-button_filled" :disabled="!item.id" @click.stop="openModal">
-              <v-icon name="ri-delete-bin-2-line" title="Delete category"></v-icon>
+            <button
+              class="icon-button_filled"
+              :disabled="!item.id"
+              @click.stop="openModal"
+            >
+              <v-icon
+                name="ri-delete-bin-2-line"
+                title="Delete category"
+              />
             </button>
           </div>
         </template>
@@ -50,7 +72,7 @@
   </div>
 
   <AppModal
-    v-if="isModalOpen"
+    :show="isModalOpen"
     @confirm="deleteCategory"
     @cancel="closeModal"
   >
@@ -75,7 +97,10 @@ import { useCategoryStore } from '@/stores/index.js'
 import { useModal } from '@/composables/index.js'
 
 defineProps({
-  categories: Array
+  categories: {
+    type: Array,
+    required: true
+  }
 })
 
 const categoryStore = useCategoryStore()

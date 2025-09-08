@@ -8,13 +8,15 @@ import {
   RiDeleteBack2Line,
   RiPlayListAddFill,
   RiDeleteBin2Line,
-  RiCheckboxLine
+  RiCheckboxLine,
+  RiEyeOffLine,
+  RiEyeLine,
 } from 'oh-vue-icons/icons'
 
-addIcons(RiCheckboxLine, RiDeleteBin2Line, RiPencilLine, RiDeleteBack2Line, RiPlayListAddFill)
+addIcons(RiCheckboxLine, RiDeleteBin2Line, RiPencilLine, RiDeleteBack2Line, RiPlayListAddFill, RiEyeOffLine, RiEyeLine)
 
 const pinia = createPinia()
 const app = createApp(App)
 app.use(pinia)
-app.component('v-icon', OhVueIcon)
+app.component('VIcon', OhVueIcon)
 app.mount('#app')

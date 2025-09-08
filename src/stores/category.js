@@ -8,21 +8,21 @@ export const useCategoryStore = defineStore('category', () => {
     isFetching,
     isEmpty,
     hasError,
-    data: categories,
-    fetchData: fetchCategories
+    data,
+    fetchData
   } = useCustomFetch(getCategories)
 
   const createCategory = async (category) => {
     await create(category)
-    await fetchCategories()
+    await fetchData()
   }
   const updateCategory = async (category) => {
     await update(category)
-    await fetchCategories()
+    await fetchData()
   }
   const deleteCategory = async (id) => {
     await remove(id)
-    await fetchCategories()
+    await fetchData()
   }
 
   const selectedCategory = ref(null)
@@ -33,16 +33,16 @@ export const useCategoryStore = defineStore('category', () => {
   }
   const selectFirstCategoryAsDefault = () => {
     if(!isEmpty.value) {
-      selectCategory(categories.value[0])
+      selectCategory(data.value[0])
     }
   }
 
   return {
     isFetching,
-    categories,
+    data,
     isEmpty,
     hasError,
-    fetchCategories,
+    fetchData,
     createCategory,
     updateCategory,
     deleteCategory,

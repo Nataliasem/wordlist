@@ -1,15 +1,26 @@
 <template>
   <div class="table-actions__wrapper">
-    <div v-if="$slots.search" class="table-search__wrapper">
+    <div
+      v-if="$slots.search"
+      class="table-search__wrapper"
+    >
       <slot name="search" />
     </div>
 
     <div v-if="readyForRemovalRows.length">
-      <button  class="remove-button" type="button" @click="removeSelectedRows">
+      <button
+        class="remove-button"
+        type="button"
+        @click="removeSelectedRows"
+      >
         Remove selected words
       </button>
 
-      <button class="remove-button cancel" type="button" @click="clearRemovalRowsList">
+      <button
+        class="remove-button cancel"
+        type="button"
+        @click="clearRemovalRowsList"
+      >
         Cancel
       </button>
     </div>
@@ -17,36 +28,75 @@
 
   <table class="app-table">
     <thead>
-    <tr>
-      <th v-for="item in columnConfig" :key="item.title">
-        <span :class="{'required-field': item.required}">{{ item.title }}</span>
-      </th>
-    </tr>
+      <tr>
+        <th
+          v-for="item in columnConfig"
+          :key="item.key"
+        >
+          <span :class="{'required-field': item.required}">{{ item.title }}</span>
+
+          <span
+            v-if="item.display"
+            class="display-icon__wrapper"
+          >
+            <button
+              v-if="hiddenColumns[item.key]"
+              type="button"
+              @click="toggleColumnVisibility(item.key)"
+            >
+              <v-icon
+                name="ri-eye-line"
+                title="Display column data"
+                fill="orange"
+              />
+            </button>
+
+            <button
+              v-else
+              type="button"
+              @click="toggleColumnVisibility(item.key)"
+            >
+              <v-icon
+                name="ri-eye-off-line"
+                title="Hide column data"
+                fill="purple"
+              />
+            </button>
+          </span>
+        </th>
+      </tr>
     </thead>
 
     <tbody>
-    <TableRowAdding
-      :row-model="rowModel"
-      :column-config="columnConfig"
-      @add-row="addRow"
-    />
+      <TableRowAdding
+        :row-model="rowModel"
+        :column-config="columnConfig"
+        @add-row="addRow"
+      />
 
-    <tr v-if="userMessage">
-      <td :colspan="columnLength" class="table-message">
-        <p :class="userMessage.type">{{ userMessage.text }}</p>
-        <p v-if="userMessage.type === 'error'">Please <a @click="reloadPage">reload the page</a>.</p>
-      </td>
-    </tr>
+      <tr v-if="userMessage">
+        <td
+          :colspan="columnLength"
+          class="table-message"
+        >
+          <p :class="userMessage.type">
+            {{ userMessage.text }}
+          </p>
+          <p v-if="userMessage.type === 'error'">
+            Please <a @click="reloadPage">reload the page</a>.
+          </p>
+        </td>
+      </tr>
 
-    <TableRow
-      v-model:readyForRemovalRows="readyForRemovalRows"
-      v-for="row in tableData"
-      :key="row.id"
-      :column-config="columnConfig"
-      :row-data="row"
-      @edit-row="$emit('edit-row', row)"
-    >
-    </TableRow>
+      <TableRow
+        v-for="row in tableData"
+        :key="row.id"
+        v-model:ready-for-removal-rows="readyForRemovalRows"
+        :column-config="columnConfig"
+        :row-data="row"
+        :hidden-columns="hiddenColumns"
+        @edit-row="$emit('edit-row', row)"
+      />
     </tbody>
   </table>
 </template>
@@ -58,15 +108,34 @@ import { computed, ref } from 'vue'
 import { reloadPage } from '@/utils/index.js'
 
 const props = defineProps({
-  rowModel: Object,
-  tableData: Array,
-  columnConfig: Array,
-  userMessage: Object
+  rowModel: {
+    type: Object,
+    required: true
+  },
+  tableData: {
+    type: Array,
+    required: true
+  },
+  columnConfig: {
+    type: Array,
+    required: true
+  },
+  userMessage: {
+    type: [Object, null],
+    default: null
+  }
 })
 
 const emit = defineEmits(['add-row', 'edit-row', 'remove-rows'])
 
 const columnLength = computed(() => props.columnConfig.length)
+
+const hiddenColumns = ref({})
+const toggleColumnVisibility = (columnKey) => {
+  hiddenColumns.value[columnKey]
+    ? delete hiddenColumns.value[columnKey]
+    : hiddenColumns.value[columnKey] = true
+}
 
 const readyForRemovalRows = ref([])
 const removeSelectedRows = () => {
@@ -152,7 +221,12 @@ tr:hover:not(thead tr) {
   border: 2px solid orange;
   padding: 8px;
 }
+
 .remove-button.cancel {
   background-color: orange;
+}
+
+.display-icon__wrapper {
+  padding: 4px;
 }
 </style>

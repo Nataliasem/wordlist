@@ -2,51 +2,62 @@
   <div class="category-list">
     <div class="add-category__wrapper">
       <input
-        v-model="category"
+        v-model="searchCategory"
         class="category-input"
         type="text"
         placeholder="Find or add category"
         name="add-category"
       >
-      <button class="icon-button_filled" :disabled="!emptyCategories" @click="addCategory">Add</button>
+      <button
+        class="icon-button_filled"
+        :disabled="!isFoundedCategoriesEmpty"
+        @click="addCategory"
+      >
+        Add
+      </button>
     </div>
 
-    <div v-if="categoryStore.hasError" class="fetching-message">
+    <div
+      v-if="categoryStore.hasError"
+      class="fetching-message"
+    >
       <p>Something went wrong.</p>
       <p>Please <a @click="reloadPage">reload the page</a>.</p>
     </div>
-    <div v-else-if="categoryStore.isEmpty" class="fetching-message">
+    <div
+      v-else-if="categoryStore.isEmpty"
+      class="fetching-message"
+    >
       <p>Category`s list is empty.</p>
       <p>Add the first category</p>
     </div>
 
-    <CategoryItem v-else :categories="filteredCategories" />
+    <CategoryItem
+      v-else
+      :categories="foundedCategories"
+    />
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
 import CategoryItem from './CategoryItem.vue'
+import { onMounted } from 'vue'
 import { useCategoryStore } from '@/stores/index.js'
-import { reloadPage, filterBySearchString } from '@/utils/index.js'
+import { reloadPage } from '@/utils/index.js'
+import { useFilterBySearch } from '@/composables/index.js'
 
 const categoryStore = useCategoryStore()
 
-const category = ref('')
-const filteredCategories = computed(() => {
-  return filterBySearchString(categoryStore.categories, 'name', category.value)
-})
-const emptyCategories = computed(() => {
-  return filteredCategories.value.length === 0
-})
+const { searchString: searchCategory, filteredData: foundedCategories, clearSearch, isFilteredDataEmpty: isFoundedCategoriesEmpty } = useFilterBySearch(categoryStore, 'name')
+
 const addCategory = async () => {
-  if (!category.value) return
-  await categoryStore.createCategory(category.value)
-  category.value = ''
+  if (!searchCategory.value) return
+  await categoryStore.createCategory(searchCategory.value)
+  clearSearch()
 }
 
 onMounted(async () => {
-  await categoryStore.fetchCategories()
+  await categoryStore.fetchData()
   categoryStore.selectFirstCategoryAsDefault()
 })
 </script>

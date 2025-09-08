@@ -1,23 +1,41 @@
 <template>
   <div class="add-example__wrapper">
     <AppTextarea
+      id="examples"
       v-model="example"
       label="examples"
       :rows="10"
-      id="examples"
     >
       <ol v-if="hasExamples">
-        <li v-for="(item, index) in model" class="example-item">
-          <button class="icon-button_filled" @click="deleteExample(index)">
-            <v-icon name="ri-delete-bin-2-line" title="Delete from category" />
+        <li
+          v-for="(item, index) in model"
+          :key="item"
+          class="example-item"
+        >
+          <button
+            class="icon-button_filled"
+            @click="deleteExample(index)"
+          >
+            <v-icon
+              name="ri-delete-bin-2-line"
+              title="Delete from category"
+            />
           </button>
           <span>{{ item }}</span>
         </li>
       </ol>
     </AppTextarea>
 
-    <button class="icon-button_filled add-example-button" type="button" @click="addExample">
-      <v-icon name="ri-play-list-add-fill" title="Add to wordlist" fill="purple" />
+    <button
+      class="icon-button_filled add-example-button"
+      type="button"
+      @click="addExample"
+    >
+      <v-icon
+        name="ri-play-list-add-fill"
+        title="Add to wordlist"
+        fill="purple"
+      />
       <span>Add example</span>
     </button>
   </div>
