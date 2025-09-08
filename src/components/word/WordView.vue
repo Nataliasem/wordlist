@@ -6,30 +6,49 @@
         class="word-view"
         ref="word-view"
       >
-        <h1>
-          {{ word.word }}
+        <h1 class="word-title">
+          <span>{{ word.word }}</span>
+          <span class="flex-center cursor-pointer" @click="isReadonly = !isReadonly">
+            <v-icon
+              name="ri-pencil-line"
+              title="Edit word"
+              scale="2"
+            />
+          </span>
         </h1>
 
-        <h3>Transcription</h3>
-        <p>{{ word.transcription || 'Add transcription' }}</p>
-        <h3>Definition</h3>
-        <p>{{ word.definition || 'Add definition' }}</p>
-        <h3>Translation</h3>
-        <p>{{ word.translation || 'Add translation' }}</p>
+        <template v-if="isReadonly">
+          <h3>Transcription</h3>
+          <p v-if="word.transcription">{{ word.transcription }}</p>
+          <a v-else href="#" @click="isReadonly = false">Add transcription</a>
 
+          <h3>Definition</h3>
+          <p v-if="word.definition">{{ word.definition }}</p>
+          <a v-else href="#" @click="isReadonly = false">Add definition</a>
 
-        <h3>Examples of using</h3>
-        <ul v-if="hasExamples">
-          <li v-for="item in word.examples" :key="item">{{ item }}</li>
-        </ul>
-        <p>Add example</p>
+          <h3>Translation</h3>
+          <p v-if=" word.translation">{{ word.translation }}</p>
+          <a v-else href="#" @click="isReadonly = false">Add translation</a>
+
+          <h3>Examples of using</h3>
+          <ul v-if="hasExamples">
+            <li v-for="item in word.examples" :key="item">{{ item }}</li>
+          </ul>
+          <a v-else href="#" @click="isReadonly = false">Add example</a>
+        </template>
+
+        <WordForm
+          v-else
+          :word="word"
+        />
       </div>
     </Transition>
   </Teleport>
 </template>
 
 <script setup>
-import { computed, useTemplateRef } from 'vue'
+import WordForm from './WordForm.vue'
+import { ref, computed, useTemplateRef } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
 const props = defineProps({
@@ -45,6 +64,8 @@ const emit = defineEmits([ 'hide-word' ])
 const hasExamples = computed(() => {
   return (props.word.examples || []).length > 0
 })
+
+const isReadonly = ref(true)
 
 const target = useTemplateRef('word-view')
 onClickOutside(target, () => {
@@ -84,5 +105,11 @@ onClickOutside(target, () => {
 .view-leave-to .word-view {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
+}
+
+.word-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 </style>
