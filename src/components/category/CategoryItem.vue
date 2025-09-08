@@ -97,7 +97,10 @@ import { useCategoryStore } from '@/stores/index.js'
 import { useModal } from '@/composables/index.js'
 
 defineProps({
-  categories: Array
+  categories: {
+    type: Array,
+    required: true
+  }
 })
 
 const categoryStore = useCategoryStore()

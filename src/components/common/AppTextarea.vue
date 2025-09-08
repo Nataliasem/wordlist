@@ -33,7 +33,10 @@ const model = defineModel({
 defineEmits(['focus', 'blur'])
 
 const props = defineProps({
-  id: String,
+  id: {
+    type: String,
+    required: true
+  },
   name: {
     type: String,
     default: '',

@@ -45,9 +45,18 @@ const readyForRemovalRows = defineModel('readyForRemovalRows', {
 })
 
 const props = defineProps({
-  columnConfig: Array,
-  rowData: Object,
-  hiddenColumns: Object
+  columnConfig: {
+    type: Array,
+    required: true
+  },
+  rowData: {
+    type: Object,
+    required: true
+  },
+  hiddenColumns: {
+    type: Object,
+    required: true
+  }
 })
 
 const emit = defineEmits(['edit-row'])

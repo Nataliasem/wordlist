@@ -22,10 +22,18 @@
 </template>
 
 <script setup>
-const model = defineModel({ required: true })
+const model = defineModel(
+  {
+    type: [String, Number, null],
+    required: true
+  }
+)
 
 defineProps({
-  id: String,
+  id: {
+    type: String,
+    required: true
+  },
   name: {
     type: String,
     required: true

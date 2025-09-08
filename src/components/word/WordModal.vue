@@ -72,7 +72,10 @@ import { WORD_FORM_CONFIG } from '@/constants.js'
 
 const props = defineProps({
   show: Boolean,
-  word: Object
+  word: {
+    type: Object,
+    required: true
+  }
 })
 const emit = defineEmits([ 'close-modal' ])
 

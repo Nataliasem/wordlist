@@ -51,8 +51,14 @@ import { useFormValidation } from '@/composables/index.js'
 import cloneDeep from 'lodash/cloneDeep'
 
 const props = defineProps({
-  rowModel: Object,
-  columnConfig: Object
+  rowModel: {
+    type: Object,
+    required: true
+  },
+  columnConfig: {
+    type: Object,
+    required: true
+  }
 })
 
 const emit = defineEmits(['add-row'])

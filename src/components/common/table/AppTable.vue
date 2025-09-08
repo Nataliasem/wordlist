@@ -108,10 +108,22 @@ import { computed, ref } from 'vue'
 import { reloadPage } from '@/utils/index.js'
 
 const props = defineProps({
-  rowModel: Object,
-  tableData: Array,
-  columnConfig: Array,
-  userMessage: Object
+  rowModel: {
+    type: Object,
+    required: true
+  },
+  tableData: {
+    type: Array,
+    required: true
+  },
+  columnConfig: {
+    type: Array,
+    required: true
+  },
+  userMessage: {
+    type: [Object, null],
+    default: null
+  }
 })
 
 const emit = defineEmits(['add-row', 'edit-row', 'remove-rows'])

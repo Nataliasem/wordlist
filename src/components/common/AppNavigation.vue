@@ -20,8 +20,14 @@
 import { ref } from 'vue'
 
 const props = defineProps({
-  items: Array,
-  selectedItemId: { type: [Number, String, null] },
+  items: {
+    type: Array,
+    required: true
+  },
+  selectedItemId: {
+    type: [Number, String, null],
+    required: true
+  },
 })
 defineEmits(['click', 'enter'])
 
