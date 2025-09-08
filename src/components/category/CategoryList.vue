@@ -8,19 +8,34 @@
         placeholder="Find or add category"
         name="add-category"
       >
-      <button class="icon-button_filled" :disabled="!isFoundedCategoriesEmpty" @click="addCategory">Add</button>
+      <button
+        class="icon-button_filled"
+        :disabled="!isFoundedCategoriesEmpty"
+        @click="addCategory"
+      >
+        Add
+      </button>
     </div>
 
-    <div v-if="categoryStore.hasError" class="fetching-message">
+    <div
+      v-if="categoryStore.hasError"
+      class="fetching-message"
+    >
       <p>Something went wrong.</p>
       <p>Please <a @click="reloadPage">reload the page</a>.</p>
     </div>
-    <div v-else-if="categoryStore.isEmpty" class="fetching-message">
+    <div
+      v-else-if="categoryStore.isEmpty"
+      class="fetching-message"
+    >
       <p>Category`s list is empty.</p>
       <p>Add the first category</p>
     </div>
 
-    <CategoryItem v-else :categories="foundedCategories" />
+    <CategoryItem
+      v-else
+      :categories="foundedCategories"
+    />
   </div>
 </template>
 

@@ -14,25 +14,47 @@
       >
         <template #search>
           <input
-            v-model="searchWord"
             id="table-search__input"
+            v-model="searchWord"
             type="text"
             class="table-search__input"
             placeholder="Enter a word here..."
           >
-          <button class="icon-button_filled table-search__button" type="button" @click="addSearchWord">
-            <v-icon name="ri-play-list-add-fill" :scale="1.3" title="Add new" fill="purple" />
+          <button
+            class="icon-button_filled table-search__button"
+            type="button"
+            @click="addSearchWord"
+          >
+            <v-icon
+              name="ri-play-list-add-fill"
+              :scale="1.3"
+              title="Add new"
+              fill="purple"
+            />
           </button>
 
-          <button class="icon-button_filled table-search__button" type="button" @click="clearSearch">
-            <v-icon name="ri-delete-back-2-line" :scale="1.3" title="Clear input" fill="purple" />
+          <button
+            class="icon-button_filled table-search__button"
+            type="button"
+            @click="clearSearch"
+          >
+            <v-icon
+              name="ri-delete-back-2-line"
+              :scale="1.3"
+              title="Clear input"
+              fill="purple"
+            />
           </button>
         </template>
       </AppTable>
     </div>
   </div>
 
-  <WordModal :show="isModalOpen" :word="wordModel" @closeModal="closeModal" />
+  <WordModal
+    :show="isModalOpen"
+    :word="wordModel"
+    @close-modal="closeModal"
+  />
 </template>
 
 <script setup>

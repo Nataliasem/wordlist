@@ -1,17 +1,36 @@
 <template>
   <tr :class="{'ready-to-deletion': isReadyForRemoval}">
     <template v-for="item in columnConfig">
-      <td v-if="item.display"><p :class="{ blurred: hiddenColumns[item.key] }">{{ rowData[item.key] }}</p></td>
+      <td
+        v-if="item.display"
+        :key="item.key"
+      >
+        <p :class="{ blurred: hiddenColumns[item.key] }">
+          {{ rowData[item.key] }}
+        </p>
+      </td>
     </template>
 
     <td class="table-row-action">
-      <button class="icon-button_filled" @click="prepareToUpdate">
-        <v-icon name="ri-pencil-line" title="Edit row" />
+      <button
+        class="icon-button_filled"
+        @click="prepareToUpdate"
+      >
+        <v-icon
+          name="ri-pencil-line"
+          title="Edit row"
+        />
       </button>
     </td>
-    <td class="table-row-action" >
-      <button class="icon-button_filled" @click="switchToRemove">
-        <v-icon name="ri-delete-bin-2-line" title="Delete row" />
+    <td class="table-row-action">
+      <button
+        class="icon-button_filled"
+        @click="switchToRemove"
+      >
+        <v-icon
+          name="ri-delete-bin-2-line"
+          title="Delete row"
+        />
       </button>
     </td>
   </tr>
@@ -26,9 +45,18 @@ const readyForRemovalRows = defineModel('readyForRemovalRows', {
 })
 
 const props = defineProps({
-  columnConfig: Array,
-  rowData: Object,
-  hiddenColumns: Object
+  columnConfig: {
+    type: Array,
+    required: true
+  },
+  rowData: {
+    type: Object,
+    required: true
+  },
+  hiddenColumns: {
+    type: Object,
+    required: true
+  }
 })
 
 const emit = defineEmits(['edit-row'])

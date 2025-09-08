@@ -18,5 +18,5 @@ addIcons(RiCheckboxLine, RiDeleteBin2Line, RiPencilLine, RiDeleteBack2Line, RiPl
 const pinia = createPinia()
 const app = createApp(App)
 app.use(pinia)
-app.component('v-icon', OhVueIcon)
+app.component('VIcon', OhVueIcon)
 app.mount('#app')

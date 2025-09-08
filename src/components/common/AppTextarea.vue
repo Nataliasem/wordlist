@@ -1,14 +1,18 @@
 <template>
-  <label v-if="label" :for="id" class="form-field__label">
+  <label
+    v-if="label"
+    :for="id"
+    class="form-field__label"
+  >
     <span :class="{'required-field': required}">{{ label }}:</span>
   </label>
 
   <slot />
 
   <textarea
-    v-model="model"
-    ref="app-textarea"
     :id="id"
+    ref="app-textarea"
+    v-model="model"
     :rows="rows"
     :name="name"
     :class="{'invalid-field': required && hasError }"
@@ -29,7 +33,10 @@ const model = defineModel({
 defineEmits(['focus', 'blur'])
 
 const props = defineProps({
-  id: String,
+  id: {
+    type: String,
+    required: true
+  },
   name: {
     type: String,
     default: '',

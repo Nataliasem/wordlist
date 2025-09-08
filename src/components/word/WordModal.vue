@@ -10,37 +10,54 @@
     </template>
 
     <template #content>
-      <form @submit.prevent class="word-form">
-        <template v-for="key in WORD_FORM_CONFIG">
-          <div v-if="key === 'category'" class="form-field">
+      <form
+        class="word-form"
+        @submit.prevent
+      >
+        <template
+          v-for="item in WORD_FORM_CONFIG"
+          :key="item"
+        >
+          <div
+            v-if="item === 'category'"
+            class="form-field"
+          >
             <AppSelect
+              :id="item"
               v-model="updatedWord.category"
-              :id="key"
-              :name="key"
-              :label="key"
+              :name="item"
+              :label="item"
               :options="categoryStore.data"
             />
           </div>
 
-          <div v-else-if="key === 'examples'" class="form-field">
+          <div
+            v-else-if="item === 'examples'"
+            class="form-field"
+          >
             <WordExamplesInput v-model="updatedWord.examples" />
           </div>
 
-          <div v-else class="form-field">
+          <div
+            v-else
+            class="form-field"
+          >
             <AppTextarea
-              v-model="updatedWord[key]"
-              :label="key"
-              :id="key"
+              :id="item"
+              :ref="(el) => { inputRefs[item] = el }"
+              v-model="updatedWord[item]"
+              :label="item"
               :rows="5"
-              :required="key === 'word'"
-              :ref="(el) => { inputRefs[key] = el }"
+              :required="item === 'word'"
             />
           </div>
         </template>
       </form>
     </template>
 
-    <template #confirm-text>Save</template>
+    <template #confirm-text>
+      Save
+    </template>
   </AppModal>
 </template>
 
@@ -55,7 +72,10 @@ import { WORD_FORM_CONFIG } from '@/constants.js'
 
 const props = defineProps({
   show: Boolean,
-  word: Object
+  word: {
+    type: Object,
+    required: true
+  }
 })
 const emit = defineEmits([ 'close-modal' ])
 
