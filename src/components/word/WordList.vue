@@ -9,6 +9,7 @@
         :table-data="foundedWords"
         :user-message="userMessage"
         @add-row="addWord"
+        @click-row="showWord"
         @edit-row="openWordModal"
         @remove-rows="removeWords"
       >
@@ -55,10 +56,18 @@
     :word="wordModel"
     @close-modal="closeModal"
   />
+
+  <WordView
+    :show="isWordShown"
+    :word="word"
+    @hide-word="word = null"
+  >
+  </WordView>
 </template>
 
 <script setup>
 import WordModal from './WordModal.vue'
+import WordView from './WordView.vue'
 import { AppTable } from '@/components/common'
 import { computed, ref } from 'vue'
 import { useModal, useFilterBySearch } from '@/composables/index.js'
@@ -67,6 +76,14 @@ import { WORD_TABLE_CONFIG, EMPTY_WORD, WORD_TABLE_MESSAGE } from '@/constants.j
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
+
+const word = ref(null)
+const isWordShown = computed(() => {
+  return Boolean(word.value)
+})
+const showWord = (data) => {
+  word.value = data
+}
 
 const { isModalOpen, openModal, closeModal } = useModal()
 const wordModel = ref(EMPTY_WORD)
