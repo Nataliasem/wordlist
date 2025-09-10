@@ -26,9 +26,7 @@
           fill="purple"
         />
       </button>
-    </td>
 
-    <td class="text-center">
       <button
         class="icon-button_filled"
         type="button"
@@ -91,6 +89,10 @@ const addWordToCategory = async () => {
 
 .add-table-row:hover .icon-button_filled {
   background-color: white;
+}
+
+.add-table-row .icon-button_filled:first-child {
+  margin-right: 8px;
 }
 </style>
 
