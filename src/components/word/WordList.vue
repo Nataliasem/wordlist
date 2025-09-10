@@ -8,9 +8,7 @@
         :column-config="WORD_TABLE_CONFIG"
         :table-data="foundedWords"
         :user-message="userMessage"
-        @add-row="addWord"
         @click-row="showWord"
-        @edit-row="openWordModal"
         @select-rows="removeWords"
       >
         <template #search>

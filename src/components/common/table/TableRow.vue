@@ -54,7 +54,6 @@ const isSelected = computed(() => {
 })
 </script>
 
-
 <style>
 .table-row.selected {
   background-color: orange;

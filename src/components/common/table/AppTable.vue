@@ -28,43 +28,10 @@
   </div>
 
   <table class="app-table">
-    <thead>
-      <tr>
-        <th class="fixed-width" />
-        <th
-          v-for="item in columnConfig"
-          :key="item.key"
-        >
-          <span :class="{'required-field': item.required}">{{ item.title }}</span>
-
-          <span class="display-icon__wrapper">
-            <button
-              v-if="hiddenColumns[item.key]"
-              type="button"
-              @click="toggleColumnVisibility(item.key)"
-            >
-              <v-icon
-                name="ri-eye-line"
-                title="Display column data"
-                fill="orange"
-              />
-            </button>
-
-            <button
-              v-else
-              type="button"
-              @click="toggleColumnVisibility(item.key)"
-            >
-              <v-icon
-                name="ri-eye-off-line"
-                title="Hide column data"
-                fill="lightgrey"
-              />
-            </button>
-          </span>
-        </th>
-      </tr>
-    </thead>
+    <TableHead
+      v-model:hidden-columns="hiddenColumns"
+      :column-config="columnConfig"
+    />
 
     <tbody>
       <tr v-if="userMessage">
@@ -81,20 +48,23 @@
         </td>
       </tr>
 
-      <TableRow
-        v-for="row in tableData"
-        :key="row.id"
-        v-model:selected-rows="selectedRows"
-        :column-config="columnConfig"
-        :row-data="row"
-        :hidden-columns="hiddenColumns"
-        @click-row="$emit('click-row', row)"
-      />
+      <template v-else>
+        <TableRow
+          v-for="row in tableData"
+          :key="row.id"
+          v-model:selected-rows="selectedRows"
+          :column-config="columnConfig"
+          :row-data="row"
+          :hidden-columns="hiddenColumns"
+          @click-row="$emit('click-row', row)"
+        />
+      </template>
     </tbody>
   </table>
 </template>
 
 <script setup>
+import TableHead from './TableHead.vue'
 import TableRow from './TableRow.vue'
 import { computed, ref } from 'vue'
 import { reloadPage } from '@/utils/index.js'
@@ -118,16 +88,11 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits([ 'click-row', 'edit-row', 'select-rows' ])
+const emit = defineEmits([ 'click-row', 'select-rows' ])
 
 const columnLength = computed(() => props.columnConfig.length + 1)
 
 const hiddenColumns = ref({})
-const toggleColumnVisibility = (columnKey) => {
-  hiddenColumns.value[columnKey]
-    ? delete hiddenColumns.value[columnKey]
-    : hiddenColumns.value[columnKey] = true
-}
 
 const selectedRows = ref([])
 const confirmSelectedRows = () => {
