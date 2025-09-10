@@ -8,14 +8,10 @@
     </div>
 
     <div v-if="selectedRows.length">
-      <button
-        v-if="$slots['selected-rows-title']"
-        class="selected-button"
-        type="button"
-        @click="confirmSelectedRows"
-      >
-        <slot name="selected-rows-title" />
-      </button>
+      <slot
+        name="selected-rows-action"
+        :selected-rows="selectedRows"
+      />
 
       <button
         class="selected-button cancel"
@@ -70,10 +66,6 @@ import { computed, ref } from 'vue'
 import { reloadPage } from '@/utils/index.js'
 
 const props = defineProps({
-  rowModel: {
-    type: Object,
-    required: true
-  },
   tableData: {
     type: Array,
     required: true
@@ -88,17 +80,13 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits([ 'click-row', 'select-rows' ])
+defineEmits([ 'click-row', 'select-rows' ])
 
 const columnLength = computed(() => props.columnConfig.length + 1)
 
 const hiddenColumns = ref({})
 
 const selectedRows = ref([])
-const confirmSelectedRows = () => {
-  emit('select-rows', selectedRows.value)
-  clearSelectedRowsList()
-}
 const clearSelectedRowsList = () => {
   selectedRows.value = []
 }

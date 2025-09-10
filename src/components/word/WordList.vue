@@ -4,7 +4,6 @@
       <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
 
       <AppTable
-        :row-model="EMPTY_WORD"
         :column-config="WORD_TABLE_CONFIG"
         :table-data="foundedWords"
         :user-message="userMessage"
@@ -46,8 +45,14 @@
           </button>
         </template>
 
-        <template #selected-rows-title>
-          Remove selected words
+        <template #selected-rows-action="{ selectedRows }">
+          <button
+            class="selected-button"
+            type="button"
+            @click="removeWords(selectedRows)"
+          >
+            Remove selected words
+          </button>
         </template>
       </AppTable>
     </div>
@@ -86,35 +91,22 @@ const showWord = (data) => {
   word.value = data
 }
 
+const wordModel = ref(null)
 const { isModalOpen, openModal, closeModal } = useModal()
-const wordModel = ref(EMPTY_WORD)
-const openWordModal = (word) => {
+const { searchString: searchWord, filteredData: foundedWords, clearSearch, isFilteredDataEmpty: isFoundedWordsEmpty } = useFilterBySearch(wordStore, 'word')
+const addSearchWord = () => {
   wordModel.value = {
-    ...word,
+    ...EMPTY_WORD,
+    word: searchWord.value,
     category: categoryStore.selectedCategoryId
   }
   openModal()
-}
-
-const { searchString: searchWord, filteredData: foundedWords, clearSearch, isFilteredDataEmpty: isFoundedWordsEmpty } = useFilterBySearch(wordStore, 'word')
-const addSearchWord = () => {
-  openWordModal({
-      ...EMPTY_WORD,
-      word: searchWord.value
-    })
   clearSearch()
 }
 
 const removeWords = (wordsIds) => {
   wordsIds.forEach(async (wordId) => {
     await wordStore.removeWord(wordId)
-  })
-}
-
-const addWord = async (word) => {
-  await wordStore.createWord({
-    ...word,
-    category: categoryStore.selectedCategoryId
   })
 }
 
