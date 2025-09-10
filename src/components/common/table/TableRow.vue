@@ -3,16 +3,13 @@
     class="table-row cursor-pointer"
     :class="{'selected': isSelected}"
   >
-    <td>
-      <button
-        class="icon-button_filled"
-        @click="switchSelected"
+    <td class="text-center">
+      <input
+        v-model="selectedRows"
+        :value="rowData.id"
+        type="checkbox"
+        title="Select row"
       >
-        <v-icon
-          name="ri-checkbox-line"
-          title="Select row"
-        />
-      </button>
     </td>
 
     <td
@@ -55,18 +52,6 @@ defineEmits([ 'click-row' ])
 const isSelected = computed(() => {
   return selectedRows.value.includes(props.rowData.id)
 })
-
-const addToSelectedRowsList = () => {
-  selectedRows.value.push((props.rowData.id))
-}
-const deleteFromSelectedRowsList = () => {
-  selectedRows.value = selectedRows.value.filter(item => item !== props.rowData.id)
-}
-const switchSelected = () => {
-  isSelected.value
-    ? deleteFromSelectedRowsList()
-    : addToSelectedRowsList()
-}
 </script>
 
 
@@ -81,5 +66,11 @@ const switchSelected = () => {
 
 .table-row .blurred {
   filter: blur(3px);
+}
+
+.table-row input[type="checkbox"] {
+  accent-color: white;
+  width: 16px;
+  height: 16px;
 }
 </style>
