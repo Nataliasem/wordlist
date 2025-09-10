@@ -61,8 +61,7 @@
     :show="isWordShown"
     :word="word"
     @hide-word="word = null"
-  >
-  </WordView>
+  />
 </template>
 
 <script setup>
