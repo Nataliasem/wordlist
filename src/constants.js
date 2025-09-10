@@ -7,8 +7,7 @@ export const WORD_TABLE_CONFIG = [
   { title: 'Transcription', key: 'transcription', required: false, display: true },
   { title: 'Definition', key: 'definition', required: false, display: true },
   { title: 'Translation', key: 'translation', required: false, display: true},
-  { title: 'Add/edit', key: '', required: false, display: false},
-  { title: 'Clear/delete', key: '', required: false, display: false},
+  { title: '', key: '', required: false, display: false},
 ]
 
 export const EMPTY_WORD = {
