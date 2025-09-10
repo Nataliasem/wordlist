@@ -59,7 +59,7 @@
               <v-icon
                 name="ri-eye-off-line"
                 title="Hide column data"
-                fill="purple"
+                fill="lightgrey"
               />
             </button>
           </span>
@@ -177,6 +177,7 @@ table, th, td {
 
 th, td {
   padding: 4px;
+  height: 28px;
 }
 
 th p, td p {
