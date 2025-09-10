@@ -11,7 +11,7 @@
         @add-row="addWord"
         @click-row="showWord"
         @edit-row="openWordModal"
-        @remove-rows="removeWords"
+        @select-rows="removeWords"
       >
         <template #search>
           <input
@@ -46,6 +46,10 @@
               fill="purple"
             />
           </button>
+        </template>
+
+        <template #selected-rows-title>
+          Remove selected words
         </template>
       </AppTable>
     </div>
@@ -147,11 +151,20 @@ const userMessage = computed(() => {
   margin-right: 8px;
   border: 2px solid lavender;
   border-radius: 4px;
+  outline: none;
+}
+
+.table-search__input:focus {
+  border-color: purple;
 }
 
 .table-search__button  {
   border: 2px solid lavender;
   padding: 4px 8px;
+  outline: none;
 }
 
+.table-search__button:focus {
+  border-color: purple;
+}
 </style>

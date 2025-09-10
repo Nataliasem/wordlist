@@ -7,19 +7,20 @@
       <slot name="search" />
     </div>
 
-    <div v-if="readyForRemovalRows.length">
+    <div v-if="selectedRows.length">
       <button
-        class="remove-button"
+        v-if="$slots['selected-rows-title']"
+        class="selected-button"
         type="button"
-        @click="removeSelectedRows"
+        @click="confirmSelectedRows"
       >
-        Remove selected rows
+        <slot name="selected-rows-title" />
       </button>
 
       <button
-        class="remove-button cancel"
+        class="selected-button cancel"
         type="button"
-        @click="clearRemovalRowsList"
+        @click="clearSelectedRowsList"
       >
         Cancel
       </button>
@@ -29,16 +30,14 @@
   <table class="app-table">
     <thead>
       <tr>
+        <th class="fixed-width" />
         <th
           v-for="item in columnConfig"
           :key="item.key"
         >
           <span :class="{'required-field': item.required}">{{ item.title }}</span>
 
-          <span
-            v-if="item.display"
-            class="display-icon__wrapper"
-          >
+          <span class="display-icon__wrapper">
             <button
               v-if="hiddenColumns[item.key]"
               type="button"
@@ -68,12 +67,6 @@
     </thead>
 
     <tbody>
-      <TableRowAdding
-        :row-model="rowModel"
-        :column-config="columnConfig"
-        @add-row="addRow"
-      />
-
       <tr v-if="userMessage">
         <td
           :colspan="columnLength"
@@ -91,12 +84,11 @@
       <TableRow
         v-for="row in tableData"
         :key="row.id"
-        v-model:ready-for-removal-rows="readyForRemovalRows"
+        v-model:selected-rows="selectedRows"
         :column-config="columnConfig"
         :row-data="row"
         :hidden-columns="hiddenColumns"
         @click-row="$emit('click-row', row)"
-        @edit-row="$emit('edit-row', row)"
       />
     </tbody>
   </table>
@@ -104,7 +96,6 @@
 
 <script setup>
 import TableRow from './TableRow.vue'
-import TableRowAdding from './TableRowAdding.vue'
 import { computed, ref } from 'vue'
 import { reloadPage } from '@/utils/index.js'
 
@@ -122,14 +113,14 @@ const props = defineProps({
     required: true
   },
   userMessage: {
-    type: [Object, null],
+    type: [ Object, null ],
     default: null
   }
 })
 
-const emit = defineEmits(['click-row', 'add-row', 'edit-row', 'remove-rows'])
+const emit = defineEmits([ 'click-row', 'edit-row', 'select-rows' ])
 
-const columnLength = computed(() => props.columnConfig.length)
+const columnLength = computed(() => props.columnConfig.length + 1)
 
 const hiddenColumns = ref({})
 const toggleColumnVisibility = (columnKey) => {
@@ -138,22 +129,19 @@ const toggleColumnVisibility = (columnKey) => {
     : hiddenColumns.value[columnKey] = true
 }
 
-const readyForRemovalRows = ref([])
-const removeSelectedRows = () => {
-  emit('remove-rows', readyForRemovalRows.value)
-  clearRemovalRowsList()
+const selectedRows = ref([])
+const confirmSelectedRows = () => {
+  emit('select-rows', selectedRows.value)
+  clearSelectedRowsList()
 }
-const clearRemovalRowsList = () => {
-  readyForRemovalRows.value = []
-}
-
-const addRow = (row) => {
-  emit('add-row', row)
+const clearSelectedRowsList = () => {
+  selectedRows.value = []
 }
 </script>
 
 <style>
 .table-actions__wrapper {
+  height: 32px;
   margin-bottom: 32px;
   display: flex;
   align-items: center;
@@ -214,17 +202,21 @@ tr:hover:not(thead tr) {
   color: red;
 }
 
-.remove-button {
+.selected-button {
   margin-left: 8px;
   border: 2px solid orange;
   padding: 8px;
 }
 
-.remove-button.cancel {
+.selected-button.cancel {
   background-color: orange;
 }
 
 .display-icon__wrapper {
   padding: 4px;
+}
+
+th.fixed-width {
+  width: 32px;
 }
 </style>
