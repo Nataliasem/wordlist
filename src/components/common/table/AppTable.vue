@@ -13,7 +13,7 @@
         type="button"
         @click="removeSelectedRows"
       >
-        Remove selected words
+        Remove selected rows
       </button>
 
       <button
