@@ -5,6 +5,7 @@
   >
     <td class="text-center">
       <input
+        :id="rowData.id"
         v-model="selectedRows"
         :value="rowData.id"
         type="checkbox"

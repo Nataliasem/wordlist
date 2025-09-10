@@ -1,7 +1,7 @@
 <template>
   <thead>
     <tr>
-      <th class="fixed-width" />
+      <th class="required-column-header" />
       <th
         v-for="item in columnConfig"
         :key="item.key"
@@ -58,7 +58,12 @@ const toggleColumnVisibility = (columnKey) => {
 }
 </script>
 
-
 <style scoped>
+.display-icon__wrapper {
+  padding: 4px;
+}
 
+th.required-column-header {
+  width: 32px;
+}
 </style>

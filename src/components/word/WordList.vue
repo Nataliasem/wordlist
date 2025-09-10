@@ -6,9 +6,7 @@
       <AppTable
         :column-config="WORD_TABLE_CONFIG"
         :table-data="foundedWords"
-        :user-message="userMessage"
         @click-row="showWord"
-        @select-rows="removeWords"
       >
         <template #search>
           <input
@@ -54,6 +52,18 @@
             Remove selected words
           </button>
         </template>
+
+        <template
+          v-if="tableMessage"
+          #table-message
+        >
+          <p :class="`table-message__${tableMessage.type}`">
+            <span>{{ tableMessage.text }}</span>
+            <span v-if="tableMessage.type === 'error'">
+              Please <a @click="reloadPage">reload the page</a>.
+            </span>
+          </p>
+        </template>
       </AppTable>
     </div>
   </div>
@@ -79,6 +89,7 @@ import { computed, ref } from 'vue'
 import { useModal, useFilterBySearch } from '@/composables/index.js'
 import { useCategoryStore, useWordStore } from '@/stores/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD, WORD_TABLE_MESSAGE } from '@/constants.js'
+import { reloadPage } from '@/utils/index.js'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
@@ -110,7 +121,7 @@ const removeWords = (wordsIds) => {
   })
 }
 
-const userMessage = computed(() => {
+const tableMessage = computed(() => {
   if(wordStore.isFetching) return WORD_TABLE_MESSAGE.fetching
   if(wordStore.hasError) return WORD_TABLE_MESSAGE.error
   if(wordStore.isEmpty) return WORD_TABLE_MESSAGE.empty
@@ -156,5 +167,17 @@ const userMessage = computed(() => {
 
 .table-search__button:focus {
   border-color: purple;
+}
+
+.table-message__fetching {
+  color: purple;
+}
+
+.table-message__empty {
+  color: blue;
+}
+
+.table-message__error {
+  color: red;
 }
 </style>

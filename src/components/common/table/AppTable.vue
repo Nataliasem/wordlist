@@ -30,17 +30,12 @@
     />
 
     <tbody>
-      <tr v-if="userMessage">
+      <tr v-if="$slots['table-message']">
         <td
-          :colspan="columnLength"
           class="table-message"
+          :colspan="columnLength"
         >
-          <p :class="userMessage.type">
-            {{ userMessage.text }}
-          </p>
-          <p v-if="userMessage.type === 'error'">
-            Please <a @click="reloadPage">reload the page</a>.
-          </p>
+          <slot name="table-message" />
         </td>
       </tr>
 
@@ -63,7 +58,6 @@
 import TableHead from './TableHead.vue'
 import TableRow from './TableRow.vue'
 import { computed, ref } from 'vue'
-import { reloadPage } from '@/utils/index.js'
 
 const props = defineProps({
   tableData: {
@@ -73,16 +67,13 @@ const props = defineProps({
   columnConfig: {
     type: Array,
     required: true
-  },
-  userMessage: {
-    type: [ Object, null ],
-    default: null
   }
 })
 
-defineEmits([ 'click-row', 'select-rows' ])
+defineEmits(['click-row'])
 
-const columnLength = computed(() => props.columnConfig.length + 1)
+const FIXED_COLUMN_NUMBER = 1
+const columnLength = computed(() => props.columnConfig.length + FIXED_COLUMN_NUMBER)
 
 const hiddenColumns = ref({})
 
@@ -143,18 +134,6 @@ tr:hover:not(thead tr) {
   text-align: center;
 }
 
-.table-message .fetching {
-  color: purple;
-}
-
-.table-message .empty {
-  color: blue;
-}
-
-.table-message .error {
-  color: red;
-}
-
 .selected-button {
   margin-left: 8px;
   border: 2px solid orange;
@@ -163,13 +142,5 @@ tr:hover:not(thead tr) {
 
 .selected-button.cancel {
   background-color: orange;
-}
-
-.display-icon__wrapper {
-  padding: 4px;
-}
-
-th.fixed-width {
-  width: 32px;
 }
 </style>
