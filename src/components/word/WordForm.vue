@@ -45,13 +45,13 @@
     <div class="word-form__footer">
       <button
         type="submit"
-        class="form-button form-button__confirm"
+        class="app-button app-button__confirm"
       >
         Save changes
       </button>
       <button
         type="button"
-        class="form-button form-button__cancel"
+        class="app-button app-button__cancel"
         @click="$emit('hide')"
       >
         Cancel
@@ -123,28 +123,5 @@ const save = async () => {
   bottom: 0;
   background-color: white;
   padding-bottom: 32px;
-}
-
-.form-button {
-  color: white;
-  font-weight: bold;
-  padding: 8px;
-  transition: background-color 0.3s ease;
-}
-
-.form-button__confirm {
-  background-color: rebeccapurple;
-}
-
-.form-button__confirm:hover {
-  background-color: mediumpurple;
-}
-
-.form-button__cancel {
-  background-color: darkred;
-}
-
-.form-button__cancel:hover {
-  background-color: orangered;
 }
 </style>
