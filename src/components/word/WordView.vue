@@ -3,43 +3,17 @@
     <Transition name="slide-right">
       <div
         v-if="show"
-        class="word-view"
         ref="word-view"
+        class="word-view"
       >
         <h1 class="word-title">
-          <span>{{ word.word }}</span>
-          <span class="flex-center cursor-pointer" @click="isReadonly = !isReadonly">
-            <v-icon
-              name="ri-pencil-line"
-              title="Edit word"
-              scale="2"
-            />
-          </span>
+          <span v-if="title">Edit the word <span class="word-name">{{ title }}</span></span>
+          <span v-else>Add a new word</span>
         </h1>
 
-        <template v-if="isReadonly">
-          <h3>Transcription</h3>
-          <p v-if="word.transcription">{{ word.transcription }}</p>
-          <a v-else href="#" @click="isReadonly = false">Add transcription</a>
-
-          <h3>Definition</h3>
-          <p v-if="word.definition">{{ word.definition }}</p>
-          <a v-else href="#" @click="isReadonly = false">Add definition</a>
-
-          <h3>Translation</h3>
-          <p v-if=" word.translation">{{ word.translation }}</p>
-          <a v-else href="#" @click="isReadonly = false">Add translation</a>
-
-          <h3>Examples of using</h3>
-          <ul v-if="hasExamples">
-            <li v-for="item in word.examples" :key="item">{{ item }}</li>
-          </ul>
-          <a v-else href="#" @click="isReadonly = false">Add example</a>
-        </template>
-
         <WordForm
-          v-else
           :word="word"
+          @hide="$emit('hide-word')"
         />
       </div>
     </Transition>
@@ -48,29 +22,29 @@
 
 <script setup>
 import WordForm from './WordForm.vue'
-import { ref, computed, useTemplateRef } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
 const props = defineProps({
   show: Boolean,
   word: {
-    type: Object,
+    type: [Object, null],
     required: true
   }
 })
 
 const emit = defineEmits([ 'hide-word' ])
 
-const hasExamples = computed(() => {
-  return (props.word.examples || []).length > 0
+const title = computed(() => {
+  return props.word?.word || ''
 })
-
-const isReadonly = ref(true)
 
 const target = useTemplateRef('word-view')
-onClickOutside(target, () => {
-  emit('hide-word')
-})
+const ignoreElSelector = '.table-row'
+onClickOutside(
+  target,
+  () => emit('hide-word'),
+  { ignore: [ignoreElSelector] })
 </script>
 
 <style scoped>

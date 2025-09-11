@@ -27,14 +27,15 @@ li:focus-visible {
     outline: none;
 }
 
-a {
+.button-link {
     cursor: pointer;
     font-weight: 500;
     color: #646cff;
     text-decoration: inherit;
+    padding: 0;
 }
 
-a:hover {
+.button-link :hover {
     color: #535bf2;
 }
 
@@ -117,13 +118,19 @@ button:focus-visible {
     align-items: center;
 }
 
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
 @media (prefers-color-scheme: light) {
     :root {
         color: #213547;
         background-color: #ffffff;
     }
 
-    a:hover {
+    .button-link :hover {
         color: #747bff;
     }
 

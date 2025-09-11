@@ -73,7 +73,7 @@ import { WORD_FORM_CONFIG } from '@/constants.js'
 const props = defineProps({
   show: Boolean,
   word: {
-    type: Object,
+    type: [Object, null],
     required: true
   }
 })

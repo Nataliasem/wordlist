@@ -6,7 +6,7 @@
       <AppTable
         :column-config="WORD_TABLE_CONFIG"
         :table-data="foundedWords"
-        @click-row="showWord"
+        @click-row="toggleShowWord"
       >
         <template #search>
           <input
@@ -19,7 +19,7 @@
           <button
             class="icon-button_filled table-search__button"
             type="button"
-            @click="addSearchWord"
+            @click="addWord"
           >
             <v-icon
               name="ri-play-list-add-fill"
@@ -68,12 +68,6 @@
     </div>
   </div>
 
-  <WordModal
-    :show="isModalOpen"
-    :word="wordModel"
-    @close-modal="closeModal"
-  />
-
   <WordView
     :show="isWordShown"
     :word="word"
@@ -82,11 +76,10 @@
 </template>
 
 <script setup>
-import WordModal from './WordModal.vue'
 import WordView from './WordView.vue'
 import { AppTable } from '@/components/common'
 import { computed, ref } from 'vue'
-import { useModal, useFilterBySearch } from '@/composables/index.js'
+import { useFilterBySearch } from '@/composables/index.js'
 import { useCategoryStore, useWordStore } from '@/stores/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD, WORD_TABLE_MESSAGE } from '@/constants.js'
 import { reloadPage } from '@/utils/index.js'
@@ -98,21 +91,23 @@ const word = ref(null)
 const isWordShown = computed(() => {
   return Boolean(word.value)
 })
-const showWord = (data) => {
-  word.value = data
+const toggleShowWord = (data) => {
+  word.value = isWordShown.value ? null : data
 }
 
-const wordModel = ref(null)
-const { isModalOpen, openModal, closeModal } = useModal()
-const { searchString: searchWord, filteredData: foundedWords, clearSearch, isFilteredDataEmpty: isFoundedWordsEmpty } = useFilterBySearch(wordStore, 'word')
-const addSearchWord = () => {
-  wordModel.value = {
+const {
+  searchString: searchWord,
+  filteredData: foundedWords,
+  clearSearch,
+  isFilteredDataEmpty: isFoundedWordsEmpty
+} = useFilterBySearch(wordStore, 'word')
+
+const addWord = () => {
+  toggleShowWord({
     ...EMPTY_WORD,
     word: searchWord.value,
     category: categoryStore.selectedCategoryId
-  }
-  openModal()
-  clearSearch()
+  })
 }
 
 const removeWords = (wordsIds) => {

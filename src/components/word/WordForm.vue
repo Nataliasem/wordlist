@@ -42,7 +42,21 @@
       </div>
     </template>
 
-    <button>Save</button>
+    <div class="word-form__footer">
+      <button
+        type="submit"
+        class="form-button form-button__confirm"
+      >
+        Save changes
+      </button>
+      <button
+        type="button"
+        class="form-button form-button__cancel"
+        @click="$emit('hide')"
+      >
+        Cancel
+      </button>
+    </div>
   </form>
 </template>
 
@@ -61,7 +75,7 @@ const props = defineProps({
     required: true
   }
 })
-const emit = defineEmits([ 'close-modal' ])
+const emit = defineEmits(['hide'])
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
@@ -84,7 +98,7 @@ const save = async () => {
     ? wordStore.updateWord(updatedWord.value)
     : wordStore.createWord(updatedWord.value)
 
-  emit('close-modal')
+  emit('hide')
 }
 </script>
 
@@ -101,13 +115,36 @@ const save = async () => {
   flex-direction: column;
 }
 
-.form-field__label {
-  font-weight: bold;
-  margin-bottom: 6px;
+.word-form__footer {
+  display: flex;
+  gap: 16px;
+  justify-content: end;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  padding-bottom: 32px;
 }
 
-.word-name {
-  font-style: italic;
-  font-weight: normal;
+.form-button {
+  color: white;
+  font-weight: bold;
+  padding: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.form-button__confirm {
+  background-color: rebeccapurple;
+}
+
+.form-button__confirm:hover {
+  background-color: mediumpurple;
+}
+
+.form-button__cancel {
+  background-color: darkred;
+}
+
+.form-button__cancel:hover {
+  background-color: orangered;
 }
 </style>
