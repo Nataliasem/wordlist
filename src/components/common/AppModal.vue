@@ -17,14 +17,14 @@
           <div class="modal-body__footer">
             <button
               type="button"
-              class="modal-button modal-button__confirm"
+              class="app-button app-button__confirm"
               @click="emit('confirm')"
             >
               <slot name="confirm-text" />
             </button>
             <button
               type="button"
-              class="modal-button modal-button__cancel"
+              class="app-button app-button__cancel"
               @click="emit('cancel')"
             >
               <slot name="cancel-text">
@@ -104,28 +104,5 @@ const emit = defineEmits([ 'confirm', 'cancel' ])
   bottom: 0;
   background-color: white;
   padding-bottom: 32px;
-}
-
-.modal-button {
-  color: white;
-  font-weight: bold;
-  padding: 8px;
-  transition: background-color 0.3s ease;
-}
-
-.modal-button__confirm {
-  background-color: rebeccapurple;
-}
-
-.modal-button__confirm:hover {
-  background-color: mediumpurple;
-}
-
-.modal-button__cancel {
-  background-color: darkred;
-}
-
-.modal-button__cancel:hover {
-  background-color: orangered;
 }
 </style>

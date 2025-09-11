@@ -1,12 +1,14 @@
 import AppModal from './AppModal.vue'
 import AppNavigation from './AppNavigation.vue'
-import AppSelect from './AppSelect.vue'
-import AppTextarea from './AppTextarea.vue'
+import AppForm from './form/AppForm.vue'
+import AppSelect from './form/AppSelect.vue'
+import AppTextarea from './form/AppTextarea.vue'
 import AppTable from './table/AppTable.vue'
 
 export {
   AppModal,
   AppNavigation,
+  AppForm,
   AppSelect,
   AppTextarea,
   AppTable

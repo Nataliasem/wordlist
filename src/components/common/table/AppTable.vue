@@ -7,19 +7,16 @@
       <slot name="search" />
     </div>
 
-    <div v-if="readyForRemovalRows.length">
-      <button
-        class="remove-button"
-        type="button"
-        @click="removeSelectedRows"
-      >
-        Remove selected words
-      </button>
+    <div v-if="selectedRows.length">
+      <slot
+        name="selected-rows-action"
+        :selected-rows="selectedRows"
+      />
 
       <button
-        class="remove-button cancel"
+        class="selected-button cancel"
         type="button"
-        @click="clearRemovalRowsList"
+        @click="clearSelectedRowsList"
       >
         Cancel
       </button>
@@ -27,91 +24,42 @@
   </div>
 
   <table class="app-table">
-    <thead>
-      <tr>
-        <th
-          v-for="item in columnConfig"
-          :key="item.key"
-        >
-          <span :class="{'required-field': item.required}">{{ item.title }}</span>
-
-          <span
-            v-if="item.display"
-            class="display-icon__wrapper"
-          >
-            <button
-              v-if="hiddenColumns[item.key]"
-              type="button"
-              @click="toggleColumnVisibility(item.key)"
-            >
-              <v-icon
-                name="ri-eye-line"
-                title="Display column data"
-                fill="orange"
-              />
-            </button>
-
-            <button
-              v-else
-              type="button"
-              @click="toggleColumnVisibility(item.key)"
-            >
-              <v-icon
-                name="ri-eye-off-line"
-                title="Hide column data"
-                fill="purple"
-              />
-            </button>
-          </span>
-        </th>
-      </tr>
-    </thead>
+    <TableHead
+      v-model:hidden-columns="hiddenColumns"
+      :column-config="columnConfig"
+    />
 
     <tbody>
-      <TableRowAdding
-        :row-model="rowModel"
-        :column-config="columnConfig"
-        @add-row="addRow"
-      />
-
-      <tr v-if="userMessage">
+      <tr v-if="$slots['table-message']">
         <td
-          :colspan="columnLength"
           class="table-message"
+          :colspan="columnLength"
         >
-          <p :class="userMessage.type">
-            {{ userMessage.text }}
-          </p>
-          <p v-if="userMessage.type === 'error'">
-            Please <a @click="reloadPage">reload the page</a>.
-          </p>
+          <slot name="table-message" />
         </td>
       </tr>
 
-      <TableRow
-        v-for="row in tableData"
-        :key="row.id"
-        v-model:ready-for-removal-rows="readyForRemovalRows"
-        :column-config="columnConfig"
-        :row-data="row"
-        :hidden-columns="hiddenColumns"
-        @edit-row="$emit('edit-row', row)"
-      />
+      <template v-else>
+        <TableRow
+          v-for="row in tableData"
+          :key="row.id"
+          v-model:selected-rows="selectedRows"
+          :column-config="columnConfig"
+          :row-data="row"
+          :hidden-columns="hiddenColumns"
+          @click-row="$emit('click-row', row)"
+        />
+      </template>
     </tbody>
   </table>
 </template>
 
 <script setup>
+import TableHead from './TableHead.vue'
 import TableRow from './TableRow.vue'
-import TableRowAdding from './TableRowAdding.vue'
 import { computed, ref } from 'vue'
-import { reloadPage } from '@/utils/index.js'
 
 const props = defineProps({
-  rowModel: {
-    type: Object,
-    required: true
-  },
   tableData: {
     type: Array,
     required: true
@@ -119,40 +67,25 @@ const props = defineProps({
   columnConfig: {
     type: Array,
     required: true
-  },
-  userMessage: {
-    type: [Object, null],
-    default: null
   }
 })
 
-const emit = defineEmits(['add-row', 'edit-row', 'remove-rows'])
+defineEmits(['click-row'])
 
-const columnLength = computed(() => props.columnConfig.length)
+const FIXED_COLUMN_NUMBER = 1
+const columnLength = computed(() => props.columnConfig.length + FIXED_COLUMN_NUMBER)
 
 const hiddenColumns = ref({})
-const toggleColumnVisibility = (columnKey) => {
-  hiddenColumns.value[columnKey]
-    ? delete hiddenColumns.value[columnKey]
-    : hiddenColumns.value[columnKey] = true
-}
 
-const readyForRemovalRows = ref([])
-const removeSelectedRows = () => {
-  emit('remove-rows', readyForRemovalRows.value)
-  clearRemovalRowsList()
-}
-const clearRemovalRowsList = () => {
-  readyForRemovalRows.value = []
-}
-
-const addRow = (row) => {
-  emit('add-row', row)
+const selectedRows = ref([])
+const clearSelectedRowsList = () => {
+  selectedRows.value = []
 }
 </script>
 
 <style>
 .table-actions__wrapper {
+  height: 32px;
   margin-bottom: 32px;
   display: flex;
   align-items: center;
@@ -176,6 +109,7 @@ table, th, td {
 
 th, td {
   padding: 4px;
+  height: 28px;
 }
 
 th p, td p {
@@ -185,10 +119,6 @@ th p, td p {
   text-overflow: ellipsis;
   padding: 0;
   margin: 0;
-}
-
-.table-row-action {
-  text-align: center;
 }
 
 tr {
@@ -204,29 +134,13 @@ tr:hover:not(thead tr) {
   text-align: center;
 }
 
-.table-message .fetching {
-  color: purple;
-}
-
-.table-message .empty {
-  color: blue;
-}
-
-.table-message .error {
-  color: red;
-}
-
-.remove-button {
+.selected-button {
   margin-left: 8px;
   border: 2px solid orange;
   padding: 8px;
 }
 
-.remove-button.cancel {
+.selected-button.cancel {
   background-color: orange;
-}
-
-.display-icon__wrapper {
-  padding: 4px;
 }
 </style>
