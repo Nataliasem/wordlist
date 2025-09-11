@@ -1,16 +1,18 @@
 <template>
-  <form
-    class="word-form"
-    @submit="save"
+  <AppForm
+    @submit="submit"
+    @cancel="$emit('cancel')"
   >
+    <template #app-form__header>
+      <span v-if="title">Edit the word <span class="word-name">{{ title }}</span></span>
+      <span v-else>Add a new word</span>
+    </template>
+
     <template
       v-for="item in WORD_FORM_CONFIG"
       :key="item"
     >
-      <div
-        v-if="item === 'category'"
-        class="form-field"
-      >
+      <div v-if="item === 'category'">
         <AppSelect
           :id="item"
           v-model="updatedWord.category"
@@ -20,17 +22,11 @@
         />
       </div>
 
-      <div
-        v-else-if="item === 'examples'"
-        class="form-field"
-      >
+      <div v-else-if="item === 'examples'">
         <WordExamplesInput v-model="updatedWord.examples" />
       </div>
 
-      <div
-        v-else
-        class="form-field"
-      >
+      <div v-else>
         <AppTextarea
           :id="item"
           :ref="(el) => { inputRefs[item] = el }"
@@ -41,30 +37,14 @@
         />
       </div>
     </template>
-
-    <div class="word-form__footer">
-      <button
-        type="submit"
-        class="app-button app-button__confirm"
-      >
-        Save changes
-      </button>
-      <button
-        type="button"
-        class="app-button app-button__cancel"
-        @click="$emit('hide')"
-      >
-        Cancel
-      </button>
-    </div>
-  </form>
+  </AppForm>
 </template>
 
 <script setup>
-import { AppSelect, AppTextarea } from '@/components/common'
+import { AppForm, AppSelect, AppTextarea } from '@/components/common'
 import WordExamplesInput from './WordExamplesInput.vue'
-import { ref, watch } from 'vue'
-import { useWordStore, useCategoryStore } from '@/stores/index.js'
+import { computed, ref, watch } from 'vue'
+import { useCategoryStore } from '@/stores/index.js'
 import cloneDeep from 'lodash/cloneDeep'
 import { useFormValidation } from '@/composables/index.js'
 import { WORD_FORM_CONFIG } from '@/constants.js'
@@ -75,10 +55,9 @@ const props = defineProps({
     required: true
   }
 })
-const emit = defineEmits(['hide'])
+const emit = defineEmits(['submit', 'cancel'])
 
 const categoryStore = useCategoryStore()
-const wordStore = useWordStore()
 
 const updatedWord = ref(null)
 watch(() => props.word, async () => {
@@ -87,41 +66,23 @@ watch(() => props.word, async () => {
   immediate: true,
   deep: true
 })
+const title = computed(() => {
+  return updatedWord.value?.word || ''
+})
 
 const inputRefs = ref({})
 const { validateForm, hasFormError } = useFormValidation(inputRefs)
-const save = async () => {
+const submit = () => {
   validateForm()
   if (hasFormError.value) return
-
-  await updatedWord.value.id
-    ? wordStore.updateWord(updatedWord.value)
-    : wordStore.createWord(updatedWord.value)
-
-  emit('hide')
+  emit('submit', updatedWord.value)
 }
 </script>
 
-<style>
-.word-form {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  margin-bottom: 32px;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-}
-
-.word-form__footer {
-  display: flex;
-  gap: 16px;
-  justify-content: end;
-  position: sticky;
-  bottom: 0;
-  background-color: white;
-  padding-bottom: 32px;
+<style scoped>
+.word-name {
+  font-style: italic;
+  font-weight: 400;
 }
 </style>
+

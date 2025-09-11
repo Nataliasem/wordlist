@@ -6,14 +6,10 @@
         ref="word-view"
         class="word-view"
       >
-        <h1 class="word-title">
-          <span v-if="title">Edit the word <span class="word-name">{{ title }}</span></span>
-          <span v-else>Add a new word</span>
-        </h1>
-
         <WordForm
           :word="word"
-          @hide="$emit('hide-word')"
+          @submit="save"
+          @cancel="$emit('hide-word')"
         />
       </div>
     </Transition>
@@ -22,10 +18,11 @@
 
 <script setup>
 import WordForm from './WordForm.vue'
-import { computed, useTemplateRef } from 'vue'
+import { useWordStore } from '@/stores/index.js'
+import { useTemplateRef } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
-const props = defineProps({
+defineProps({
   show: Boolean,
   word: {
     type: [Object, null],
@@ -35,16 +32,21 @@ const props = defineProps({
 
 const emit = defineEmits([ 'hide-word' ])
 
-const title = computed(() => {
-  return props.word?.word || ''
-})
-
 const target = useTemplateRef('word-view')
 const ignoreElSelector = '.table-row'
 onClickOutside(
   target,
   () => emit('hide-word'),
   { ignore: [ignoreElSelector] })
+
+const wordStore = useWordStore()
+const save = async (word) => {
+   word.id
+     ? await wordStore.updateWord(word)
+     : await wordStore.createWord(word)
+
+  emit('hide-word')
+}
 </script>
 
 <style scoped>
@@ -79,11 +81,5 @@ onClickOutside(
 .view-leave-to .word-view {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
-}
-
-.word-title {
-  display: flex;
-  align-items: center;
-  gap: 16px;
 }
 </style>
