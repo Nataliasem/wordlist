@@ -4,13 +4,9 @@
       <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
 
       <AppTable
-        :row-model="EMPTY_WORD"
         :column-config="WORD_TABLE_CONFIG"
         :table-data="foundedWords"
-        :user-message="userMessage"
-        @add-row="addWord"
-        @edit-row="openWordModal"
-        @remove-rows="removeWords"
+        @click-row="toggleShowWord"
       >
         <template #search>
           <input
@@ -23,7 +19,7 @@
           <button
             class="icon-button_filled table-search__button"
             type="button"
-            @click="addSearchWord"
+            @click="addWord"
           >
             <v-icon
               name="ri-play-list-add-fill"
@@ -46,45 +42,75 @@
             />
           </button>
         </template>
+
+        <template #selected-rows-action="{ selectedRows }">
+          <button
+            class="selected-button"
+            type="button"
+            @click="removeWords(selectedRows)"
+          >
+            Remove selected words
+          </button>
+        </template>
+
+        <template
+          v-if="tableMessage"
+          #table-message
+        >
+          <p :class="`table-message__${tableMessage.type}`">
+            <span>{{ tableMessage.text }}</span>
+            <span v-if="tableMessage.type === 'error'">
+              Please <a @click="reloadPage">reload the page</a>.
+            </span>
+          </p>
+        </template>
       </AppTable>
     </div>
   </div>
 
-  <WordModal
-    :show="isModalOpen"
-    :word="wordModel"
-    @close-modal="closeModal"
+  <WordView
+    :show="isWordShown"
+    :word="word"
+    @hide-word="word = null"
   />
 </template>
 
 <script setup>
-import WordModal from './WordModal.vue'
+import WordView from './WordView.vue'
 import { AppTable } from '@/components/common'
 import { computed, ref } from 'vue'
-import { useModal, useFilterBySearch } from '@/composables/index.js'
+import { useFilterBySearch } from '@/composables/index.js'
 import { useCategoryStore, useWordStore } from '@/stores/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD, WORD_TABLE_MESSAGE } from '@/constants.js'
+import { reloadPage } from '@/utils/index.js'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
 
-const { isModalOpen, openModal, closeModal } = useModal()
-const wordModel = ref(EMPTY_WORD)
-const openWordModal = (word) => {
-  wordModel.value = {
-    ...word,
+const word = ref(null)
+const isWordShown = computed(() => {
+  return Boolean(word.value)
+})
+const toggleShowWord = (data) => {
+  word.value = isWordShown.value ? null : {
+    ...data,
     category: categoryStore.selectedCategoryId
   }
-  openModal()
 }
 
-const { searchString: searchWord, filteredData: foundedWords, clearSearch, isFilteredDataEmpty: isFoundedWordsEmpty } = useFilterBySearch(wordStore, 'word')
-const addSearchWord = () => {
-  openWordModal({
-      ...EMPTY_WORD,
-      word: searchWord.value
-    })
-  clearSearch()
+const {
+  searchString: searchWord,
+  filteredData: foundedWords,
+  clearSearch,
+  isFilteredDataEmpty: isFoundedWordsEmpty
+} = useFilterBySearch(wordStore, 'word')
+
+const addWord = () => {
+  toggleShowWord({
+    ...EMPTY_WORD,
+    word: searchWord.value,
+    category: categoryStore.selectedCategoryId
+  })
 }
 
 const removeWords = (wordsIds) => {
@@ -93,14 +119,7 @@ const removeWords = (wordsIds) => {
   })
 }
 
-const addWord = async (word) => {
-  await wordStore.createWord({
-    ...word,
-    category: categoryStore.selectedCategoryId
-  })
-}
-
-const userMessage = computed(() => {
+const tableMessage = computed(() => {
   if(wordStore.isFetching) return WORD_TABLE_MESSAGE.fetching
   if(wordStore.hasError) return WORD_TABLE_MESSAGE.error
   if(wordStore.isEmpty) return WORD_TABLE_MESSAGE.empty
@@ -131,11 +150,32 @@ const userMessage = computed(() => {
   margin-right: 8px;
   border: 2px solid lavender;
   border-radius: 4px;
+  outline: none;
+}
+
+.table-search__input:focus {
+  border-color: purple;
 }
 
 .table-search__button  {
   border: 2px solid lavender;
   padding: 4px 8px;
+  outline: none;
 }
 
+.table-search__button:focus {
+  border-color: purple;
+}
+
+.table-message__fetching {
+  color: purple;
+}
+
+.table-message__empty {
+  color: blue;
+}
+
+.table-message__error {
+  color: red;
+}
 </style>
