@@ -1,8 +1,10 @@
 <template>
   <form @submit="$emit('submit')">
-    <h2>
-      <slot name="app-form__header" />
-    </h2>
+    <div class="app-form__header">
+      <h2>
+        <slot name="app-form__header" />
+      </h2>
+    </div>
 
     <div class="app-form__fields-wrapper">
       <slot />
@@ -41,14 +43,20 @@ defineEmits(['submit', 'cancel'])
   flex-direction: column;
   gap: 32px;
   margin-bottom: 32px;
-  overflow: scroll;
-  max-height: 80%;
 }
 
 .app-form__field {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.app-form__header {
+  position: sticky;
+  top: 0;
+  padding: 32px 0;
+  background-color: white;
+  z-index: 100;
 }
 
 .app-form__footer {
@@ -58,6 +66,6 @@ defineEmits(['submit', 'cancel'])
   position: sticky;
   bottom: 0;
   background-color: white;
-  padding-bottom: 32px;
+  padding: 32px 0;
 }
 </style>
