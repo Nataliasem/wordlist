@@ -1,24 +1,26 @@
 <template>
-  <label
-    v-if="label"
-    :for="id"
-    class="form-field__label"
-  >
-    <span :class="{'required-field': required}">{{ label }}:</span>
-  </label>
+  <div class="app-form__field">
+    <label
+      v-if="label"
+      :for="id"
+      class="form-field__label"
+    >
+      <span :class="{'required-field': required}">{{ label }}:</span>
+    </label>
 
-  <slot />
+    <slot />
 
-  <textarea
-    :id="id"
-    ref="app-textarea"
-    v-model="model"
-    :rows="rows"
-    :name="name"
-    :class="{'invalid-field': required && hasError }"
-    @focus="$emit('focus')"
-    @blur="$emit('blur')"
-  />
+    <textarea
+      :id="id"
+      ref="app-textarea"
+      v-model="model"
+      :rows="rows"
+      :name="name"
+      :class="{'invalid-field': required && hasError }"
+      @focus="$emit('focus')"
+      @blur="$emit('blur')"
+    />
+  </div>
 </template>
 
 <script setup>
