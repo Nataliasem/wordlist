@@ -1,20 +1,19 @@
 <template>
   <div class="category-list">
     <div class="add-category__wrapper">
-      <input
-        v-model="searchCategory"
-        class="category-input"
-        type="text"
+      <AppSearch
+        v-model="filteredCategories"
+        :list="categoryStore.data"
+        search-by-field="name"
         placeholder="Find or add category"
-        name="add-category"
+        @confirm-search="addCategory"
       >
-      <button
-        class="icon-button_filled"
-        :disabled="!isFoundedCategoriesEmpty"
-        @click="addCategory"
-      >
-        Add
-      </button>
+        <!-- TODO: icon instead of text-->
+        <!-- TODO: disabled="isAddingCategoryDisabled"-->
+        <template #confirm-button>
+          Add
+        </template>
+      </AppSearch>
     </div>
 
     <div
@@ -34,30 +33,34 @@
 
     <CategoryItem
       v-else
-      :categories="foundedCategories"
+      :categories="filteredCategories"
     />
   </div>
 </template>
 
 <script setup>
+import { AppSearch } from '@/components/common'
 import CategoryItem from './CategoryItem.vue'
-import { onMounted } from 'vue'
+// import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useCategoryStore } from '@/stores/index.js'
 import { reloadPage } from '@/utils/index.js'
-import { useFilterBySearch } from '@/composables/index.js'
+
 
 const categoryStore = useCategoryStore()
 
-const { searchString: searchCategory, filteredData: foundedCategories, clearSearch, isFilteredDataEmpty: isFoundedCategoriesEmpty } = useFilterBySearch(categoryStore, 'name')
-
-const addCategory = async () => {
-  if (!searchCategory.value) return
-  await categoryStore.createCategory(searchCategory.value)
-  clearSearch()
+const addCategory = async (category) => {
+  if (!category) return
+  await categoryStore.createCategory(category)
 }
 
+const filteredCategories = ref([])
+// const isAddingCategoryDisabled = computed(() => {
+//   return filteredCategories.value.length > 0
+// })
 onMounted(async () => {
   await categoryStore.fetchData()
+  filteredCategories.value = categoryStore.data
   categoryStore.selectFirstCategoryAsDefault()
 })
 </script>
@@ -77,23 +80,6 @@ onMounted(async () => {
   justify-content: space-between;
   gap: 4px;
   padding: 8px 0;
-}
-
-.add-category__wrapper .icon-button_filled {
-  border: 2px solid #e7e6e9;
-}
-
-.category-input {
-  flex-grow: 1;
-  border: 2px solid #e7e6e9;
-  border-radius: 4px;
-  font-size: 16px;
-  padding: 2px 4px;
-  cursor: pointer;
-}
-
-.add-category__wrapper .category-input:hover {
-  background-color: lavender;
 }
 
 .fetching-message {

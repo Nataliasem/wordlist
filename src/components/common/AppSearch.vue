@@ -4,19 +4,21 @@
     v-model="searchString"
     type="text"
     class="app-search__input"
-    placeholder="Enter a word here..."
+    :placeholder="placeholder"
   >
   <button
     class="icon-button_filled app-search__button"
     type="button"
-    @click="$emit('confirm-search', searchString)"
+    @click="confirmSearch"
   >
-    <v-icon
-      name="ri-play-list-add-fill"
-      :scale="1.3"
-      title="Add new"
-      fill="purple"
-    />
+    <slot name="confirm-button">
+      <v-icon
+        name="ri-play-list-add-fill"
+        :scale="1.3"
+        title="Add new"
+        fill="purple"
+      />
+    </slot>
   </button>
 
   <button
@@ -24,18 +26,19 @@
     type="button"
     @click="clearSearch"
   >
-    <v-icon
-      name="ri-delete-back-2-line"
-      :scale="1.3"
-      title="Clear input"
-      fill="purple"
-    />
+    <slot name="clear-button">
+      <v-icon
+        name="ri-delete-back-2-line"
+        :scale="1.3"
+        title="Clear input"
+        fill="purple"
+      />
+    </slot>
   </button>
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
-import { useSearch } from '@/composables/index.js'
+import { ref, watch } from 'vue'
 import { filterBySearchString } from '@/utils/index.js'
 
 const model = defineModel({
@@ -43,29 +46,39 @@ const model = defineModel({
   required: true
 })
 
-defineEmits(['confirm-search'])
+const props = defineProps({
+  list: {
+    type: Array,
+    required: true
+  },
+  searchByField: {
+    type: String,
+    required: true
+  },
+  placeholder: {
+    type: String,
+    default: 'Enter to search smth...'
+  }
+})
+
+const emit = defineEmits(['confirm-search'])
 
 const searchString = ref('')
-const filteredData = computed(() => {
-  return filterBySearchString(data, searchByField, searchString.value)
-})
-const isFilteredDataEmpty = computed(() => {
-  return filteredData.value.length === 0
-})
 const clearSearch = () => {
   searchString.value = ''
 }
-
-
+const confirmSearch = () => {
+  emit('confirm-search', searchString.value)
+  clearSearch()
+}
 watch(searchString, () => {
-  model.value = filteredData.value
+  model.value = filterBySearchString(props.list, props.searchByField, searchString.value)
 })
 </script>
 
 <style scoped>
 .app-search__input {
   padding: 9px;
-  min-width: 300px;
   margin-right: 8px;
   border: 2px solid lavender;
   border-radius: 4px;

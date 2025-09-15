@@ -30,16 +30,7 @@
     />
 
     <tbody>
-      <tr v-if="$slots['table-message']">
-        <td
-          class="table-message"
-          :colspan="columnLength"
-        >
-          <slot name="table-message" />
-        </td>
-      </tr>
-
-      <template v-else>
+      <template v-if="tableData.length">
         <TableRow
           v-for="row in tableData"
           :key="row.id"
@@ -50,6 +41,15 @@
           @click-row="$emit('click-row', row)"
         />
       </template>
+
+      <tr v-else>
+        <td
+          class="table-message"
+          :colspan="columnLength"
+        >
+          <slot name="table-message">No data loaded</slot>
+        </td>
+      </tr>
     </tbody>
   </table>
 </template>

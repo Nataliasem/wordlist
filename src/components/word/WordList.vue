@@ -5,42 +5,18 @@
 
       <AppTable
         :column-config="WORD_TABLE_CONFIG"
-        :table-data="foundedWords"
+        :table-data="filteredWords"
         @click-row="toggleShowWord"
       >
         <template #search>
-          <input
-            id="table-search__input"
-            v-model="searchWord"
-            type="text"
-            class="table-search__input"
-            placeholder="Enter a word here..."
-          >
-          <button
-            class="icon-button_filled table-search__button"
-            type="button"
-            @click="addWord"
-          >
-            <v-icon
-              name="ri-play-list-add-fill"
-              :scale="1.3"
-              title="Add new"
-              fill="purple"
+          <div class="word-list-search">
+            <AppSearch
+              v-model="filteredWords"
+              search-by-field="word"
+              :list="wordStore.data"
+              @confirm-search="addWord"
             />
-          </button>
-
-          <button
-            class="icon-button_filled table-search__button"
-            type="button"
-            @click="clearSearch"
-          >
-            <v-icon
-              name="ri-delete-back-2-line"
-              :scale="1.3"
-              title="Clear input"
-              fill="purple"
-            />
-          </button>
+          </div>
         </template>
 
         <template #selected-rows-action="{ selectedRows }">
@@ -77,9 +53,8 @@
 
 <script setup>
 import WordView from './WordView.vue'
-import { AppTable } from '@/components/common'
-import { computed, ref } from 'vue'
-import { useFilterBySearch } from '@/composables/index.js'
+import { AppSearch, AppTable } from '@/components/common'
+import { computed, onMounted, ref } from 'vue'
 import { useCategoryStore, useWordStore } from '@/stores/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD, WORD_TABLE_MESSAGE } from '@/constants.js'
 import { reloadPage } from '@/utils/index.js'
@@ -98,17 +73,10 @@ const toggleShowWord = (data) => {
   }
 }
 
-const {
-  searchString: searchWord,
-  filteredData: foundedWords,
-  clearSearch,
-  isFilteredDataEmpty: isFoundedWordsEmpty
-} = useFilterBySearch(wordStore, 'word')
-
-const addWord = () => {
+const addWord = (word) => {
   toggleShowWord({
     ...EMPTY_WORD,
-    word: searchWord.value,
+    word: word,
     category: categoryStore.selectedCategoryId
   })
 }
@@ -119,13 +87,17 @@ const removeWords = (wordsIds) => {
   })
 }
 
+const filteredWords = ref([])
 const tableMessage = computed(() => {
   if(wordStore.isFetching) return WORD_TABLE_MESSAGE.fetching
   if(wordStore.hasError) return WORD_TABLE_MESSAGE.error
   if(wordStore.isEmpty) return WORD_TABLE_MESSAGE.empty
-  if(isFoundedWordsEmpty.value) return WORD_TABLE_MESSAGE.emptySearch
-
+  if(!filteredWords.value?.length) return WORD_TABLE_MESSAGE.emptySearch
   return null
+})
+onMounted(async () => {
+  await wordStore.fetchData(categoryStore.selectedCategoryId)
+  filteredWords.value = wordStore.data
 })
 </script>
 
@@ -177,5 +149,9 @@ const tableMessage = computed(() => {
 
 .table-message__error {
   color: red;
+}
+
+.word-list-search {
+  min-width: 300px;
 }
 </style>
