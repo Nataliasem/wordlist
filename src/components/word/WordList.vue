@@ -92,7 +92,10 @@ const isWordShown = computed(() => {
   return Boolean(word.value)
 })
 const toggleShowWord = (data) => {
-  word.value = isWordShown.value ? null : data
+  word.value = isWordShown.value ? null : {
+    ...data,
+    category: categoryStore.selectedCategoryId
+  }
 }
 
 const {
