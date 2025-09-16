@@ -44,8 +44,26 @@
         </template>
 
         <template #selected-rows-action="{ selectedRows }">
+          <div class="select-category__wrapper">
+            <AppSelect
+              id="select-category"
+              v-model="selectedCategory"
+              name="select-category"
+              :options="categoryStore.data"
+            />
+
+            <button
+              class="selected-button confirm"
+              type="button"
+              @click="changeCategory(selectedRows)"
+            >
+              Change category
+            </button>
+          </div>
+
+
           <button
-            class="selected-button"
+            class="selected-button remove-button"
             type="button"
             @click="removeWords(selectedRows)"
           >
@@ -77,7 +95,7 @@
 
 <script setup>
 import WordView from './WordView.vue'
-import { AppTable } from '@/components/common'
+import { AppSelect, AppTable } from '@/components/common'
 import { computed, ref } from 'vue'
 import { useFilterBySearch } from '@/composables/index.js'
 import { useCategoryStore, useWordStore } from '@/stores/index.js'
@@ -127,7 +145,22 @@ const tableMessage = computed(() => {
 
   return null
 })
+
+const selectedCategory = ref(null)
+const changeCategory = (wordsIds) => {
+  console.log(wordsIds)
+  // TODO: after backend WL-39
+}
 </script>
+
+
+<style>
+.select-category__wrapper .app-select {
+  min-height: 38px;
+  border: 2px solid mediumpurple;
+  border-radius: 4px;
+}
+</style>
 
 <style scoped>
 .word-list {
@@ -177,5 +210,22 @@ const tableMessage = computed(() => {
 
 .table-message__error {
   color: red;
+}
+
+.select-category__wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 16px;
+  border-right: 2px solid lavender;
+}
+
+.select-category__wrapper .selected-button {
+  color: white;
+}
+
+.remove-button {
+  margin-left: 16px;
+  margin-right: 8px;
 }
 </style>

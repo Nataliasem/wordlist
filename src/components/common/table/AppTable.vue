@@ -7,7 +7,10 @@
       <slot name="search" />
     </div>
 
-    <div v-if="selectedRows.length">
+    <div
+      v-if="selectedRows.length"
+      class="selected-rows-action__wrapper"
+    >
       <slot
         name="selected-rows-action"
         :selected-rows="selectedRows"
@@ -135,12 +138,21 @@ tr:hover:not(thead tr) {
 }
 
 .selected-button {
-  margin-left: 8px;
   border: 2px solid orange;
   padding: 8px;
 }
 
 .selected-button.cancel {
   background-color: orange;
+  border-color: orange;
+}
+
+.selected-button.confirm {
+  background-color: mediumpurple;
+  border-color: mediumpurple;
+}
+
+.selected-rows-action__wrapper {
+  display: flex;
 }
 </style>
