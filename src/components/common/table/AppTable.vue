@@ -7,7 +7,10 @@
       <slot name="search" />
     </div>
 
-    <div v-if="selectedRows.length">
+    <div
+      v-if="selectedRows.length"
+      class="selected-rows-action__wrapper"
+    >
       <slot
         name="selected-rows-action"
         :selected-rows="selectedRows"
@@ -26,7 +29,9 @@
   <table class="app-table">
     <TableHead
       v-model:hidden-columns="hiddenColumns"
+      v-model:all-selected="allSelected"
       :column-config="columnConfig"
+      @select-all="selectAllRows"
     />
 
     <tbody>
@@ -57,7 +62,7 @@
 <script setup>
 import TableHead from './TableHead.vue'
 import TableRow from './TableRow.vue'
-import { computed, ref } from 'vue'
+import { computed, defineExpose, ref } from 'vue'
 
 const props = defineProps({
   tableData: {
@@ -78,9 +83,20 @@ const columnLength = computed(() => props.columnConfig.length + FIXED_COLUMN_NUM
 const hiddenColumns = ref({})
 
 const selectedRows = ref([])
+const allSelected = ref(false)
 const clearSelectedRowsList = () => {
   selectedRows.value = []
+  allSelected.value = false
 }
+const tableDataIds = computed(() => {
+  return props.tableData.map(item => item.id)
+})
+const selectAllRows = () => {
+  selectedRows.value = allSelected.value ? tableDataIds.value : []
+}
+defineExpose({
+  clearSelectedRowsList
+})
 </script>
 
 <style>
@@ -135,12 +151,21 @@ tr:hover:not(thead tr) {
 }
 
 .selected-button {
-  margin-left: 8px;
   border: 2px solid orange;
   padding: 8px;
 }
 
 .selected-button.cancel {
   background-color: orange;
+  border-color: orange;
+}
+
+.selected-button.confirm {
+  background-color: mediumpurple;
+  border-color: mediumpurple;
+}
+
+.selected-rows-action__wrapper {
+  display: flex;
 }
 </style>

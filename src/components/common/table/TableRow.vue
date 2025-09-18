@@ -67,10 +67,4 @@ const isSelected = computed(() => {
 .table-row .blurred {
   filter: blur(3px);
 }
-
-.table-row input[type="checkbox"] {
-  accent-color: white;
-  width: 16px;
-  height: 16px;
-}
 </style>
