@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getWordlist, create, update, remove } from '@/api/word.js'
+import { getWordlist, create, update, remove, changeCategory } from '@/api/word.js'
 import { watch } from 'vue'
 import { useCategoryStore } from './category'
 import { useCustomFetch } from '@/composables/index.js'
@@ -31,6 +31,10 @@ export const useWordStore = defineStore('word', () => {
     await remove(id)
     await fetchData(categoryStore.selectedCategoryId)
   }
+  const changeWordsCategory = async (categoryId, updatedWords) => {
+    await changeCategory(categoryId, updatedWords)
+    await fetchData(categoryStore.selectedCategoryId)
+  }
 
   return {
     data,
@@ -40,6 +44,7 @@ export const useWordStore = defineStore('word', () => {
     isEmpty,
     createWord,
     updateWord,
-    removeWord
+    removeWord,
+    changeWordsCategory
   }
 })

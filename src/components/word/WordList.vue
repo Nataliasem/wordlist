@@ -4,6 +4,7 @@
       <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
 
       <AppTable
+        ref="app-table"
         :column-config="WORD_TABLE_CONFIG"
         :table-data="foundedWords"
         @click-row="toggleShowWord"
@@ -44,8 +45,26 @@
         </template>
 
         <template #selected-rows-action="{ selectedRows }">
+          <div class="select-category__wrapper">
+            <AppSelect
+              id="select-category"
+              v-model="selectedCategory"
+              name="select-category"
+              :options="categoryStore.data"
+            />
+
+            <button
+              class="selected-button confirm"
+              type="button"
+              @click="changeCategory(selectedRows)"
+            >
+              Change category
+            </button>
+          </div>
+
+
           <button
-            class="selected-button"
+            class="selected-button remove-button"
             type="button"
             @click="removeWords(selectedRows)"
           >
@@ -77,8 +96,8 @@
 
 <script setup>
 import WordView from './WordView.vue'
-import { AppTable } from '@/components/common'
-import { computed, ref } from 'vue'
+import { AppSelect, AppTable } from '@/components/common'
+import { computed, watch, ref, useTemplateRef } from 'vue'
 import { useFilterBySearch } from '@/composables/index.js'
 import { useCategoryStore, useWordStore } from '@/stores/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD, WORD_TABLE_MESSAGE } from '@/constants.js'
@@ -113,12 +132,6 @@ const addWord = () => {
   })
 }
 
-const removeWords = (wordsIds) => {
-  wordsIds.forEach(async (wordId) => {
-    await wordStore.removeWord(wordId)
-  })
-}
-
 const tableMessage = computed(() => {
   if(wordStore.isFetching) return WORD_TABLE_MESSAGE.fetching
   if(wordStore.hasError) return WORD_TABLE_MESSAGE.error
@@ -127,7 +140,38 @@ const tableMessage = computed(() => {
 
   return null
 })
+
+const table = useTemplateRef('app-table')
+const removeWords = (wordsIds) => {
+  wordsIds.forEach(async (wordId) => {
+    await wordStore.removeWord(wordId)
+  })
+  table.value?.clearSelectedRowsList()
+}
+
+const initialCategory = computed(() => {
+  return categoryStore.selectedCategoryId
+})
+const selectedCategory = ref(initialCategory.value)
+watch(initialCategory, (newValue) => {
+  selectedCategory.value = newValue
+})
+const changeCategory = (wordsIds) => {
+  wordStore.changeWordsCategory(selectedCategory.value, wordsIds)
+  selectedCategory.value = null
+  table.value?.clearSelectedRowsList()
+}
+
 </script>
+
+
+<style>
+.select-category__wrapper .app-select {
+  min-height: 38px;
+  border: 2px solid mediumpurple;
+  border-radius: 4px;
+}
+</style>
 
 <style scoped>
 .word-list {
@@ -177,5 +221,22 @@ const tableMessage = computed(() => {
 
 .table-message__error {
   color: red;
+}
+
+.select-category__wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 16px;
+  border-right: 2px solid lavender;
+}
+
+.select-category__wrapper .selected-button {
+  color: white;
+}
+
+.remove-button {
+  margin-left: 16px;
+  margin-right: 8px;
 }
 </style>
