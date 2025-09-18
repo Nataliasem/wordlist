@@ -51,12 +51,15 @@ export const getWordlistOrphans = async () => {
 }
 
 export const changeCategory = async (categoryId, updatedWords) => {
-  await fetch(`${WORD_URL}/change-category/${categoryId}`, {
+  await fetch(`${WORD_URL}/change-category`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(updatedWords)
+    body: JSON.stringify({
+      wordIds: updatedWords,
+      categoryId
+    })
   })
 }
 
