@@ -54,8 +54,8 @@ const hiddenColumns = defineModel('hiddenColumns', {
 })
 
 const allSelected = defineModel('all-selected', {
-  type: Object,
-  default: () => {}
+  type: Boolean,
+  default: false
 })
 
 defineProps({
