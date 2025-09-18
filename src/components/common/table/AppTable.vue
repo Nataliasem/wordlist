@@ -29,7 +29,9 @@
   <table class="app-table">
     <TableHead
       v-model:hidden-columns="hiddenColumns"
+      v-model:all-selected="allSelected"
       :column-config="columnConfig"
+      @select-all="selectAllRows"
     />
 
     <tbody>
@@ -60,7 +62,7 @@
 <script setup>
 import TableHead from './TableHead.vue'
 import TableRow from './TableRow.vue'
-import { computed, ref } from 'vue'
+import { computed, defineExpose, ref } from 'vue'
 
 const props = defineProps({
   tableData: {
@@ -81,9 +83,20 @@ const columnLength = computed(() => props.columnConfig.length + FIXED_COLUMN_NUM
 const hiddenColumns = ref({})
 
 const selectedRows = ref([])
+const allSelected = ref(false)
 const clearSelectedRowsList = () => {
   selectedRows.value = []
+  allSelected.value = false
 }
+const tableDataIds = computed(() => {
+  return props.tableData.map(item => item.id)
+})
+const selectAllRows = () => {
+  selectedRows.value = allSelected.value ? tableDataIds.value : []
+}
+defineExpose({
+  clearSelectedRowsList
+})
 </script>
 
 <style>

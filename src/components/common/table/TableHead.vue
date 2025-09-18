@@ -1,7 +1,16 @@
 <template>
   <thead>
     <tr>
-      <th class="required-column-header" />
+      <th class="required-column-header">
+        <input
+          id="select-all"
+          v-model="allSelected"
+          type="checkbox"
+          title="Select all rows"
+          @change="$emit('select-all')"
+        >
+      </th>
+
       <th
         v-for="item in columnConfig"
         :key="item.key"
@@ -44,12 +53,19 @@ const hiddenColumns = defineModel('hiddenColumns', {
   default: () => {}
 })
 
+const allSelected = defineModel('all-selected', {
+  type: Object,
+  default: () => {}
+})
+
 defineProps({
   columnConfig: {
     type: Array,
     required: true
   }
 })
+
+defineEmits(['select-all'])
 
 const toggleColumnVisibility = (columnKey) => {
   hiddenColumns.value[columnKey]
@@ -65,5 +81,6 @@ const toggleColumnVisibility = (columnKey) => {
 
 th.required-column-header {
   width: 32px;
+  text-align: center;
 }
 </style>

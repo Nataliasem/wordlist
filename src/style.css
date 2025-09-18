@@ -123,6 +123,12 @@ button:focus-visible {
     cursor: pointer;
 }
 
+input[type="checkbox"] {
+    accent-color: white;
+    width: 16px;
+    height: 16px;
+}
+
 @media (prefers-color-scheme: light) {
     :root {
         color: #213547;
