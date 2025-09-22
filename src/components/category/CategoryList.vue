@@ -87,7 +87,6 @@ onMounted(async () => {
   flex-grow: 1;
   border: 2px solid #e7e6e9;
   border-radius: 4px;
-  font-size: 16px;
   padding: 2px 4px;
   cursor: pointer;
 }
