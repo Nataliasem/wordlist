@@ -41,14 +41,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { AppTextarea } from '@/components/common'
 import { computed, ref } from 'vue'
 
-const model = defineModel({
-  type: Array,
-  default: []
-})
+const model = defineModel<string[]>({ default: () => [] })
 
 const example = ref('')
 const addExample = () => {
@@ -56,7 +53,7 @@ const addExample = () => {
   model.value.unshift(example.value)
   example.value = ''
 }
-const deleteExample = (indexToRemove) => {
+const deleteExample = (indexToRemove: number) => {
   model.value.splice(indexToRemove, 1)
 }
 const hasExamples = computed(() => {

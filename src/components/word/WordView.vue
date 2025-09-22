@@ -16,19 +16,17 @@
   </Teleport>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import WordForm from './WordForm.vue'
 import { useWordStore } from '@/stores/index.js'
 import { useTemplateRef } from 'vue'
 import { onClickOutside } from '@vueuse/core'
+import { Word } from '@/types/word.ts'
 
-defineProps({
-  show: Boolean,
-  word: {
-    type: [Object, null],
-    required: true
-  }
-})
+const { show = false } = defineProps<{
+  show?: boolean
+  word: Word | null
+}>()
 
 const emit = defineEmits([ 'hide-word' ])
 
@@ -40,11 +38,12 @@ onClickOutside(
   { ignore: [ignoreElSelector] })
 
 const wordStore = useWordStore()
-const save = async (word) => {
-   word.id
-     ? await wordStore.updateWord(word)
-     : await wordStore.createWord(word)
-
+const save = async (word: Word) => {
+  if(word.id) {
+    await wordStore.updateWord(word)
+  } else {
+    await wordStore.createWord(word)
+  }
   emit('hide-word')
 }
 </script>

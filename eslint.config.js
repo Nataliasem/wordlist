@@ -1,16 +1,19 @@
-import eslint from '@eslint/js'
 import pluginVue from 'eslint-plugin-vue'
 import globals from 'globals'
+import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
 
-export default [
-  eslint.configs.recommended,
-  ...pluginVue.configs['flat/recommended'],
+export default defineConfigWithVueTs(
+  pluginVue.configs['flat/recommended'],
+   vueTsConfigs.recommended,
+   vueTsConfigs.stylistic,
   {
+    files: ['**/*.{js,mjs,cjs,ts,vue}'],
     languageOptions: {
+      ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
         ...globals.browser
       }
     }
   }
-]
+)

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getWordlist, create, update, remove, changeCategory, removeMany } from '@/api/word.js'
+import { getWordlist, create, update, remove, changeCategory, removeMany } from '@/api/word.ts'
 import { watch } from 'vue'
 import { useCategoryStore } from './category'
 import { useCustomFetch } from '@/composables/index.js'

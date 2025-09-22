@@ -40,7 +40,7 @@
   </AppForm>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { AppForm, AppSelect, AppTextarea } from '@/components/common'
 import WordExamplesInput from './WordExamplesInput.vue'
 import { computed, ref, watch } from 'vue'
@@ -48,14 +48,15 @@ import { useCategoryStore } from '@/stores/index.js'
 import cloneDeep from 'lodash/cloneDeep'
 import { useFormValidation } from '@/composables/index.js'
 import { WORD_FORM_CONFIG } from '@/constants.js'
+import { Word } from '@/types/word.ts'
 
-const props = defineProps({
-  word: {
-    type: Object,
-    required: true
-  }
-})
-const emit = defineEmits(['submit', 'cancel'])
+const props = defineProps<{
+  word: Word
+}>()
+const emit = defineEmits<{
+  submit: [data: Word],
+  cancel: []
+}>()
 
 const categoryStore = useCategoryStore()
 
