@@ -1,4 +1,5 @@
 import { WORD_URL } from '@/constants.js'
+import { normalizeNullable } from '@/utils/index.js'
 
 export const create = async (word) => {
   await fetch(`${WORD_URL}`, {
@@ -26,10 +27,22 @@ export const remove = async (wordId) => {
   })
 }
 
+export const removeMany = async (wordIds) => {
+  await fetch(`${WORD_URL}/delete-bulk`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(wordIds)
+  })
+}
+
 export const getWordlist = async (categoryId) => {
-  return await categoryId
+  const rawData =  await categoryId
      ? await getWordlistByCategory(categoryId)
      : await getWordlistOrphans()
+
+  return rawData.map(word => normalizeNullable(word, ['id', 'category']))
 }
 
 export const getWordlistByCategory = async (categoryId) => {

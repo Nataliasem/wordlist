@@ -142,10 +142,8 @@ const tableMessage = computed(() => {
 })
 
 const table = useTemplateRef('app-table')
-const removeWords = (wordsIds) => {
-  wordsIds.forEach(async (wordId) => {
-    await wordStore.removeWord(wordId)
-  })
+const removeWords = async (wordsIds) => {
+  await wordStore.removeWords(wordsIds)
   table.value?.clearSelectedRowsList()
 }
 
@@ -161,7 +159,6 @@ const changeCategory = (wordsIds) => {
   selectedCategory.value = null
   table.value?.clearSelectedRowsList()
 }
-
 </script>
 
 
