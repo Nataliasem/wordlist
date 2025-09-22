@@ -26,6 +26,16 @@ export const remove = async (wordId) => {
   })
 }
 
+export const removeMany = async (wordIds) => {
+  await fetch(`${WORD_URL}/delete-bulk`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(wordIds)
+  })
+}
+
 export const getWordlist = async (categoryId) => {
   return await categoryId
      ? await getWordlistByCategory(categoryId)
