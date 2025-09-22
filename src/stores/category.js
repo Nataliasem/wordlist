@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { create, update, remove, getCategories } from '@/api/category.js'
+import { create, update, remove, getCategories } from '@/api/category.ts'
 import { computed, ref } from 'vue'
 import { useCustomFetch } from '@/composables/index.js'
 

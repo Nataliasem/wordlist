@@ -19,7 +19,7 @@
 
         <span class="display-icon__wrapper">
           <button
-            v-if="hiddenColumns[item.key]"
+            v-if="hiddenColumns.has(item.key)"
             type="button"
             @click="toggleColumnVisibility(item.key)"
           >
@@ -47,30 +47,27 @@
   </thead>
 </template>
 
-<script setup>
-const hiddenColumns = defineModel('hiddenColumns', {
-  type: Object,
-  default: () => {}
-})
+<script setup lang="ts">
+const hiddenColumns = defineModel<Set<string>>('hiddenColumns')
 
-const allSelected = defineModel('all-selected', {
-  type: Boolean,
-  default: false
-})
+const allSelected = defineModel<boolean>('all-selected', {default: false})
 
-defineProps({
+defineProps<{
   columnConfig: {
-    type: Array,
-    required: true
-  }
-})
+    key: string
+    title: string
+    required: boolean
+  }[]
+}>()
 
 defineEmits(['select-all'])
 
-const toggleColumnVisibility = (columnKey) => {
-  hiddenColumns.value[columnKey]
-    ? delete hiddenColumns.value[columnKey]
-    : hiddenColumns.value[columnKey] = true
+const toggleColumnVisibility = (columnKey: string) => {
+  if( hiddenColumns.value.has(columnKey)) {
+    hiddenColumns.value.delete(columnKey)
+  } else {
+    hiddenColumns.value.add(columnKey)
+  }
 }
 </script>
 

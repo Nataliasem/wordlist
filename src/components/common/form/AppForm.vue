@@ -33,8 +33,11 @@
   </form>
 </template>
 
-<script setup>
-defineEmits(['submit', 'cancel'])
+<script setup lang="ts">
+defineEmits<{
+  submit: []
+  cancel: []
+}>()
 </script>
 
 <style>

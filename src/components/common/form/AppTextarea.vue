@@ -23,43 +23,29 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
 import { ref, useTemplateRef, defineExpose, watch } from 'vue'
 
-const model = defineModel({
-  type: String,
-  required: true
-})
+const model = defineModel<string>()
 
-defineEmits(['focus', 'blur'])
+interface Props {
+  id: string
+  name?: string
+  rows?: number
+  label?: string
+  required?: boolean
+}
+const { name = '', rows = 1, label = '', required = false } = defineProps<Props>()
 
-const props = defineProps({
-  id: {
-    type: String,
-    required: true
-  },
-  name: {
-    type: String,
-    default: '',
-  },
-  rows: {
-    type: Number,
-    default: 1,
-  },
-  label: {
-    type: String,
-    default: '',
-  },
-  required: {
-    type: Boolean,
-    default: false
-  }
-})
+defineEmits<{
+  focus: [],
+  blur: []
+}>()
 
 const hasError = ref(false)
 const validate = () => {
-  hasError.value = props.required && !model.value.length
+  hasError.value = required && !model.value.length
 }
 const clearError = () => {
   hasError.value = false

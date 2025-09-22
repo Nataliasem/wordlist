@@ -94,7 +94,7 @@
   />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import WordView from './WordView.vue'
 import { AppSelect, AppTable } from '@/components/common'
 import { computed, watch, ref, useTemplateRef } from 'vue'
