@@ -5,7 +5,7 @@
   >
     <td class="text-center">
       <input
-        :id="rowData.id"
+        :id="String(rowData.id)"
         v-model="selectedRows"
         :value="rowData.id"
         type="checkbox"
@@ -18,37 +18,33 @@
       :key="item.key"
       @click="$emit('click-row')"
     >
-      <p :class="{ blurred: hiddenColumns[item.key] }">
+      <p :class="{ blurred: hiddenColumns.has(item.key) }">
         {{ rowData[item.key] }}
       </p>
     </td>
   </tr>
 </template>
 
-<script setup>
+<script setup lang="ts" generic="T extends { id: number }">
 import { computed } from 'vue'
 
-const selectedRows = defineModel('selectedRows', {
-  type: Array,
-  default: []
-})
+const selectedRows = defineModel<Array<number>>('selectedRows', { default: [] })
 
-const props = defineProps({
-  columnConfig: {
-    type: Array,
-    required: true
-  },
-  rowData: {
-    type: Object,
-    required: true
-  },
-  hiddenColumns: {
-    type: Object,
-    required: true
-  }
-})
+interface Props {
+  rowData: T
+  columnConfig: Array<{
+    title: string
+    key: string
+    required: boolean
+  }>
+  hiddenColumns: Set<string>
+}
 
-defineEmits([ 'click-row' ])
+const props = defineProps<Props>()
+
+defineEmits<{
+  'click-row': []
+}>()
 
 const isSelected = computed(() => {
   return selectedRows.value.includes(props.rowData.id)

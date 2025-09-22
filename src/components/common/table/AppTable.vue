@@ -59,28 +59,28 @@
   </table>
 </template>
 
-<script setup>
+<script setup lang="ts" generic="T extends { id: number }">
 import TableHead from './TableHead.vue'
 import TableRow from './TableRow.vue'
 import { computed, defineExpose, ref } from 'vue'
 
-const props = defineProps({
-  tableData: {
-    type: Array,
-    required: true
-  },
-  columnConfig: {
-    type: Array,
-    required: true
-  }
-})
+const props = defineProps<{
+  tableData: Array<T>
+  columnConfig: Array<{
+    title: string
+    key: string
+    required: boolean
+  }>
+}>()
 
-defineEmits(['click-row'])
+defineEmits<{
+  'click-row': [row: T]
+}>()
 
 const FIXED_COLUMN_NUMBER = 1
 const columnLength = computed(() => props.columnConfig.length + FIXED_COLUMN_NUMBER)
 
-const hiddenColumns = ref({})
+const hiddenColumns = ref(new Set<string>())
 
 const selectedRows = ref([])
 const allSelected = ref(false)

@@ -18,14 +18,14 @@
             <button
               type="button"
               class="app-button app-button__confirm"
-              @click="emit('confirm')"
+              @click="$emit('confirm')"
             >
               <slot name="confirm-text" />
             </button>
             <button
               type="button"
               class="app-button app-button__cancel"
-              @click="emit('cancel')"
+              @click="$emit('cancel')"
             >
               <slot name="cancel-text">
                 Cancel
@@ -38,11 +38,13 @@
   </Teleport>
 </template>
 
-<script setup>
-defineProps({
-  show: Boolean
-})
-const emit = defineEmits([ 'confirm', 'cancel' ])
+<script setup lang="ts">
+defineProps<{show: boolean}>()
+
+defineEmits<{
+  confirm: []
+  cancel: []
+}>()
 </script>
 
 <style scoped>

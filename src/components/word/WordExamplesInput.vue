@@ -41,14 +41,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { AppTextarea } from '@/components/common'
 import { computed, ref } from 'vue'
 
-const model = defineModel({
-  type: Array,
-  default: []
-})
+const model = defineModel<Array<string>>({ default: () => [] })
 
 const example = ref('')
 const addExample = () => {

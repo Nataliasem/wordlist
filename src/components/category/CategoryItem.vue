@@ -90,25 +90,23 @@
   </AppModal>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { AppNavigation, AppModal } from '@/components/common'
 import { ref, nextTick } from 'vue'
 import { useCategoryStore } from '@/stores/index.js'
 import { useModal } from '@/composables/index.js'
+import { Category } from '@/types/category.ts'
 
-defineProps({
-  categories: {
-    type: Array,
-    required: true
-  }
-})
+defineProps<{
+  categories: Array<Category>
+}>()
 
 const categoryStore = useCategoryStore()
 
 const { isModalOpen, closeModal, openModal } = useModal()
 
 const updatedCategory = ref(null)
-const selectCategory = (category) => {
+const selectCategory = (category: Category) => {
   // Cannot select a category if it's already selected or updating
   if([categoryStore.selectedCategoryId, updatedCategory.value?.id].includes(category.id)) return
 
@@ -117,7 +115,7 @@ const selectCategory = (category) => {
 }
 
 const updatedCategoryInputRef = ref(null)
-const toggleUpdatingMode = async (category) => {
+const toggleUpdatingMode = async (category: Category) => {
   if(!category?.id) {
     updatedCategory.value = null
     return

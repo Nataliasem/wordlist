@@ -16,28 +16,32 @@
   </ul>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 
-const props = defineProps({
-  items: {
-    type: Array,
-    required: true
-  },
-  selectedItemId: {
-    type: [Number, String, null],
-    required: true
-  },
-})
-defineEmits(['click', 'enter'])
+interface Item {
+  id: number | string | null
+  name: string
+}
+
+interface Props {
+  items: Array<Item>
+  selectedItemId: number | string | null
+}
+const props = defineProps<Props>()
+
+defineEmits<{
+  click: [item: Item]
+  enter: [item: Item]
+}>()
 
 // Use function template refs because of re-rendering items when props changes
 const itemRefs = ref({})
-const navigateUp = async (currentIndex) => {
+const navigateUp = async (currentIndex: number) => {
   const prevElId = props.items[currentIndex - 1]?.id
   itemRefs.value[prevElId]?.focus()
 }
-const navigateDown = async (currentIndex) => {
+const navigateDown = async (currentIndex: number) => {
   const nextElId = props.items[currentIndex + 1]?.id
   itemRefs.value[nextElId]?.focus()
 }

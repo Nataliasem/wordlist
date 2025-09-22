@@ -19,46 +19,25 @@
         :value="item[valueProp]"
         :selected="item[valueProp] === model"
       >
-        {{ item.name }}
+        {{ item[nameProp] }}
       </option>
     </select>
   </div>
 </template>
 
-<script setup>
-const model = defineModel(
-  {
-    type: [String, Number, null],
-    required: true
-  }
-)
+<script setup lang="ts" generic="T">
+const model = defineModel<string | number | null>()
 
-defineProps({
-  id: {
-    type: String,
-    required: true
-  },
-  name: {
-    type: String,
-    required: true
-  },
-  options: {
-    type: Array,
-    required: true
-  },
-  valueProp: {
-    type: String,
-    default: 'id'
-  },
-  nameProp: {
-    type: String,
-    default: 'name'
-  },
-  label: {
-    type: String,
-    default: ''
-  }
-})
+interface Props {
+  id: string
+  name: string
+  options: Array<T>
+  valueProp?: string
+  nameProp?: string
+  label?: string
+}
+
+const { valueProp = 'id', nameProp = 'name', label = ''} = defineProps<Props>()
 </script>
 
 <style scoped>
