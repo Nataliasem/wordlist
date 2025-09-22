@@ -1,21 +1,17 @@
 import { CATEGORY_URL } from '@/constants.js'
+import { Category } from '@/types/category.ts'
 
-export const create = async (category) => {
-  const response = await fetch(`${CATEGORY_URL}`, {
+export const create = async (category: Category): Promise<void> => {
+  await fetch(`${CATEGORY_URL}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ category })
   })
-  if (response.ok) {
-    return await response.json()
-  } else {
-    return []
-  }
 }
 
-export const getCategories = async () => {
+export const getCategories = async (): Promise<Category[]> => {
   const response = await fetch(`${CATEGORY_URL}`)
   if (response.ok) {
     const res = await response.json()
@@ -28,7 +24,7 @@ export const getCategories = async () => {
   }
 }
 
-export const update = async (category) => {
+export const update = async (category: Category): Promise<void> => {
   await fetch(`${CATEGORY_URL}/${category.id}`, {
     method: 'PUT',
     headers: {
@@ -38,7 +34,7 @@ export const update = async (category) => {
   })
 }
 
-export const remove = async (id) => {
+export const remove = async (id: number): Promise<void> => {
   await fetch(`${CATEGORY_URL}/${ id }`, {
     method: 'DELETE'
   })
