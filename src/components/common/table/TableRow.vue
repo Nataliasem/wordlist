@@ -28,15 +28,15 @@
 <script setup lang="ts" generic="T extends { id: number }">
 import { computed } from 'vue'
 
-const selectedRows = defineModel<Array<number>>('selectedRows', { default: [] })
+const selectedRows = defineModel<number[]>('selectedRows', { default: [] })
 
 interface Props {
   rowData: T
-  columnConfig: Array<{
+  columnConfig: {
     title: string
     key: string
     required: boolean
-  }>
+  }[]
   hiddenColumns: Set<string>
 }
 

@@ -98,7 +98,7 @@ import { useModal } from '@/composables/index.js'
 import { Category } from '@/types/category.ts'
 
 defineProps<{
-  categories: Array<Category>
+  categories: Category[]
 }>()
 
 const categoryStore = useCategoryStore()

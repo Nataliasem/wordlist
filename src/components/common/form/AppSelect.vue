@@ -31,7 +31,7 @@ const model = defineModel<string | number | null>()
 interface Props {
   id: string
   name: string
-  options: Array<T>
+  options: T[]
   valueProp?: string
   nameProp?: string
   label?: string

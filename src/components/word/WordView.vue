@@ -39,10 +39,11 @@ onClickOutside(
 
 const wordStore = useWordStore()
 const save = async (word: Word) => {
-   word.id
-     ? await wordStore.updateWord(word)
-     : await wordStore.createWord(word)
-
+  if(word.id) {
+    await wordStore.updateWord(word)
+  } else {
+    await wordStore.createWord(word)
+  }
   emit('hide-word')
 }
 </script>

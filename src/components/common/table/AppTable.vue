@@ -65,12 +65,12 @@ import TableRow from './TableRow.vue'
 import { computed, defineExpose, ref } from 'vue'
 
 const props = defineProps<{
-  tableData: Array<T>
-  columnConfig: Array<{
+  tableData: T[]
+  columnConfig: {
     title: string
     key: string
     required: boolean
-  }>
+  }[]
 }>()
 
 defineEmits<{

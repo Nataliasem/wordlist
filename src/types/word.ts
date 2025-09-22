@@ -6,6 +6,6 @@ export interface Word {
     transcription: string
     translation: string
     definition: string
-    examples: Array<string>
+    examples: string[]
     category: Category | null
 }

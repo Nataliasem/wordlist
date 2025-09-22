@@ -25,7 +25,7 @@ interface Item {
 }
 
 interface Props {
-  items: Array<Item>
+  items: Item[]
   selectedItemId: number | string | null
 }
 const props = defineProps<Props>()

@@ -53,19 +53,21 @@ const hiddenColumns = defineModel<Set<string>>('hiddenColumns')
 const allSelected = defineModel<boolean>('all-selected', {default: false})
 
 defineProps<{
-  columnConfig: Array<{
+  columnConfig: {
     key: string
     title: string
     required: boolean
-  }>
+  }[]
 }>()
 
 defineEmits(['select-all'])
 
 const toggleColumnVisibility = (columnKey: string) => {
-  hiddenColumns.value.has(columnKey)
-    ? hiddenColumns.value.delete(columnKey)
-    : hiddenColumns.value.add(columnKey)
+  if( hiddenColumns.value.has(columnKey)) {
+    hiddenColumns.value.delete(columnKey)
+  } else {
+    hiddenColumns.value.add(columnKey)
+  }
 }
 </script>
 

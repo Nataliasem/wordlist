@@ -39,7 +39,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import CategoryItem from './CategoryItem.vue'
 import { onMounted } from 'vue'
 import { useCategoryStore } from '@/stores/index.js'
