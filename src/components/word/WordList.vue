@@ -6,13 +6,13 @@
       <AppTable
         ref="app-table"
         :column-config="WORD_TABLE_CONFIG"
-        :table-data="foundedWords"
+        :table-data="wordList"
         @click-row="toggleShowWord"
       >
         <template #search>
           <input
             id="table-search__input"
-            v-model="searchWord"
+            v-model="searchString"
             type="text"
             class="table-search__input"
             placeholder="Enter a word here..."
@@ -45,31 +45,38 @@
         </template>
 
         <template #selected-rows-action="{ selectedRows }">
-          <div class="select-category__wrapper">
-            <AppSelect
-              id="select-category"
-              v-model="selectedCategory"
-              name="select-category"
-              :options="categoryStore.data"
-            />
+          <template v-if="selectedRows.length > 0">
+            <div class="select-category__wrapper">
+              <AppSelect
+                id="select-category"
+                v-model="selectedCategory"
+                name="select-category"
+                :options="categoryStore.data"
+              />
+
+              <button
+                class="selected-button confirm"
+                type="button"
+                @click="changeCategory(selectedRows)"
+              >
+                Change category
+              </button>
+            </div>
 
             <button
-              class="selected-button confirm"
+              class="selected-button remove-button"
               type="button"
-              @click="changeCategory(selectedRows)"
+              @click="removeWords(selectedRows)"
             >
-              Change category
+              Remove selected
             </button>
-          </div>
+          </template>
 
-
-          <button
-            class="selected-button remove-button"
-            type="button"
-            @click="removeWords(selectedRows)"
-          >
-            Remove selected words
-          </button>
+          <AppPagination
+            v-else
+            v-model="currentPage"
+            :total-items="1000"
+          />
         </template>
 
         <template
@@ -95,13 +102,18 @@
 </template>
 
 <script setup lang="ts">
+import { AppPagination } from '@/components/common'
 import WordView from './WordView.vue'
 import { AppSelect, AppTable } from '@/components/common'
 import { computed, watch, ref, useTemplateRef } from 'vue'
-import { useFilterBySearch } from '@/composables/index.js'
+import { useSearch } from '@/composables/index.js'
 import { useCategoryStore, useWordStore } from '@/stores/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD, WORD_TABLE_MESSAGE } from '@/constants.js'
 import { reloadPage } from '@/utils/index.js'
+import { Word } from '@/types/word'
+import { useCustomFetch } from '@/composables/index.js'
+import { getWordlist } from '@/api/word'
+import { DEFAULT_FETCH_LIMIT, DEFAULT_WORD_SORT } from '@/constants'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
@@ -110,7 +122,7 @@ const word = ref(null)
 const isWordShown = computed(() => {
   return Boolean(word.value)
 })
-const toggleShowWord = (data) => {
+const toggleShowWord = (data: Word) => {
   word.value = isWordShown.value ? null : {
     ...data,
     category: categoryStore.selectedCategoryId
@@ -118,32 +130,23 @@ const toggleShowWord = (data) => {
 }
 
 const {
-  searchString: searchWord,
-  filteredData: foundedWords,
-  clearSearch,
-  isFilteredDataEmpty: isFoundedWordsEmpty
-} = useFilterBySearch(wordStore, 'word')
+  searchString,
+  hasActiveSearch,
+  clearSearch
+} = useSearch()
 
 const addWord = () => {
   toggleShowWord({
     ...EMPTY_WORD,
-    word: searchWord.value,
+    word: searchString.value,
     category: categoryStore.selectedCategoryId
   })
 }
 
-const tableMessage = computed(() => {
-  if(wordStore.isFetching) return WORD_TABLE_MESSAGE.fetching
-  if(wordStore.hasError) return WORD_TABLE_MESSAGE.error
-  if(wordStore.isEmpty) return WORD_TABLE_MESSAGE.empty
-  if(isFoundedWordsEmpty.value) return WORD_TABLE_MESSAGE.emptySearch
-
-  return null
-})
-
 const table = useTemplateRef('app-table')
-const removeWords = async (wordsIds) => {
+const removeWords = async (wordsIds: number[]) => {
   await wordStore.removeWords(wordsIds)
+  await fetchWordList()
   table.value?.clearSelectedRowsList()
 }
 
@@ -154,11 +157,60 @@ const selectedCategory = ref(initialCategory.value)
 watch(initialCategory, (newValue) => {
   selectedCategory.value = newValue
 })
-const changeCategory = (wordsIds) => {
-  wordStore.changeWordsCategory(selectedCategory.value, wordsIds)
+const changeCategory = async (wordsIds: number[]) => {
+  await wordStore.changeWordsCategory(selectedCategory.value, wordsIds)
+  await fetchWordList()
   selectedCategory.value = null
   table.value?.clearSelectedRowsList()
 }
+
+const currentPage = ref(1)
+const queryParams = computed(() => ({
+  word: searchString.value,
+  offset: currentPage.value - 1,
+  sortColumn: DEFAULT_WORD_SORT.column,
+  sortDirection: DEFAULT_WORD_SORT.direction,
+  limit: DEFAULT_FETCH_LIMIT
+}))
+watch(searchString, () => {
+  if (searchString.value.length) {
+    currentPage.value = 1
+  }
+})
+
+const resetQueryParams = () => {
+  searchString.value = ''
+  currentPage.value = 1
+}
+
+const tableMessage = computed(() => {
+  if (hasError.value) return WORD_TABLE_MESSAGE.error
+  if (!hasActiveSearch.value && isEmpty.value) return WORD_TABLE_MESSAGE.empty
+  if (hasActiveSearch.value && isEmpty.value) return WORD_TABLE_MESSAGE.emptySearch
+
+  return null
+})
+
+const {
+  isEmpty,
+  hasError,
+  data: wordList,
+  fetchData,
+} = useCustomFetch(getWordlist)
+
+
+const fetchWordList = async () => {
+  await fetchData(categoryStore.selectedCategoryId, queryParams.value)
+}
+
+watch(() => categoryStore.selectedCategoryId, () => {
+  resetQueryParams()
+  fetchWordList()
+})
+
+watch(queryParams, () => {
+  fetchWordList()
+}, { immediate: true })
 </script>
 
 
@@ -174,9 +226,7 @@ const changeCategory = (wordsIds) => {
 .word-list {
   flex-grow: 1;
   padding: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
+
 }
 
 .scrollable-table-container {
@@ -198,7 +248,7 @@ const changeCategory = (wordsIds) => {
   border-color: purple;
 }
 
-.table-search__button  {
+.table-search__button {
   border: 2px solid lavender;
   padding: 4px 8px;
   outline: none;
@@ -235,5 +285,9 @@ const changeCategory = (wordsIds) => {
 .remove-button {
   margin-left: 16px;
   margin-right: 8px;
+}
+
+.wordlist-pagination-wrapper {
+  margin-top: 32px;
 }
 </style>

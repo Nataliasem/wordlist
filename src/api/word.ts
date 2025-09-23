@@ -2,79 +2,103 @@ import { WORD_URL } from '@/constants.js'
 import { normalizeNullable } from '@/utils/index.js'
 import { Word } from '@types/word.ts'
 
+interface QueryParams {
+    words: string
+    translation: string
+    sortColumn: string
+    sortDirection: string
+    limit: number
+    offset: number
+}
+
+const setQueryParams = (rawUrl: string, queryParams?: QueryParams): string | URL => {
+    if(!queryParams) return rawUrl
+
+    const url = new URL(rawUrl)
+    Object.keys(queryParams).forEach(key => {
+        if(['', undefined].includes(queryParams[key])) {
+            return
+        }
+        url.searchParams.append(key, queryParams[key])
+    })
+    return url
+}
+
 export const create = async (word: Word): Promise<void> => {
-  await fetch(`${WORD_URL}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(word)
-  })
+    await fetch(`${WORD_URL}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(word)
+    })
 }
 
 export const update = async (word: Word): Promise<void> => {
-  await fetch(`${WORD_URL}/${word.id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(word)
-  })
+    await fetch(`${WORD_URL}/${word.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(word)
+    })
 }
 
 export const remove = async (wordId: number): Promise<void> => {
-  await fetch(`${WORD_URL}/${ wordId }`, {
-    method: 'DELETE'
-  })
+    await fetch(`${WORD_URL}/${wordId}`, {
+        method: 'DELETE'
+    })
 }
 
 export const removeMany = async (wordIds: number[]): Promise<void> => {
-  await fetch(`${WORD_URL}/delete-bulk`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(wordIds)
-  })
+    await fetch(`${WORD_URL}/delete-bulk`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(wordIds)
+    })
 }
 
-export const getWordlist = async (categoryId: number): Promise<Word[]> => {
-  const rawData =  categoryId
-     ? await getWordlistByCategory(categoryId)
-     : await getWordlistOrphans()
+export const getWordlist = async (categoryId: number, queryParams?: QueryParams): Promise<Word[]> => {
+    const rawData = categoryId
+        ? await getWordlistByCategory(categoryId, queryParams)
+        : await getWordlistOrphans(queryParams)
 
-  return rawData.map(word => normalizeNullable(word, ['id', 'category']))
+    return rawData.map(word => normalizeNullable(word, ['id', 'category']))
 }
 
-export const getWordlistByCategory = async (categoryId: number): Promise<Word[]> => {
-  const response = await fetch(`${WORD_URL}/categories/${ categoryId }`)
-  if (response.ok) {
-    return await response.json()
-  } else {
-    return []
-  }
+export const getWordlistByCategory = async (categoryId: number, queryParams?: QueryParams): Promise<Word[]> => {
+    const url = setQueryParams(`${WORD_URL}/categories/${categoryId}`, queryParams)
+    const response = await fetch(url)
+    if (response.ok) {
+        return await response.json()
+    } else {
+        return []
+    }
 }
 
-export const getWordlistOrphans = async (): Promise<Word[]>  => {
-  const response = await fetch(`${WORD_URL}/categories/orphan`)
-  if (response.ok) {
-   return await response.json()
-  } else {
-    return []
-  }
+export const getWordlistOrphans = async (queryParams?: QueryParams): Promise<Word[]> => {
+    const url = setQueryParams(`${WORD_URL}/categories/orphan`, queryParams)
+    const response = await fetch(url)
+    if (response.ok) {
+        return await response.json()
+    } else {
+        return []
+    }
 }
 
 export const changeCategory = async (categoryId: number | null, updatedWords: number[]): Promise<void> => {
-  await fetch(`${WORD_URL}/change-category`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      wordIds: updatedWords,
-      categoryId
+    await fetch(`${WORD_URL}/change-category`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            wordIds: updatedWords,
+            categoryId
+        })
     })
-  })
 }
 
 
