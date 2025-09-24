@@ -5,6 +5,7 @@ import AppSelect from './form/AppSelect.vue'
 import AppTextarea from './form/AppTextarea.vue'
 import AppTable from './table/AppTable.vue'
 import AppPagination from './AppPagination.vue'
+import AppView from './AppView.vue'
 
 export {
   AppModal,
@@ -13,5 +14,6 @@ export {
   AppSelect,
   AppTextarea,
   AppTable,
-  AppPagination
+  AppPagination,
+  AppView
 }

@@ -95,7 +95,7 @@
     </div>
   </div>
 
-  <WordView
+  <AppView
     :show="isWordViewShown"
     :ignore-el-selectors="['.table-row', '#add-word-button']"
     @hide="toggleWordView"
@@ -105,14 +105,13 @@
       @submit="createOrUpdateWord"
       @cancel="toggleWordView"
     />
-  </WordView>
+  </AppView>
 </template>
 
 <script setup lang="ts">
 import { computed, watch, ref, useTemplateRef } from 'vue'
-import WordView from './WordView.vue'
 import WordForm from './WordForm.vue'
-import { AppSelect, AppTable, AppPagination } from '@/components/common'
+import { AppSelect, AppTable, AppPagination, AppView } from '@/components/common'
 import { useWordsFetch, useWordView } from '@/composables/index.js'
 import { useCategoryStore } from '@/stores/index.js'
 import { reloadPage } from '@/utils/index.js'
