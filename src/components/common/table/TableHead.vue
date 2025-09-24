@@ -41,6 +41,35 @@
               fill="lightgrey"
             />
           </button>
+
+          <span
+            v-if="item.sortable"
+            class="sort-icon__wrapper"
+          >
+            <button
+              v-if="sortedBy.sortDirection === 'asc'"
+              type="button"
+              @click="sortByColumn(item.key)"
+            >
+              <v-icon
+                name="ri-sort-asc"
+                title="Sort ascending"
+                fill="orange"
+              />
+            </button>
+
+            <button
+              v-else
+              type="button"
+              @click="sortByColumn(item.key)"
+            >
+              <v-icon
+                name="ri-sort-desc"
+                title="Sort descending"
+                fill="mediumpurple"
+              />
+            </button>
+          </span>
         </span>
       </th>
     </tr>
@@ -49,6 +78,10 @@
 
 <script setup lang="ts">
 const hiddenColumns = defineModel<Set<string>>('hiddenColumns')
+const sortedBy = defineModel<{
+  sortColumn: string
+  sortDirection: string
+}>('sortedBy')
 
 const allSelected = defineModel<boolean>('all-selected', {default: false})
 
@@ -57,6 +90,7 @@ defineProps<{
     key: string
     title: string
     required: boolean
+    sortable: boolean
   }[]
 }>()
 
@@ -68,6 +102,11 @@ const toggleColumnVisibility = (columnKey: string) => {
   } else {
     hiddenColumns.value.add(columnKey)
   }
+}
+
+const sortByColumn = (column: string) => {
+  sortedBy.value.sortColumn = column
+  sortedBy.value.sortDirection = sortedBy.value.sortDirection === 'asc' ? 'desc' : 'asc'
 }
 </script>
 

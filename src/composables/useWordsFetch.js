@@ -29,16 +29,22 @@ export function useWordsFetch() {
   })
 
   const currentPage = ref(1)
+  const sortedBy = ref({
+    sortColumn: DEFAULT_WORD_SORT.column,
+    sortDirection: DEFAULT_WORD_SORT.direction,
+  })
   const queryParams = computed(() => ({
     word: searchString.value,
     offset: currentPage.value - 1,
-    sortColumn: DEFAULT_WORD_SORT.column,
-    sortDirection: DEFAULT_WORD_SORT.direction,
+    sortColumn: sortedBy.value.sortColumn,
+    sortDirection: sortedBy.value.sortDirection,
     limit: DEFAULT_FETCH_LIMIT
   }))
   const resetQueryParams = () => {
     searchString.value = ''
     currentPage.value = 1
+    sortedBy.value.sortColumn = DEFAULT_WORD_SORT.column
+    sortedBy.value.sortDirection = DEFAULT_WORD_SORT.direction
   }
   const fetchWordList = async () => {
     await fetchData(categoryStore.selectedCategoryId, queryParams.value)
@@ -81,6 +87,7 @@ export function useWordsFetch() {
   }
 
   return {
+    sortedBy,
     currentPage,
     searchString,
     fetchMessage,

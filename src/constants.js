@@ -3,10 +3,10 @@ export const WORD_URL = API_URL + '/api/v1/words'
 export const CATEGORY_URL = API_URL + '/api/v1/categories'
 
 export const WORD_TABLE_CONFIG = [
-  { title: 'Word', key: 'word', required: true},
-  { title: 'Transcription', key: 'transcription', required: false},
-  { title: 'Definition', key: 'definition', required: false},
-  { title: 'Translation', key: 'translation', required: false}
+  { title: 'Word', key: 'word', required: true, sortable: true },
+  { title: 'Transcription', key: 'transcription', required: false, sortable: false},
+  { title: 'Definition', key: 'definition', required: false, sortable: false},
+  { title: 'Translation', key: 'translation', required: false, sortable: false}
 ]
 
 export const EMPTY_WORD = {
