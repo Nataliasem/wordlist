@@ -7,16 +7,14 @@
       <slot name="search" />
     </div>
 
-    <div
-      v-if="selectedRows.length"
-      class="selected-rows-action__wrapper"
-    >
+    <div class="selected-rows-action__wrapper">
       <slot
         name="selected-rows-action"
         :selected-rows="selectedRows"
       />
 
       <button
+        v-if="selectedRows.length"
         class="selected-button cancel"
         type="button"
         @click="clearSelectedRowsList"
@@ -35,7 +33,7 @@
     />
 
     <tbody>
-      <tr v-if="$slots['table-message']">
+      <tr v-if="!tableData.length">
         <td
           class="table-message"
           :colspan="columnLength"

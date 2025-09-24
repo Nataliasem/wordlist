@@ -19,10 +19,6 @@ export const EMPTY_WORD = {
 }
 
 export const WORD_TABLE_MESSAGE = {
-  fetching: {
-    type: 'fetching',
-    text: 'Words are fetching...'
-  },
   empty: {
     type: 'empty',
     text: 'No words in this category.'
@@ -45,3 +41,10 @@ export const WORD_FORM_CONFIG = [
   'translation',
   'examples'
 ]
+
+export const DEFAULT_FETCH_LIMIT = 30
+
+export const DEFAULT_WORD_SORT = {
+  column: 'word',
+  direction: 'asc'
+}

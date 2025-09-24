@@ -3,53 +3,37 @@
     <Transition name="slide-right">
       <div
         v-if="show"
-        ref="word-view"
-        class="word-view"
+        ref="app-view"
+        class="app-view"
       >
-        <WordForm
-          :word="word"
-          @submit="save"
-          @cancel="$emit('hide-word')"
-        />
+        <slot />
       </div>
     </Transition>
   </Teleport>
 </template>
 
 <script setup lang="ts">
-import WordForm from './WordForm.vue'
-import { useWordStore } from '@/stores/index.js'
 import { useTemplateRef } from 'vue'
 import { onClickOutside } from '@vueuse/core'
-import { Word } from '@/types/word.ts'
 
-const { show = false } = defineProps<{
+const { show = false, ignoreElSelectors = [] } = defineProps<{
   show?: boolean
-  word: Word | null
+  ignoreElSelectors?: string[]
 }>()
 
-const emit = defineEmits([ 'hide-word' ])
+const emit = defineEmits<{
+  hide: []
+}>()
 
-const target = useTemplateRef('word-view')
-const ignoreElSelector = '.table-row'
+const target = useTemplateRef('app-view')
 onClickOutside(
   target,
-  () => emit('hide-word'),
-  { ignore: [ignoreElSelector] })
-
-const wordStore = useWordStore()
-const save = async (word: Word) => {
-  if(word.id) {
-    await wordStore.updateWord(word)
-  } else {
-    await wordStore.createWord(word)
-  }
-  emit('hide-word')
-}
+  () => emit('hide'),
+  { ignore: ignoreElSelectors })
 </script>
 
 <style scoped>
-.word-view {
+.app-view {
   position: fixed;
   right: 0;
   z-index: 999;
@@ -77,8 +61,8 @@ const save = async (word: Word) => {
   transform: translateX(100%);
 }
 
-.view-enter-from .word-view,
-.view-leave-to .word-view {
+.view-enter-from .app-view,
+.view-leave-to .app-view {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
