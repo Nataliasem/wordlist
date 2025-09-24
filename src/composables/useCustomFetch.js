@@ -1,4 +1,5 @@
 import { computed, ref } from 'vue'
+import { useThrottleFn } from '@vueuse/core'
 
 export function useCustomFetch(apiMethod) {
   const isFetching = ref(false)
@@ -8,7 +9,7 @@ export function useCustomFetch(apiMethod) {
     return !isFetching.value && (hasError.value || data.value.length === 0)
   })
 
-  const fetchData = async (...params) => {
+  const fetchDataNoThrottling = async (...params) => {
     isFetching.value = true
     try {
       data.value = await apiMethod(...params)
@@ -18,6 +19,7 @@ export function useCustomFetch(apiMethod) {
       isFetching.value = false
     }
   }
+  const fetchData = useThrottleFn(fetchDataNoThrottling, 100)
 
   return {
     isFetching,
