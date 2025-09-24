@@ -13,13 +13,10 @@ import {
   RiEyeLine,
 } from 'oh-vue-icons/icons'
 
-
-
 addIcons(RiCheckboxLine, RiDeleteBin2Line, RiPencilLine, RiDeleteBack2Line, RiPlayListAddFill, RiEyeOffLine, RiEyeLine)
 
 const pinia = createPinia()
 const app = createApp(App)
 app.use(pinia)
-
 app.component('VIcon', OhVueIcon)
 app.mount('#app')
