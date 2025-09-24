@@ -3,8 +3,8 @@
     <Transition name="slide-right">
       <div
         v-if="show"
-        ref="word-view"
-        class="word-view"
+        ref="app-view"
+        class="app-view"
       >
         <slot />
       </div>
@@ -16,16 +16,16 @@
 import { useTemplateRef } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
-const { show = false } = defineProps<{
+const { show = false, ignoreElSelectors = [] } = defineProps<{
   show?: boolean
+  ignoreElSelectors?: string[]
 }>()
 
 const emit = defineEmits<{
   hide: []
 }>()
 
-const target = useTemplateRef('word-view')
-const ignoreElSelectors = ['.table-row', '#add-word-button']
+const target = useTemplateRef('app-view')
 onClickOutside(
   target,
   () => emit('hide'),
@@ -33,7 +33,7 @@ onClickOutside(
 </script>
 
 <style scoped>
-.word-view {
+.app-view {
   position: fixed;
   right: 0;
   z-index: 999;
@@ -61,8 +61,8 @@ onClickOutside(
   transform: translateX(100%);
 }
 
-.view-enter-from .word-view,
-.view-leave-to .word-view {
+.view-enter-from .app-view,
+.view-leave-to .app-view {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }

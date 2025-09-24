@@ -97,6 +97,7 @@
 
   <WordView
     :show="isWordViewShown"
+    :ignore-el-selectors="['.table-row', '#add-word-button']"
     @hide="toggleWordView"
   >
     <WordForm
