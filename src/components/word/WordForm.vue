@@ -4,7 +4,7 @@
     @cancel="$emit('cancel')"
   >
     <template #app-form__header>
-      <span v-if="title">Edit the word <span class="word-name">{{ title }}</span></span>
+      <span v-if="title">Edit the word <span class="italic font-light">{{ title }}</span></span>
       <span v-else>Add a new word</span>
     </template>
 
@@ -79,11 +79,3 @@ const submit = () => {
   emit('submit', updatedWord.value)
 }
 </script>
-
-<style scoped>
-.word-name {
-  font-style: italic;
-  font-weight: 400;
-}
-</style>
-

@@ -17,14 +17,14 @@
           <div class="modal-body__footer">
             <button
               type="button"
-              class="app-button app-button__confirm"
+              class="app-button bg-violet-800 hover:bg-violet-700"
               @click="$emit('confirm')"
             >
               <slot name="confirm-text" />
             </button>
             <button
               type="button"
-              class="app-button app-button__cancel"
+              class="app-button bg-red-900 hover:bg-red-800"
               @click="$emit('cancel')"
             >
               <slot name="cancel-text">

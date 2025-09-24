@@ -1,7 +1,7 @@
 <template>
   <thead>
     <tr>
-      <th class="required-column-header">
+      <th class="w-8 text-center">
         <input
           id="select-all"
           v-model="allSelected"
@@ -17,7 +17,7 @@
       >
         <span :class="{'required-field': item.required}">{{ item.title }}</span>
 
-        <span class="display-icon__wrapper">
+        <span class="p-2">
           <button
             v-if="hiddenColumns.has(item.key)"
             type="button"
@@ -109,14 +109,3 @@ const sortByColumn = (column: string) => {
   sortedBy.value.sortDirection = sortedBy.value.sortDirection === 'asc' ? 'desc' : 'asc'
 }
 </script>
-
-<style scoped>
-.display-icon__wrapper {
-  padding: 4px;
-}
-
-th.required-column-header {
-  width: 32px;
-  text-align: center;
-}
-</style>

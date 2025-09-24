@@ -1,9 +1,8 @@
 <template>
-  <div class="app-form__field">
+  <div class="flex flex-col gap-4">
     <label
       v-if="label"
       :for="id"
-      class="form-field__label"
     >
       {{ label }}:
     </label>
@@ -11,7 +10,7 @@
       :id="id"
       v-model="model"
       :name="name"
-      class="app-select"
+      class="app-input py-2"
     >
       <option
         v-for="item in options"
@@ -39,9 +38,3 @@ interface Props {
 
 const { valueProp = 'id', nameProp = 'name', label = ''} = defineProps<Props>()
 </script>
-
-<style scoped>
-.app-select {
-  min-height: 32px;
-}
-</style>

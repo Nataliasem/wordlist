@@ -1,5 +1,5 @@
 <template>
-  <div class="add-example__wrapper">
+  <div class="flex flex-col gap-4">
     <AppTextarea
       id="examples"
       v-model="example"
@@ -10,10 +10,10 @@
         <li
           v-for="(item, index) in model"
           :key="item"
-          class="example-item"
+          class="flex gap-2 mb-2"
         >
           <button
-            class="icon-button_filled"
+            class="cursor-pointer"
             @click="deleteExample(index)"
           >
             <v-icon
@@ -27,16 +27,15 @@
     </AppTextarea>
 
     <button
-      class="icon-button_filled add-example-button"
+      class="self-start cursor-pointer text-purple-700"
       type="button"
       @click="addExample"
     >
       <v-icon
         name="ri-play-list-add-fill"
         title="Add to wordlist"
-        fill="purple"
       />
-      <span>Add example</span>
+      <span class="ml-1">Add example</span>
     </button>
   </div>
 </template>
@@ -60,35 +59,3 @@ const hasExamples = computed(() => {
   return model.value.length
 })
 </script>
-
-<style scoped>
-.add-example__wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.add-example__wrapper textarea {
-  flex-grow: 1;
-}
-
-.add-example__wrapper button {
-  align-self: flex-start;
-}
-
-li.example-item {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-li.example-item button {
-  align-self: start;
-}
-
-.icon-button_filled.add-example-button {
-  color: purple;
-  display: flex;
-  gap: 8px;
-}
-</style>

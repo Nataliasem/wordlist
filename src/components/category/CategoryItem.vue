@@ -37,9 +37,9 @@
         </div>
 
         <template v-else>
-          <div class="truncated">
+          <p class="overflow-hidden text-ellipsis">
             {{ item.name }}
-          </div>
+          </p>
 
           <div
             class="category-actions"
