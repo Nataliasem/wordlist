@@ -80,12 +80,12 @@
         </template>
 
         <template
-          v-if="tableMessage"
+          v-if="fetchMessage"
           #table-message
         >
-          <p :class="`table-message__${tableMessage.type}`">
-            <span>{{ tableMessage.text }}</span>
-            <span v-if="tableMessage.type === 'error'">
+          <p :class="`table-message__${fetchMessage.type}`">
+            <span>{{ fetchMessage.text }}</span>
+            <span v-if="fetchMessage.type === 'error'">
               Please <a @click="reloadPage">reload the page</a>.
             </span>
           </p>
@@ -102,21 +102,19 @@
 </template>
 
 <script setup lang="ts">
-import { AppPagination } from '@/components/common'
-import WordView from './WordView.vue'
-import { AppSelect, AppTable } from '@/components/common'
 import { computed, watch, ref, useTemplateRef } from 'vue'
-import { useSearch } from '@/composables/index.js'
+import WordView from './WordView.vue'
+import { AppSelect, AppTable, AppPagination } from '@/components/common'
+import { useWordsFetch } from '@/composables/index.js'
 import { useCategoryStore, useWordStore } from '@/stores/index.js'
-import { WORD_TABLE_CONFIG, EMPTY_WORD, WORD_TABLE_MESSAGE } from '@/constants.js'
 import { reloadPage } from '@/utils/index.js'
+import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants.js'
 import { Word } from '@/types/word'
-import { useCustomFetch } from '@/composables/index.js'
-import { getWordlist } from '@/api/word'
-import { DEFAULT_FETCH_LIMIT, DEFAULT_WORD_SORT } from '@/constants'
 
 const categoryStore = useCategoryStore()
 const wordStore = useWordStore()
+
+const { currentPage, searchString, clearSearch, wordList, fetchMessage, fetchWordList } = useWordsFetch()
 
 const word = ref(null)
 const isWordShown = computed(() => {
@@ -128,13 +126,6 @@ const toggleShowWord = (data: Word) => {
     category: categoryStore.selectedCategoryId
   }
 }
-
-const {
-  searchString,
-  hasActiveSearch,
-  clearSearch
-} = useSearch()
-
 const addWord = () => {
   toggleShowWord({
     ...EMPTY_WORD,
@@ -163,56 +154,7 @@ const changeCategory = async (wordsIds: number[]) => {
   selectedCategory.value = null
   table.value?.clearSelectedRowsList()
 }
-
-const currentPage = ref(1)
-const queryParams = computed(() => ({
-  word: searchString.value,
-  offset: currentPage.value - 1,
-  sortColumn: DEFAULT_WORD_SORT.column,
-  sortDirection: DEFAULT_WORD_SORT.direction,
-  limit: DEFAULT_FETCH_LIMIT
-}))
-watch(searchString, () => {
-  if (searchString.value.length) {
-    currentPage.value = 1
-  }
-})
-
-const resetQueryParams = () => {
-  searchString.value = ''
-  currentPage.value = 1
-}
-
-const tableMessage = computed(() => {
-  if (hasError.value) return WORD_TABLE_MESSAGE.error
-  if (!hasActiveSearch.value && isEmpty.value) return WORD_TABLE_MESSAGE.empty
-  if (hasActiveSearch.value && isEmpty.value) return WORD_TABLE_MESSAGE.emptySearch
-
-  return null
-})
-
-const {
-  isEmpty,
-  hasError,
-  data: wordList,
-  fetchData,
-} = useCustomFetch(getWordlist)
-
-
-const fetchWordList = async () => {
-  await fetchData(categoryStore.selectedCategoryId, queryParams.value)
-}
-
-watch(() => categoryStore.selectedCategoryId, () => {
-  resetQueryParams()
-  fetchWordList()
-})
-
-watch(queryParams, () => {
-  fetchWordList()
-}, { immediate: true })
 </script>
-
 
 <style>
 .select-category__wrapper .app-select {
@@ -285,9 +227,5 @@ watch(queryParams, () => {
 .remove-button {
   margin-left: 16px;
   margin-right: 8px;
-}
-
-.wordlist-pagination-wrapper {
-  margin-top: 32px;
 }
 </style>
