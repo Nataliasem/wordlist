@@ -4,7 +4,6 @@ import { Word } from '@types/word.ts'
 
 interface QueryParams {
     words: string
-    translation: string
     sortColumn: string
     sortDirection: string
     limit: number
