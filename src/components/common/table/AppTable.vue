@@ -28,6 +28,7 @@
     <TableHead
       v-model:hidden-columns="hiddenColumns"
       v-model:all-selected="allSelected"
+      :sorted-by="sortedBy"
       :column-config="columnConfig"
       @select-all="selectAllRows"
     />
@@ -68,7 +69,12 @@ const props = defineProps<{
     title: string
     key: string
     required: boolean
+    sortable: boolean
   }[]
+  sortedBy: {
+    sortColumn: string
+    sortDirection: string
+  }
 }>()
 
 defineEmits<{

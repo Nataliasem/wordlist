@@ -7,6 +7,7 @@
         ref="app-table"
         :column-config="WORD_TABLE_CONFIG"
         :table-data="wordList"
+        :sorted-by="sortedBy"
         @click-row="editWord"
       >
         <template #search>
@@ -124,6 +125,7 @@ const TEMPORARY_TOTAL_PAGES = 1000
 const categoryStore = useCategoryStore()
 
 const {
+  sortedBy,
   currentPage,
   searchString,
   clearSearch,
