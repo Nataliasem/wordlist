@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import WordForm from './WordForm.vue'
-import { useWordStore } from '@/stores/index.js'
+import { useWordsFetch } from '@/composables/index.js'
 import { useTemplateRef } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import { Word } from '@/types/word.ts'
@@ -37,12 +37,12 @@ onClickOutside(
   () => emit('hide-word'),
   { ignore: [ignoreElSelector] })
 
-const wordStore = useWordStore()
+const { updateWord, createWord } = useWordsFetch()
 const save = async (word: Word) => {
   if(word.id) {
-    await wordStore.updateWord(word)
+    await updateWord(word)
   } else {
-    await wordStore.createWord(word)
+    await createWord(word)
   }
   emit('hide-word')
 }

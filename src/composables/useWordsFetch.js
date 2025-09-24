@@ -1,5 +1,5 @@
 import { useSearch, useCustomFetch } from '@/composables/index.js'
-import { getWordlist } from '@/api/word.js'
+import { getWordlist, create, update, remove, changeCategory, removeMany } from '@/api/word.ts'
 import { computed, ref, watch } from 'vue'
 import { DEFAULT_FETCH_LIMIT, DEFAULT_WORD_SORT, WORD_TABLE_MESSAGE } from '@/constants.js'
 import { useCategoryStore } from '@/stores/index.js'
@@ -36,20 +36,19 @@ export const useWordsFetch = () => {
     sortDirection: DEFAULT_WORD_SORT.direction,
     limit: DEFAULT_FETCH_LIMIT
   }))
+  const resetQueryParams = () => {
+    searchString.value = ''
+    currentPage.value = 1
+  }
+  const fetchWordList = async () => {
+    await fetchData(categoryStore.selectedCategoryId, queryParams.value)
+  }
+
   watch(searchString, () => {
     if (searchString.value.length) {
       currentPage.value = 1
     }
   })
-
-  const resetQueryParams = () => {
-    searchString.value = ''
-    currentPage.value = 1
-  }
-
-  const fetchWordList = async () => {
-    await fetchData(categoryStore.selectedCategoryId, queryParams.value)
-  }
 
   watch(() => categoryStore.selectedCategoryId, async () => {
     resetQueryParams()
@@ -60,13 +59,39 @@ export const useWordsFetch = () => {
     await fetchWordList()
   }, { immediate: true })
 
+  const createWord = async (word) => {
+    await create(word)
+    await fetchWordList()
+  }
+  const updateWord = async (word) => {
+    await update(word)
+    await fetchWordList()
+  }
+  const removeWord = async (id) => {
+    await remove(id)
+    await fetchWordList()
+  }
+  const removeWords = async (ids) => {
+    await removeMany(ids)
+    await fetchWordList()
+  }
+  const changeWordsCategory = async (categoryId, updatedWords) => {
+    await changeCategory(categoryId, updatedWords)
+    await fetchWordList()
+  }
+
   return {
     currentPage,
     searchString,
     fetchMessage,
     clearSearch,
     wordList,
-    fetchWordList
+    fetchWordList,
+    createWord,
+    updateWord,
+    removeWord,
+    removeWords,
+    changeWordsCategory
   }
 }
 

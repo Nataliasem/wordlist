@@ -66,7 +66,7 @@
             <button
               class="selected-button remove-button"
               type="button"
-              @click="removeWords(selectedRows)"
+              @click="removeSelectedWords(selectedRows)"
             >
               Remove selected
             </button>
@@ -106,15 +106,22 @@ import { computed, watch, ref, useTemplateRef } from 'vue'
 import WordView from './WordView.vue'
 import { AppSelect, AppTable, AppPagination } from '@/components/common'
 import { useWordsFetch } from '@/composables/index.js'
-import { useCategoryStore, useWordStore } from '@/stores/index.js'
+import { useCategoryStore } from '@/stores/index.js'
 import { reloadPage } from '@/utils/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants.js'
 import { Word } from '@/types/word'
 
 const categoryStore = useCategoryStore()
-const wordStore = useWordStore()
 
-const { currentPage, searchString, clearSearch, wordList, fetchMessage, fetchWordList } = useWordsFetch()
+const {
+  currentPage,
+  searchString,
+  clearSearch,
+  wordList,
+  fetchMessage,
+  removeWords,
+  changeWordsCategory
+} = useWordsFetch()
 
 const word = ref(null)
 const isWordShown = computed(() => {
@@ -135,9 +142,8 @@ const addWord = () => {
 }
 
 const table = useTemplateRef('app-table')
-const removeWords = async (wordsIds: number[]) => {
-  await wordStore.removeWords(wordsIds)
-  await fetchWordList()
+const removeSelectedWords = async (wordsIds: number[]) => {
+  await removeWords(wordsIds)
   table.value?.clearSelectedRowsList()
 }
 
@@ -149,8 +155,7 @@ watch(initialCategory, (newValue) => {
   selectedCategory.value = newValue
 })
 const changeCategory = async (wordsIds: number[]) => {
-  await wordStore.changeWordsCategory(selectedCategory.value, wordsIds)
-  await fetchWordList()
+  await changeWordsCategory(selectedCategory.value, wordsIds)
   selectedCategory.value = null
   table.value?.clearSelectedRowsList()
 }
