@@ -7,7 +7,7 @@
         ref="app-table"
         :column-config="WORD_TABLE_CONFIG"
         :table-data="wordList"
-        @click-row="toggleShowWord"
+        @click-row="editWord"
       >
         <template #search>
           <input
@@ -18,9 +18,10 @@
             placeholder="Enter a word here..."
           >
           <button
+            id="add-word-button"
             class="icon-button_filled table-search__button"
             type="button"
-            @click="showWordView"
+            @click="addWord"
           >
             <v-icon
               name="ri-play-list-add-fill"
@@ -75,7 +76,7 @@
           <AppPagination
             v-else
             v-model="currentPage"
-            :total-items="1000"
+            :total-items="TEMPORARY_TOTAL_PAGES"
           />
         </template>
 
@@ -96,12 +97,12 @@
 
   <WordView
     :show="isWordViewShown"
-    @hide="hideWordView"
+    @hide="toggleWordView"
   >
     <WordForm
       :word="word"
-      @submit="addOrUpdateWord"
-      @cancel="hideWordView"
+      @submit="createOrUpdateWord"
+      @cancel="toggleWordView"
     />
   </WordView>
 </template>
@@ -109,13 +110,16 @@
 <script setup lang="ts">
 import { computed, watch, ref, useTemplateRef } from 'vue'
 import WordView from './WordView.vue'
+import WordForm from './WordForm.vue'
 import { AppSelect, AppTable, AppPagination } from '@/components/common'
-import { useWordsFetch } from '@/composables/index.js'
+import { useWordsFetch, useWordView } from '@/composables/index.js'
 import { useCategoryStore } from '@/stores/index.js'
 import { reloadPage } from '@/utils/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants.js'
 import { Word } from '@/types/word'
-import WordForm from "@/components/word/WordForm.vue";
+
+// TODO: fix after backend WL-54
+const TEMPORARY_TOTAL_PAGES = 1000
 
 const categoryStore = useCategoryStore()
 
@@ -131,33 +135,30 @@ const {
   createWord
 } = useWordsFetch()
 
+const { isWordViewShown, toggleWordView } = useWordView()
 const word = ref(null)
-const isWordViewShown = computed(() => {
-  return Boolean(word.value)
-})
-const hideWordView = () => {
-  word.value = null
-}
-const toggleShowWord = (data: Word) => {
-  word.value = isWordViewShown.value ? null : {
+const editWord = (data: Word) => {
+  word.value = {
     ...data,
     category: categoryStore.selectedCategoryId
   }
+  toggleWordView()
 }
-const showWordView = () => {
-  toggleShowWord({
+const addWord = () => {
+  word.value = {
     ...EMPTY_WORD,
     word: searchString.value,
     category: categoryStore.selectedCategoryId
-  })
+  }
+  toggleWordView()
 }
-const addOrUpdateWord = async (updatedWord: Word) => {
+const createOrUpdateWord = async (updatedWord: Word) => {
   if(updatedWord.id) {
     await updateWord(updatedWord)
   } else {
     await createWord(updatedWord)
   }
-  hideWordView()
+  toggleWordView()
 }
 
 const table = useTemplateRef('app-table')

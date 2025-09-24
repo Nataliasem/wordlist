@@ -25,11 +25,11 @@ const emit = defineEmits<{
 }>()
 
 const target = useTemplateRef('word-view')
-const ignoreElSelector = '.table-row'
+const ignoreElSelectors = ['.table-row', '#add-word-button']
 onClickOutside(
   target,
   () => emit('hide'),
-  { ignore: [ignoreElSelector] })
+  { ignore: ignoreElSelectors })
 </script>
 
 <style scoped>

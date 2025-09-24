@@ -4,7 +4,7 @@ import { computed, ref, watch } from 'vue'
 import { DEFAULT_FETCH_LIMIT, DEFAULT_WORD_SORT, WORD_TABLE_MESSAGE } from '@/constants.js'
 import { useCategoryStore } from '@/stores/index.js'
 
-export const useWordsFetch = () => {
+export function useWordsFetch() {
   const categoryStore = useCategoryStore()
 
   const {

@@ -4,6 +4,7 @@ import { useModal } from './useModal.js'
 import { useFilterBySearch } from './useFilterBySearch.js'
 import { useSearch } from './useSearch.js'
 import { useWordsFetch } from './useWordsFetch.js'
+import { useWordView } from './useWordView.js'
 
 export {
   useCustomFetch,
@@ -11,5 +12,6 @@ export {
   useModal,
   useFilterBySearch,
   useSearch,
-  useWordsFetch
+  useWordsFetch,
+  useWordView
 }
