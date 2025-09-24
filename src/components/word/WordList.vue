@@ -20,7 +20,7 @@
           <button
             class="icon-button_filled table-search__button"
             type="button"
-            @click="addWord"
+            @click="showWordView"
           >
             <v-icon
               name="ri-play-list-add-fill"
@@ -95,10 +95,15 @@
   </div>
 
   <WordView
-    :show="isWordShown"
-    :word="word"
-    @hide-word="word = null"
-  />
+    :show="isWordViewShown"
+    @hide="hideWordView"
+  >
+    <WordForm
+      :word="word"
+      @submit="addOrUpdateWord"
+      @cancel="hideWordView"
+    />
+  </WordView>
 </template>
 
 <script setup lang="ts">
@@ -110,6 +115,7 @@ import { useCategoryStore } from '@/stores/index.js'
 import { reloadPage } from '@/utils/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants.js'
 import { Word } from '@/types/word'
+import WordForm from "@/components/word/WordForm.vue";
 
 const categoryStore = useCategoryStore()
 
@@ -120,25 +126,38 @@ const {
   wordList,
   fetchMessage,
   removeWords,
-  changeWordsCategory
+  changeWordsCategory,
+  updateWord,
+  createWord
 } = useWordsFetch()
 
 const word = ref(null)
-const isWordShown = computed(() => {
+const isWordViewShown = computed(() => {
   return Boolean(word.value)
 })
+const hideWordView = () => {
+  word.value = null
+}
 const toggleShowWord = (data: Word) => {
-  word.value = isWordShown.value ? null : {
+  word.value = isWordViewShown.value ? null : {
     ...data,
     category: categoryStore.selectedCategoryId
   }
 }
-const addWord = () => {
+const showWordView = () => {
   toggleShowWord({
     ...EMPTY_WORD,
     word: searchString.value,
     category: categoryStore.selectedCategoryId
   })
+}
+const addOrUpdateWord = async (updatedWord: Word) => {
+  if(updatedWord.id) {
+    await updateWord(updatedWord)
+  } else {
+    await createWord(updatedWord)
+  }
+  hideWordView()
 }
 
 const table = useTemplateRef('app-table')

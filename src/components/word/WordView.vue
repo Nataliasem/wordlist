@@ -6,46 +6,30 @@
         ref="word-view"
         class="word-view"
       >
-        <WordForm
-          :word="word"
-          @submit="save"
-          @cancel="$emit('hide-word')"
-        />
+        <slot />
       </div>
     </Transition>
   </Teleport>
 </template>
 
 <script setup lang="ts">
-import WordForm from './WordForm.vue'
-import { useWordsFetch } from '@/composables/index.js'
 import { useTemplateRef } from 'vue'
 import { onClickOutside } from '@vueuse/core'
-import { Word } from '@/types/word.ts'
 
 const { show = false } = defineProps<{
   show?: boolean
-  word: Word | null
 }>()
 
-const emit = defineEmits([ 'hide-word' ])
+const emit = defineEmits<{
+  hide: []
+}>()
 
 const target = useTemplateRef('word-view')
 const ignoreElSelector = '.table-row'
 onClickOutside(
   target,
-  () => emit('hide-word'),
+  () => emit('hide'),
   { ignore: [ignoreElSelector] })
-
-const { updateWord, createWord } = useWordsFetch()
-const save = async (word: Word) => {
-  if(word.id) {
-    await updateWord(word)
-  } else {
-    await createWord(word)
-  }
-  emit('hide-word')
-}
 </script>
 
 <style scoped>
