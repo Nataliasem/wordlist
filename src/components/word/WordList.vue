@@ -6,18 +6,19 @@
       <AppTable
         ref="app-table"
         :column-config="WORD_TABLE_CONFIG"
-        :table-data="foundedWords"
-        @click-row="toggleShowWord"
+        :table-data="wordList"
+        @click-row="editWord"
       >
         <template #search>
           <input
             id="table-search__input"
-            v-model="searchWord"
+            v-model="searchString"
             type="text"
             class="table-search__input"
             placeholder="Enter a word here..."
           >
           <button
+            id="add-word-button"
             class="icon-button_filled table-search__button"
             type="button"
             @click="addWord"
@@ -45,40 +46,47 @@
         </template>
 
         <template #selected-rows-action="{ selectedRows }">
-          <div class="select-category__wrapper">
-            <AppSelect
-              id="select-category"
-              v-model="selectedCategory"
-              name="select-category"
-              :options="categoryStore.data"
-            />
+          <template v-if="selectedRows.length > 0">
+            <div class="select-category__wrapper">
+              <AppSelect
+                id="select-category"
+                v-model="selectedCategory"
+                name="select-category"
+                :options="categoryStore.data"
+              />
+
+              <button
+                class="selected-button confirm"
+                type="button"
+                @click="changeCategory(selectedRows)"
+              >
+                Change category
+              </button>
+            </div>
 
             <button
-              class="selected-button confirm"
+              class="selected-button remove-button"
               type="button"
-              @click="changeCategory(selectedRows)"
+              @click="removeSelectedWords(selectedRows)"
             >
-              Change category
+              Remove selected
             </button>
-          </div>
+          </template>
 
-
-          <button
-            class="selected-button remove-button"
-            type="button"
-            @click="removeWords(selectedRows)"
-          >
-            Remove selected words
-          </button>
+          <AppPagination
+            v-else
+            v-model="currentPage"
+            :total-items="TEMPORARY_TOTAL_PAGES"
+          />
         </template>
 
         <template
-          v-if="tableMessage"
+          v-if="fetchMessage"
           #table-message
         >
-          <p :class="`table-message__${tableMessage.type}`">
-            <span>{{ tableMessage.text }}</span>
-            <span v-if="tableMessage.type === 'error'">
+          <p :class="`table-message__${fetchMessage.type}`">
+            <span>{{ fetchMessage.text }}</span>
+            <span v-if="fetchMessage.type === 'error'">
               Please <a @click="reloadPage">reload the page</a>.
             </span>
           </p>
@@ -87,63 +95,75 @@
     </div>
   </div>
 
-  <WordView
-    :show="isWordShown"
-    :word="word"
-    @hide-word="word = null"
-  />
+  <AppView
+    :show="isWordViewShown"
+    :ignore-el-selectors="['.table-row', '#add-word-button']"
+    @hide="toggleWordView"
+  >
+    <WordForm
+      :word="word"
+      @submit="createOrUpdateWord"
+      @cancel="toggleWordView"
+    />
+  </AppView>
 </template>
 
 <script setup lang="ts">
-import WordView from './WordView.vue'
-import { AppSelect, AppTable } from '@/components/common'
 import { computed, watch, ref, useTemplateRef } from 'vue'
-import { useFilterBySearch } from '@/composables/index.js'
-import { useCategoryStore, useWordStore } from '@/stores/index.js'
-import { WORD_TABLE_CONFIG, EMPTY_WORD, WORD_TABLE_MESSAGE } from '@/constants.js'
+import WordForm from './WordForm.vue'
+import { AppSelect, AppTable, AppPagination, AppView } from '@/components/common'
+import { useWordsFetch, useWordView } from '@/composables/index.js'
+import { useCategoryStore } from '@/stores/index.js'
 import { reloadPage } from '@/utils/index.js'
+import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants.js'
+import { Word } from '@/types/word'
+
+// TODO: fix after backend WL-54
+const TEMPORARY_TOTAL_PAGES = 1000
 
 const categoryStore = useCategoryStore()
-const wordStore = useWordStore()
 
+const {
+  currentPage,
+  searchString,
+  clearSearch,
+  wordList,
+  fetchMessage,
+  removeWords,
+  changeWordsCategory,
+  updateWord,
+  createWord
+} = useWordsFetch()
+
+const { isWordViewShown, toggleWordView } = useWordView()
 const word = ref(null)
-const isWordShown = computed(() => {
-  return Boolean(word.value)
-})
-const toggleShowWord = (data) => {
-  word.value = isWordShown.value ? null : {
+const editWord = (data: Word) => {
+  word.value = {
     ...data,
     category: categoryStore.selectedCategoryId
   }
+  toggleWordView()
 }
-
-const {
-  searchString: searchWord,
-  filteredData: foundedWords,
-  clearSearch,
-  isFilteredDataEmpty: isFoundedWordsEmpty
-} = useFilterBySearch(wordStore, 'word')
-
 const addWord = () => {
-  toggleShowWord({
+  word.value = {
     ...EMPTY_WORD,
-    word: searchWord.value,
+    word: searchString.value,
     category: categoryStore.selectedCategoryId
-  })
+  }
+  toggleWordView()
 }
-
-const tableMessage = computed(() => {
-  if(wordStore.isFetching) return WORD_TABLE_MESSAGE.fetching
-  if(wordStore.hasError) return WORD_TABLE_MESSAGE.error
-  if(wordStore.isEmpty) return WORD_TABLE_MESSAGE.empty
-  if(isFoundedWordsEmpty.value) return WORD_TABLE_MESSAGE.emptySearch
-
-  return null
-})
+const createOrUpdateWord = async (updatedWord: Word) => {
+  if(updatedWord.id) {
+    await updateWord(updatedWord)
+  } else {
+    await createWord(updatedWord)
+  }
+  toggleWordView()
+}
 
 const table = useTemplateRef('app-table')
-const removeWords = async (wordsIds) => {
-  await wordStore.removeWords(wordsIds)
+const removeSelectedWords = async (wordsIds: number[]) => {
+  await removeWords(wordsIds)
   table.value?.clearSelectedRowsList()
 }
 
@@ -154,13 +174,12 @@ const selectedCategory = ref(initialCategory.value)
 watch(initialCategory, (newValue) => {
   selectedCategory.value = newValue
 })
-const changeCategory = (wordsIds) => {
-  wordStore.changeWordsCategory(selectedCategory.value, wordsIds)
+const changeCategory = async (wordsIds: number[]) => {
+  await changeWordsCategory(selectedCategory.value, wordsIds)
   selectedCategory.value = null
   table.value?.clearSelectedRowsList()
 }
 </script>
-
 
 <style>
 .select-category__wrapper .app-select {
@@ -174,9 +193,7 @@ const changeCategory = (wordsIds) => {
 .word-list {
   flex-grow: 1;
   padding: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
+
 }
 
 .scrollable-table-container {
@@ -198,7 +215,7 @@ const changeCategory = (wordsIds) => {
   border-color: purple;
 }
 
-.table-search__button  {
+.table-search__button {
   border: 2px solid lavender;
   padding: 4px 8px;
   outline: none;

@@ -11,11 +11,12 @@
     "format": "prettier .  --write"
   },
   "dependencies": {
-    "@vueuse/core": "^13.8.0",
+    "@vueuse/core": "^13.9.0",
     "lodash": "^4.17.21",
     "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^3.0.3",
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "vue-awesome-paginate": "^1.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
