@@ -1,15 +1,15 @@
 <template>
-  <div class="category-list">
-    <div class="add-category__wrapper">
+  <div class="bg-gray-100 p-4 shadow-xl/20">
+    <div class="flex justify-between gap-1 py-2">
       <input
         v-model="searchCategory"
-        class="category-input"
+        class="app-input"
         type="text"
         placeholder="Find or add category"
         name="add-category"
       >
       <button
-        class="app-button"
+        class="app-button border-violet-100 hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300"
         :disabled="!isFoundedCategoriesEmpty"
         @click="addCategory"
       >
@@ -18,18 +18,18 @@
     </div>
 
     <div
-      v-if="categoryStore.hasError"
-      class="fetching-message"
+      v-if="categoryStore.hasError || categoryStore.isEmpty"
+      class="bg-violet-100 p-8 rounded-sm border-2 border-violet-300"
     >
-      <p>Something went wrong.</p>
-      <p>Please <a @click="reloadPage">reload the page</a>.</p>
-    </div>
-    <div
-      v-else-if="categoryStore.isEmpty"
-      class="fetching-message"
-    >
-      <p>Category`s list is empty.</p>
-      <p>Add the first category</p>
+      <template v-if="categoryStore.hasError">
+        <p>Something went wrong.</p>
+        <p>Please <a @click="reloadPage">reload the page</a>.</p>
+      </template>
+
+      <template v-if="categoryStore.isEmpty">
+        <p>Category`s list is empty.</p>
+        <p>Add the first category</p>
+      </template>
     </div>
 
     <CategoryItem
@@ -48,7 +48,12 @@ import { useFilterBySearch } from '@/composables/index.js'
 
 const categoryStore = useCategoryStore()
 
-const { searchString: searchCategory, filteredData: foundedCategories, clearSearch, isFilteredDataEmpty: isFoundedCategoriesEmpty } = useFilterBySearch(categoryStore, 'name')
+const {
+  searchString: searchCategory,
+  filteredData: foundedCategories,
+  clearSearch,
+  isFilteredDataEmpty: isFoundedCategoriesEmpty
+} = useFilterBySearch(categoryStore, 'name')
 
 const addCategory = async () => {
   if (!searchCategory.value) return
@@ -61,40 +66,3 @@ onMounted(async () => {
   categoryStore.selectFirstCategoryAsDefault()
 })
 </script>
-
-<style>
-.category-list {
-  width: 256px;
-  background-color: #f1f0f2;
-  padding: 16px;
-  -webkit-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
-  -moz-box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
-  box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
-}
-
-.add-category__wrapper {
-  display: flex;
-  justify-content: space-between;
-  gap: 4px;
-  padding: 8px 0;
-}
-
-.category-input {
-  flex-grow: 1;
-  border: 2px solid #e7e6e9;
-  border-radius: 4px;
-  padding: 2px 4px;
-  cursor: pointer;
-}
-
-.add-category__wrapper .category-input:hover {
-  background-color: lavender;
-}
-
-.fetching-message {
-  background-color: lavender;
-  padding: 8px;
-  border-radius: 4px;
-  border: 2px solid #e7e6e9;
-}
-</style>

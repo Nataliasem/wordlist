@@ -26,7 +26,7 @@
             name="update-category"
           >
           <button
-            class="app-button"
+            class="app-button border-transparent"
             @click.stop="updateCategory"
           >
             <v-icon
@@ -46,7 +46,7 @@
             :class="{ 'category-actions__selected' : item.id === categoryStore.selectedCategoryId }"
           >
             <button
-              class="app-button"
+              class="app-button border-transparent"
               :disabled="!item.id"
               @click.stop="toggleUpdatingMode(item)"
             >
@@ -56,7 +56,7 @@
               />
             </button>
             <button
-              class="app-button"
+              class="app-button border-transparent"
               :disabled="!item.id"
               @click.stop="openModal"
             >
@@ -147,6 +147,7 @@ const deleteCategory = async () => {
 
 <style>
 .category-items__wrapper {
+  padding-top: 32px;
   overflow-y: scroll;
   height: 85%;
   position: fixed;

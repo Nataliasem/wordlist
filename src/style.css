@@ -15,8 +15,15 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+#app {
+    width: 100%;
+}
+
 body {
-    @apply h-screen w-screen;
+    margin: 0;
+    display: flex;
+    min-width: 320px;
+    min-height: 100vh;
 }
 
 .app-table th, .app-table td {
