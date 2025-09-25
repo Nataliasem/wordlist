@@ -22,32 +22,25 @@ const { itemsPerPage = 10, maxPagesShown = 5} = defineProps<Props>()
 </script>
 
 <style>
+@reference "tailwindcss";
+
 .pagination-container {
-  display: flex;
-  column-gap: 8px;
+  @apply flex gap-2;
 }
 
 .paginate-buttons {
-  height: 40px;
-  width: 40px;
-  border-radius: 4px;
-  cursor: pointer;
-  background-color: white;
-  border: 2px solid lavender;
-  color: black;
-}
-
-.paginate-buttons:hover {
-  background-color: lavender;
-  border-color: mediumpurple;
+  @apply cursor-pointer;
+  @apply border-2 border-transparent rounded-sm;
+  @apply outline-none;
+  @apply border-violet-200 h-10 w-10 hover:bg-violet-100 focus:bg-violet-300 focus:text-white focus:border-violet-300;
+  @apply transition-all duration-300 ease-in;
 }
 
 .active-page {
-  background-color: mediumpurple;
-  color: white;
+  @apply bg-amber-500 border-amber-500 text-white;
 }
 
 .active-page:hover {
-  background-color: purple;
+  @apply bg-amber-500 border-amber-500;
 }
 </style>

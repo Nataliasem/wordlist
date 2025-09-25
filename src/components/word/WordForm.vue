@@ -4,7 +4,7 @@
     @cancel="$emit('cancel')"
   >
     <template #app-form__header>
-      <span v-if="title">Edit the word <span class="word-name">{{ title }}</span></span>
+      <span v-if="title">Edit the word <span class="italic font-light">{{ title }}</span></span>
       <span v-else>Add a new word</span>
     </template>
 
@@ -12,7 +12,10 @@
       v-for="item in WORD_FORM_CONFIG"
       :key="item"
     >
-      <div v-if="item === 'category'">
+      <div
+        v-if="item === 'category'"
+        class="mb-8"
+      >
         <AppSelect
           :id="item"
           v-model="updatedWord.category"
@@ -26,7 +29,10 @@
         <WordExamplesInput v-model="updatedWord.examples" />
       </div>
 
-      <div v-else>
+      <div
+        v-else
+        class="mb-8"
+      >
         <AppTextarea
           :id="item"
           :ref="(el) => { inputRefs[item] = el }"
@@ -79,11 +85,3 @@ const submit = () => {
   emit('submit', updatedWord.value)
 }
 </script>
-
-<style scoped>
-.word-name {
-  font-style: italic;
-  font-weight: 400;
-}
-</style>
-

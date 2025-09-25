@@ -1,7 +1,9 @@
 <template>
-  <div class="word-list">
-    <div class="scrollable-table-container">
-      <h2>Category: {{ categoryStore.selectedCategoryName }}</h2>
+  <div class="word-list flex-1 p-4">
+    <div>
+      <h2 class="text-3xl mb-8">
+        Category: {{ categoryStore.selectedCategoryName }}
+      </h2>
 
       <AppTable
         ref="app-table"
@@ -15,12 +17,12 @@
             id="table-search__input"
             v-model="searchString"
             type="text"
-            class="table-search__input"
+            class="app-input p-1 h-10 min-w-xs"
             placeholder="Enter a word here..."
           >
           <button
             id="add-word-button"
-            class="icon-button_filled table-search__button"
+            class="app-button border-violet-200 hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300"
             type="button"
             @click="addWord"
           >
@@ -33,7 +35,7 @@
           </button>
 
           <button
-            class="icon-button_filled table-search__button"
+            class="app-button border-violet-200 hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300"
             type="button"
             @click="clearSearch"
           >
@@ -48,16 +50,17 @@
 
         <template #selected-rows-action="{ selectedRows }">
           <template v-if="selectedRows.length > 0">
-            <div class="select-category__wrapper">
+            <div class="flex items-center gap-2 pr-4 ml-2 border-r-2 border-r-violet-200">
               <AppSelect
                 id="select-category"
                 v-model="selectedCategory"
                 name="select-category"
                 :options="categoryStore.data"
+                class="select-category"
               />
 
               <button
-                class="selected-button confirm"
+                class="app-button bg-violet-100 border-violet-200"
                 type="button"
                 @click="changeCategory(selectedRows)"
               >
@@ -66,7 +69,7 @@
             </div>
 
             <button
-              class="selected-button remove-button"
+              class="app-button border-amber-500 bg-orange-200 ml-4"
               type="button"
               @click="removeSelectedWords(selectedRows)"
             >
@@ -85,12 +88,12 @@
           v-if="fetchMessage"
           #table-message
         >
-          <p :class="`table-message__${fetchMessage.type}`">
+          <span :class="fetchMessage.style">
             <span>{{ fetchMessage.text }}</span>
             <span v-if="fetchMessage.type === 'error'">
               Please <a @click="reloadPage">reload the page</a>.
             </span>
-          </p>
+          </span>
         </template>
       </AppTable>
     </div>
@@ -98,7 +101,7 @@
 
   <AppView
     :show="isWordViewShown"
-    :ignore-el-selectors="['.table-row', '#add-word-button']"
+    :ignore-el-selectors="['#table-row', '#add-word-button']"
     @hide="toggleWordView"
   >
     <WordForm
@@ -182,77 +185,3 @@ const changeCategory = async (wordsIds: number[]) => {
   table.value?.clearSelectedRowsList()
 }
 </script>
-
-<style>
-.select-category__wrapper .app-select {
-  min-height: 38px;
-  border: 2px solid mediumpurple;
-  border-radius: 4px;
-}
-</style>
-
-<style scoped>
-.word-list {
-  flex-grow: 1;
-  padding: 16px;
-
-}
-
-.scrollable-table-container {
-  max-height: 95vh;
-  width: 75vw;
-  overflow-y: auto;
-}
-
-.table-search__input {
-  padding: 9px;
-  min-width: 300px;
-  margin-right: 8px;
-  border: 2px solid lavender;
-  border-radius: 4px;
-  outline: none;
-}
-
-.table-search__input:focus {
-  border-color: purple;
-}
-
-.table-search__button {
-  border: 2px solid lavender;
-  padding: 4px 8px;
-  outline: none;
-}
-
-.table-search__button:focus {
-  border-color: purple;
-}
-
-.table-message__fetching {
-  color: purple;
-}
-
-.table-message__empty {
-  color: blue;
-}
-
-.table-message__error {
-  color: red;
-}
-
-.select-category__wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-right: 16px;
-  border-right: 2px solid lavender;
-}
-
-.select-category__wrapper .selected-button {
-  color: white;
-}
-
-.remove-button {
-  margin-left: 16px;
-  margin-right: 8px;
-}
-</style>

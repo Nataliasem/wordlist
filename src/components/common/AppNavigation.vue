@@ -5,6 +5,7 @@
       :ref="(el) => { itemRefs[item.id] = el }"
       :key="item.id"
       :tabindex="index"
+      class="outline-none"
       @click="$emit('click', item)"
       @focus="$emit('click', item)"
       @keyup.enter="$emit('enter', item)"
