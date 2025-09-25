@@ -17,7 +17,7 @@ export const getCategories = async (): Promise<Category[]> => {
     const res = await response.json()
     return [{
       id: null,
-      name: 'No category',
+      name: 'Words without category',
     }].concat(res.sort())
   } else {
     return []

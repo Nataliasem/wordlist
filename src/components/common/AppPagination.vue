@@ -22,7 +22,7 @@ const { itemsPerPage = 10, maxPagesShown = 5} = defineProps<Props>()
 </script>
 
 <style>
-@import "tailwindcss";
+@reference "tailwindcss";
 
 .pagination-container {
   @apply flex gap-2;
