@@ -26,6 +26,10 @@ body {
     min-height: 100vh;
 }
 
+.app-table th, .app-table td {
+    @apply border border-gray-900 border-collapse;
+}
+
 .app-button {
     @apply cursor-pointer py-1 px-2 h-10;
     @apply border-2 rounded-sm;

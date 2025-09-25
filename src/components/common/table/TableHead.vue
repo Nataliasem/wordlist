@@ -1,7 +1,7 @@
 <template>
   <thead>
     <tr>
-      <th class="w-8 text-center">
+      <th class="w-8 text-center p-1">
         <input
           id="select-all"
           v-model="allSelected"
@@ -15,6 +15,7 @@
       <th
         v-for="item in columnConfig"
         :key="item.key"
+        class="p-1"
       >
         <span :class="{'required-field': item.required}">{{ item.title }}</span>
 

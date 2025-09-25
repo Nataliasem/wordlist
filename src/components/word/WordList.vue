@@ -101,7 +101,7 @@
 
   <AppView
     :show="isWordViewShown"
-    :ignore-el-selectors="['.table-row', '#add-word-button']"
+    :ignore-el-selectors="['#table-row', '#add-word-button']"
     @hide="toggleWordView"
   >
     <WordForm

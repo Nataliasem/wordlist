@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  <table class="w-full">
+  <table class="app-table w-full">
     <TableHead
       v-model:hidden-columns="hiddenColumns"
       v-model:all-selected="allSelected"
@@ -101,31 +101,3 @@ defineExpose({
   clearSelectedRowsList
 })
 </script>
-
-<style>
-table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 4px;
-  height: 28px;
-}
-
-th p, td p {
-  @apply overflow-hidden text-ellipsis;
-  width: 160px;
-  white-space: nowrap;
-  padding: 0;
-  margin: 0;
-}
-
-tr {
-  transition: background-color 0.3s ease;
-}
-
-tr:hover:not(thead tr) {
-  background-color: lavenderblush;
-}
-</style>
