@@ -15,15 +15,8 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-#app {
-    width: 100%;
-}
-
 body {
-    margin: 0;
-    display: flex;
-    min-width: 320px;
-    min-height: 100vh;
+    @apply h-screen w-screen;
 }
 
 .app-table th, .app-table td {
@@ -43,22 +36,12 @@ body {
     @apply transition-all duration-300 ease-in;
 }
 
-.icon-button_filled {
-    border: 4px solid transparent;
-    transition: border 0.3s ease;
+.app-input.invalid {
+    @apply border-red-500 bg-red-200 hover:bg-red-300;
 }
 
-.icon-button_filled:hover:not(:disabled) {
-    background-color: lavender;
-    border-color: purple;
-}
-
-.required-field {
+.required-field-title {
     @apply after:content-['*'] after:ml-0.5 after:text-red-500;
-}
-
-.invalid-field {
-    @apply border-red-500 bg-red-200;
 }
 
 @media (prefers-color-scheme: light) {

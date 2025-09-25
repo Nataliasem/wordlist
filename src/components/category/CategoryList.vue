@@ -9,7 +9,7 @@
         name="add-category"
       >
       <button
-        class="icon-button_filled"
+        class="app-button"
         :disabled="!isFoundedCategoriesEmpty"
         @click="addCategory"
       >
@@ -77,10 +77,6 @@ onMounted(async () => {
   justify-content: space-between;
   gap: 4px;
   padding: 8px 0;
-}
-
-.add-category__wrapper .icon-button_filled {
-  border: 2px solid #e7e6e9;
 }
 
 .category-input {

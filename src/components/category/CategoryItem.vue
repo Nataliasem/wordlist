@@ -26,7 +26,7 @@
             name="update-category"
           >
           <button
-            class="icon-button_filled"
+            class="app-button"
             @click.stop="updateCategory"
           >
             <v-icon
@@ -46,7 +46,7 @@
             :class="{ 'category-actions__selected' : item.id === categoryStore.selectedCategoryId }"
           >
             <button
-              class="icon-button_filled"
+              class="app-button"
               :disabled="!item.id"
               @click.stop="toggleUpdatingMode(item)"
             >
@@ -56,7 +56,7 @@
               />
             </button>
             <button
-              class="icon-button_filled"
+              class="app-button"
               :disabled="!item.id"
               @click.stop="openModal"
             >

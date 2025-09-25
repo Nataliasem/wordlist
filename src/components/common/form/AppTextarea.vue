@@ -4,7 +4,7 @@
       v-if="label"
       :for="id"
     >
-      <span :class="{'required-field': required}">{{ label }}:</span>
+      <span :class="{'required-field-title': required}">{{ label }}:</span>
     </label>
 
     <slot />
@@ -16,7 +16,7 @@
       class="app-input"
       :rows="rows"
       :name="name"
-      :class="{'invalid-field': required && hasError }"
+      :class="{'invalid': required && hasError }"
       @focus="$emit('focus')"
       @blur="$emit('blur')"
     />

@@ -17,7 +17,7 @@
         :key="item.key"
         class="p-1"
       >
-        <span :class="{'required-field': item.required}">{{ item.title }}</span>
+        <span :class="{'required-field-title': item.required}">{{ item.title }}</span>
 
         <span class="p-2">
           <button
