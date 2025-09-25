@@ -6,25 +6,25 @@
         class="modal-mask"
       >
         <div class="modal-body">
-          <h2 class="modal-body__header">
+          <h2 class="sticky top-0 bg-white pt-8">
             <slot name="header" />
           </h2>
 
-          <div>
+          <div class="mt-8">
             <slot name="content" />
           </div>
 
-          <div class="modal-body__footer">
+          <div class="flex justify-end gap-4 sticky bottom-0 bg-white py-8">
             <button
               type="button"
-              class="app-button bg-violet-800 hover:bg-violet-700"
+              class="app-button text-white font-bold bg-violet-700 hover:bg-violet-600 focus:border-violet-800"
               @click="$emit('confirm')"
             >
               <slot name="confirm-text" />
             </button>
             <button
               type="button"
-              class="app-button bg-red-900 hover:bg-red-800"
+              class="app-button text-white font-bold bg-red-800 hover:bg-red-700 focus:border-red-900"
               @click="$emit('cancel')"
             >
               <slot name="cancel-text">
@@ -89,22 +89,5 @@ defineEmits<{
 .modal-leave-to .modal-container {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
-}
-
-.modal-body__header {
-  position: sticky;
-  top: 0;
-  background-color: white;
-  padding-top: 32px
-}
-
-.modal-body__footer {
-  display: flex;
-  gap: 16px;
-  justify-content: end;
-  position: sticky;
-  bottom: 0;
-  background-color: white;
-  padding-bottom: 32px;
 }
 </style>

@@ -12,7 +12,10 @@
       v-for="item in WORD_FORM_CONFIG"
       :key="item"
     >
-      <div v-if="item === 'category'">
+      <div
+        v-if="item === 'category'"
+        class="mb-8"
+      >
         <AppSelect
           :id="item"
           v-model="updatedWord.category"
@@ -26,7 +29,10 @@
         <WordExamplesInput v-model="updatedWord.examples" />
       </div>
 
-      <div v-else>
+      <div
+        v-else
+        class="mb-8"
+      >
         <AppTextarea
           :id="item"
           :ref="(el) => { inputRefs[item] = el }"

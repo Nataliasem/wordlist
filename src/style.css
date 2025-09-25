@@ -19,17 +19,6 @@
     width: 100%;
 }
 
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-li:focus,
-li:focus-visible {
-    outline: none;
-}
-
 body {
     margin: 0;
     display: flex;
@@ -44,13 +33,10 @@ body {
     @apply transition-all duration-300 ease-in;
 }
 
-.app-button__border-violet {
-    @apply border-violet-200 hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300;
-}
-
 .app-input {
-    @apply px-1 rounded-sm border-2 border-violet-100 outline-none;
+    @apply text-lg px-1 rounded-sm border-2 border-violet-100 outline-none;
     @apply hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300;
+    @apply transition-all duration-300 ease-in;
 }
 
 .icon-button_filled {
@@ -64,32 +50,11 @@ body {
 }
 
 .required-field {
-    position: relative;
-}
-
-.required-field::before {
-    content: "*";
-    color: red;
-    position: absolute;
-    top: -2px;
-    right: -12px;
-    transform: translateX(-50%);
-    font-size: 0.8em;
+    @apply after:content-['*'] after:ml-0.5 after:text-red-500;
 }
 
 .invalid-field {
-    border-color: red;
-    background-color: rgba(255, 0, 0, 0.2);
-}
-
-input[type="checkbox"] {
-    accent-color: white;
-    width: 16px;
-    height: 16px;
-}
-
-input[type="text"], select, textarea {
-    font-size: 16px;
+    @apply border-red-500 bg-red-200;
 }
 
 @media (prefers-color-scheme: light) {

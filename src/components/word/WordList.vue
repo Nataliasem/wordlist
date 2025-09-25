@@ -22,7 +22,7 @@
           >
           <button
             id="add-word-button"
-            class="app-button app-button__border-violet"
+            class="app-button border-violet-200 hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300"
             type="button"
             @click="addWord"
           >
@@ -35,7 +35,7 @@
           </button>
 
           <button
-            class="app-button app-button__border-violet"
+            class="app-button border-violet-200 hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300"
             type="button"
             @click="clearSearch"
           >

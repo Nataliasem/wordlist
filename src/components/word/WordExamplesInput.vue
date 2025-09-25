@@ -27,7 +27,7 @@
     </AppTextarea>
 
     <button
-      class="self-start cursor-pointer text-purple-700"
+      class="px-1 self-start cursor-pointer text-purple-700 hover:text-purple-500 focus:outline-purple-700"
       type="button"
       @click="addExample"
     >

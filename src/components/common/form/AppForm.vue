@@ -14,7 +14,7 @@
       <slot name="confirm">
         <button
           type="submit"
-          class="app-button p-2 text-white font-bold bg-violet-700 hover:bg-violet-600"
+          class="app-button text-white font-bold bg-violet-700 hover:bg-violet-600 focus:border-violet-800"
         >
           Save changes
         </button>
@@ -23,7 +23,7 @@
       <slot name="cancel">
         <button
           type="button"
-          class="app-button p-2 text-white font-bold bg-red-800 hover:bg-red-700"
+          class="app-button text-white font-bold bg-red-800 hover:bg-red-700 focus:border-red-900"
           @click="$emit('cancel')"
         >
           Cancel

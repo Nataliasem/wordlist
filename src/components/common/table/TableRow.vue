@@ -10,6 +10,7 @@
         :value="rowData.id"
         type="checkbox"
         title="Select row"
+        class="accent-white w-4 h-4"
       >
     </td>
 

@@ -7,6 +7,7 @@
           v-model="allSelected"
           type="checkbox"
           title="Select all rows"
+          class="accent-white w-4 h-4"
           @change="$emit('select-all')"
         >
       </th>
