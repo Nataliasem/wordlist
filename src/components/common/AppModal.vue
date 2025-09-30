@@ -17,14 +17,14 @@
           <div class="flex justify-end gap-4 sticky bottom-0 bg-white py-8">
             <button
               type="button"
-              class="app-button text-white font-bold bg-violet-700 hover:bg-violet-600 focus:border-violet-800"
+              class="app-button app-button__confirm"
               @click="$emit('confirm')"
             >
               <slot name="confirm-text" />
             </button>
             <button
               type="button"
-              class="app-button text-white font-bold bg-red-800 hover:bg-red-700 focus:border-red-900"
+              class="app-button app-button__cancel"
               @click="$emit('cancel')"
             >
               <slot name="cancel-text">

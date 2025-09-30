@@ -28,6 +28,15 @@ body {
     @apply transition-all duration-300 ease-in;
 }
 
+.app-button__confirm {
+    @apply text-white font-bold bg-violet-700 hover:bg-violet-600 focus:border-violet-800;
+}
+
+.app-button__cancel {
+    @apply text-white font-bold bg-red-800 hover:bg-red-700 focus:border-red-900;
+}
+
+
 .app-input {
     @apply text-lg px-1 rounded-sm border-2 border-violet-100 outline-none;
     @apply hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300;
