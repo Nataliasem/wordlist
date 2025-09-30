@@ -1,7 +1,8 @@
 <template>
   <tr
-    class="table-row cursor-pointer"
-    :class="{'selected': isSelected}"
+    id="table-row"
+    class="cursor-pointer transition-all duration-300 ease-in"
+    :class="isSelected ? 'bg-amber-500 hover:bg-amber-600' : 'hover:bg-violet-200'"
   >
     <td class="text-center">
       <input
@@ -10,6 +11,7 @@
         :value="rowData.id"
         type="checkbox"
         title="Select row"
+        class="accent-white w-4 h-4"
       >
     </td>
 
@@ -18,7 +20,10 @@
       :key="item.key"
       @click="$emit('click-row')"
     >
-      <p :class="{ blurred: hiddenColumns.has(item.key) }">
+      <p
+        class="p-1 overflow-hidden text-ellipsis whitespace-nowrap"
+        :class="{ 'blur-sm': hiddenColumns.has(item.key) }"
+      >
         {{ rowData[item.key] }}
       </p>
     </td>
@@ -50,17 +55,3 @@ const isSelected = computed(() => {
   return selectedRows.value.includes(props.rowData.id)
 })
 </script>
-
-<style>
-.table-row.selected {
-  background-color: orange;
-}
-
-.table-row.selected:hover {
-  background-color: darkorange;
-}
-
-.table-row .blurred {
-  filter: blur(3px);
-}
-</style>

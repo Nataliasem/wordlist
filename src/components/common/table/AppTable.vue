@@ -1,13 +1,13 @@
 <template>
-  <div class="table-actions__wrapper">
+  <div class="h-8 mb-8 flex items-center justify-between">
     <div
       v-if="$slots.search"
-      class="table-search__wrapper"
+      class="flex gap-2 items-center"
     >
       <slot name="search" />
     </div>
 
-    <div class="selected-rows-action__wrapper">
+    <div class="flex">
       <slot
         name="selected-rows-action"
         :selected-rows="selectedRows"
@@ -15,7 +15,7 @@
 
       <button
         v-if="selectedRows.length"
-        class="selected-button cancel"
+        class="app-button bg-amber-500 border-amber-500 ml-2"
         type="button"
         @click="clearSelectedRowsList"
       >
@@ -24,38 +24,39 @@
     </div>
   </div>
 
-  <table class="app-table">
-    <TableHead
-      v-model:hidden-columns="hiddenColumns"
-      v-model:all-selected="allSelected"
-      :sorted-by="sortedBy"
-      :column-config="columnConfig"
-      @select-all="selectAllRows"
-    />
+  <div class="table-scrollable-container">
+    <table class="app-table w-full">
+      <TableHead
+        v-model:hidden-columns="hiddenColumns"
+        v-model:all-selected="allSelected"
+        :sorted-by="sortedBy"
+        :column-config="columnConfig"
+        @select-all="selectAllRows"
+      />
 
-    <tbody>
-      <tr v-if="!tableData.length">
-        <td
-          class="table-message"
-          :colspan="columnLength"
-        >
-          <slot name="table-message" />
-        </td>
-      </tr>
+      <tbody>
+        <tr v-if="!tableData.length">
+          <td :colspan="columnLength">
+            <p class="w-full text-center">
+              <slot name="table-message" />
+            </p>
+          </td>
+        </tr>
 
-      <template v-else>
-        <TableRow
-          v-for="row in tableData"
-          :key="row.id"
-          v-model:selected-rows="selectedRows"
-          :column-config="columnConfig"
-          :row-data="row"
-          :hidden-columns="hiddenColumns"
-          @click-row="$emit('click-row', row)"
-        />
-      </template>
-    </tbody>
-  </table>
+        <template v-else>
+          <TableRow
+            v-for="row in tableData"
+            :key="row.id"
+            v-model:selected-rows="selectedRows"
+            :column-config="columnConfig"
+            :row-data="row"
+            :hidden-columns="hiddenColumns"
+            @click-row="$emit('click-row', row)"
+          />
+        </template>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script setup lang="ts" generic="T extends { id: number }">
@@ -104,72 +105,9 @@ defineExpose({
 </script>
 
 <style>
-.table-actions__wrapper {
-  height: 32px;
-  margin-bottom: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.table-search__wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.app-table {
-  width: 100%;
-}
-
-table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 4px;
-  height: 28px;
-}
-
-th p, td p {
-  width: 160px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 0;
-  margin: 0;
-}
-
-tr {
-  transition: background-color 0.3s ease;
-}
-
-tr:hover:not(thead tr) {
-  background-color: lavenderblush;
-}
-
-.table-message p {
-  width: 100%;
-  text-align: center;
-}
-
-.selected-button {
-  border: 2px solid orange;
-  padding: 8px;
-}
-
-.selected-button.cancel {
-  background-color: orange;
-  border-color: orange;
-}
-
-.selected-button.confirm {
-  background-color: mediumpurple;
-  border-color: mediumpurple;
-}
-
-.selected-rows-action__wrapper {
-  display: flex;
+.table-scrollable-container {
+  height: 80vh;
+  overflow-y: scroll;
+  padding-bottom: 32px;
 }
 </style>
