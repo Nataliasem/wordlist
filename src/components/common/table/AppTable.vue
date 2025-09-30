@@ -37,7 +37,7 @@
       <tbody>
         <tr v-if="!tableData.length">
           <td :colspan="columnLength">
-            <p class="w-full text-center">
+            <p class="w-full text-center py-2">
               <slot name="table-message" />
             </p>
           </td>
