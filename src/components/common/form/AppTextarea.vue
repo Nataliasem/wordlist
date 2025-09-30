@@ -1,11 +1,10 @@
 <template>
-  <div class="app-form__field">
+  <div class="flex flex-col gap-4">
     <label
       v-if="label"
       :for="id"
-      class="form-field__label"
     >
-      <span :class="{'required-field': required}">{{ label }}:</span>
+      <span :class="{'required-field-title': required}">{{ label }}:</span>
     </label>
 
     <slot />
@@ -14,9 +13,10 @@
       :id="id"
       ref="app-textarea"
       v-model="model"
+      class="app-input"
       :rows="rows"
       :name="name"
-      :class="{'invalid-field': required && hasError }"
+      :class="{'invalid': required && hasError }"
       @focus="$emit('focus')"
       @blur="$emit('blur')"
     />
@@ -67,9 +67,3 @@ defineExpose({
   hasError
 })
 </script>
-
-<style scoped>
-textarea {
-  border-radius: 2px;
-}
-</style>

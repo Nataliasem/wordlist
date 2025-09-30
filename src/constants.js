@@ -21,15 +21,18 @@ export const EMPTY_WORD = {
 export const WORD_TABLE_MESSAGE = {
   empty: {
     type: 'empty',
-    text: 'No words in this category.'
+    text: 'No words in this category.',
+    style: 'text-purple-800'
   },
   error: {
     type: 'error',
-    text: 'Something went wrong fetching words.'
+    text: 'Something went wrong fetching words.',
+    style: 'text-red-800'
   },
   emptySearch: {
     type: 'empty',
-    text: 'No such word was found. Try changing the search criteria or add a new word.'
+    text: 'No such word was found. Try changing the search criteria or add a new word.',
+    style: 'text-blue-800'
   }
 }
 
@@ -42,7 +45,7 @@ export const WORD_FORM_CONFIG = [
   'examples'
 ]
 
-export const DEFAULT_FETCH_LIMIT = 30
+export const DEFAULT_FETCH_LIMIT = 130
 
 export const DEFAULT_WORD_SORT = {
   column: 'word',

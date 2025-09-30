@@ -1,16 +1,16 @@
 <template>
   <form @submit.prevent="$emit('submit')">
-    <div class="app-form__header">
-      <h2>
+    <div class="sticky top-0 py-8 bg-white z-100">
+      <h2 class="font-bold text-xl">
         <slot name="app-form__header" />
       </h2>
     </div>
 
-    <div class="app-form__fields-wrapper">
+    <div class="flex flex-col gap-x-8 mb-8">
       <slot />
     </div>
 
-    <div class="app-form__footer">
+    <div class="sticky bottom-0 flex gap-4 bg-white py-8">
       <slot name="confirm">
         <button
           type="submit"
@@ -39,36 +39,3 @@ defineEmits<{
   cancel: []
 }>()
 </script>
-
-<style>
-.app-form__fields-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  margin-bottom: 32px;
-}
-
-.app-form__field {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.app-form__header {
-  position: sticky;
-  top: 0;
-  padding: 32px 0;
-  background-color: white;
-  z-index: 100;
-}
-
-.app-form__footer {
-  display: flex;
-  gap: 16px;
-  justify-content: end;
-  position: sticky;
-  bottom: 0;
-  background-color: white;
-  padding: 32px 0;
-}
-</style>

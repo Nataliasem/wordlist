@@ -1,11 +1,8 @@
+@import "tailwindcss";
+@reference "tailwindcss";
+
 :root {
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    font-weight: 400;
-
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
-
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -13,133 +10,43 @@
 }
 
 #app {
-    width: 100%;
-}
-
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-li:focus,
-li:focus-visible {
-    outline: none;
+    @apply w-full;
 }
 
 body {
-    margin: 0;
-    display: flex;
-    min-width: 320px;
-    min-height: 100vh;
+    @apply m-0 flex h-screen;
 }
 
-h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
-}
-
-button {
-    border-radius: 4px;
-    border: 1px solid transparent;
-    font-size: 1em;
-    font-weight: 500;
-    font-family: inherit;
-    background-color: #1a1a1a;
-    cursor: pointer;
-    transition: border-color 0.25s;
-}
-
-button:focus,
-button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
+.app-table th, .app-table td {
+    @apply border border-gray-900 border-collapse;
 }
 
 .app-button {
-    color: white;
-    font-weight: bold;
-    padding: 8px;
-    transition: background-color 0.3s ease;
+    @apply cursor-pointer py-1 px-2 h-10;
+    @apply border-2 rounded-sm;
+    @apply outline-none;
+    @apply transition-all duration-300 ease-in;
 }
 
 .app-button__confirm {
-    background-color: rebeccapurple;
-}
-
-.app-button__confirm:hover {
-    background-color: mediumpurple;
+    @apply text-white font-bold bg-violet-700 hover:bg-violet-600 focus:border-violet-800;
 }
 
 .app-button__cancel {
-    background-color: darkred;
+    @apply text-white font-bold bg-red-800 hover:bg-red-700 focus:border-red-900;
 }
 
-.app-button__cancel:hover {
-    background-color: orangered;
+
+.app-input {
+    @apply text-lg px-1 rounded-sm border-2 border-violet-100 outline-none;
+    @apply hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300;
+    @apply transition-all duration-300 ease-in;
 }
 
-.icon-button_filled {
-    border: 1px solid transparent;
-    transition: border 0.3s ease;
+.app-input.invalid {
+    @apply border-red-500 bg-red-200 hover:bg-red-300;
 }
 
-.icon-button_filled:hover:not(:disabled) {
-    background-color: lavender;
-    border-color: purple;
-}
-
-.truncated {
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.required-field {
-    position: relative;
-}
-
-.required-field::before {
-    content: "*";
-    color: red;
-    position: absolute;
-    top: -2px;
-    right: -12px;
-    transform: translateX(-50%);
-    font-size: 0.8em;
-}
-
-.invalid-field {
-    border-color: red;
-    background-color: rgba(255, 0, 0, 0.2);
-
-}
-
-.text-center {
-    text-align: center;
-}
-
-.cursor-pointer {
-    cursor: pointer;
-}
-
-input[type="checkbox"] {
-    accent-color: white;
-    width: 16px;
-    height: 16px;
-}
-
-input[type="text"], select, textarea {
-    font-size: 16px;
-}
-
-@media (prefers-color-scheme: light) {
-    :root {
-        color: #213547;
-        background-color: #ffffff;
-    }
-
-    button {
-        background-color: transparent;
-    }
+.required-field-title {
+    @apply after:content-['*'] after:ml-0.5 after:text-red-500;
 }

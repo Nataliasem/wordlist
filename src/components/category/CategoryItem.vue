@@ -12,8 +12,8 @@
       <div
         class="category-name"
         :class="{
-          'category-name__selected' : item.id === categoryStore.selectedCategoryId,
-          'category-name__divided': item.id === null
+          'selected' : item.id === categoryStore.selectedCategoryId,
+          'divided': item.id === null
         }"
       >
         <div v-if="updatedCategory && updatedCategory.id === item.id">
@@ -26,7 +26,7 @@
             name="update-category"
           >
           <button
-            class="icon-button_filled"
+            class="px-1 cursor-pointer hover:text-purple-800"
             @click.stop="updateCategory"
           >
             <v-icon
@@ -37,17 +37,16 @@
         </div>
 
         <template v-else>
-          <div class="truncated">
+          <p class="overflow-hidden text-ellipsis">
             {{ item.name }}
-          </div>
+          </p>
 
           <div
+            v-if="item.id !== null"
             class="category-actions"
-            :class="{ 'category-actions__selected' : item.id === categoryStore.selectedCategoryId }"
           >
             <button
-              class="icon-button_filled"
-              :disabled="!item.id"
+              class="px-1 cursor-pointer hover:text-purple-800"
               @click.stop="toggleUpdatingMode(item)"
             >
               <v-icon
@@ -56,8 +55,7 @@
               />
             </button>
             <button
-              class="icon-button_filled"
-              :disabled="!item.id"
+              class="px-1 cursor-pointer hover:text-purple-800"
               @click.stop="openModal"
             >
               <v-icon
@@ -146,56 +144,36 @@ const deleteCategory = async () => {
 </script>
 
 <style>
+@reference "tailwindcss";
 .category-items__wrapper {
-  overflow-y: scroll;
-  height: 85%;
-  position: fixed;
-  top: 64px;
-}
-
-.category-actions {
-  display: none;
-  cursor: pointer;
-}
-
-.category-actions__selected {
-  display: flex;
-  gap: 4px;
+  @apply pt-8 pr-4 w-2xs;
+  @apply overflow-y-scroll h-9/10;
+  @apply fixed top-16;
 }
 
 .category-name {
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 16px;
-  border: 2px solid transparent;
-  border-radius: 4px;
-  width: 220px;
+  @apply cursor-pointer flex justify-between items-center py-2 px-4 border-2 border-transparent rounded-sm;
+  @apply hover:bg-gray-200;
 }
 
-.category-name:hover {
-  background-color: #e7e6e9;
+.category-name.selected {
+  @apply font-bold bg-violet-100 border-purple-800;
 }
 
-.category-name__selected {
-  font-weight: bold;
-  background-color: lavender;
-  border-radius: 4px;
-  border: 2px solid purple;
+.category-name.divided {
+  @apply border-y-2 border-y-gray-200;
 }
 
-.category-name.category-name__divided:not(.category-name__selected) {
-  border-top: 2px solid  #e7e6e9;
-  border-bottom: 2px solid  #e7e6e9;
+.category-name.selected.divided {
+  @apply border-2 border-purple-800;
 }
 
-.category-name:focus-visible,
-.category-name:focus-within,
-.category-name:focus
-{
-  outline: none;
-  background-color: lavender;
-  border-color: purple;
+.category-actions {
+  @apply hidden;
 }
+
+.category-name.selected .category-actions {
+  @apply flex gap-1;
+}
+
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="page-layout">
+  <div class="flex h-full">
     <CategoryList />
     <WordList />
   </div>
@@ -9,11 +9,3 @@
 import CategoryList from './components/category/CategoryList.vue'
 import WordList from './components/word/WordList.vue'
 </script>
-
-<style scoped>
-.page-layout {
-  display: flex;
-  height: 100%;
-}
-</style>
-

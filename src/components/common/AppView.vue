@@ -33,19 +33,12 @@ onClickOutside(
 </script>
 
 <style scoped>
+@reference "tailwindcss";
+
 .app-view {
-  position: fixed;
-  right: 0;
-  z-index: 999;
-  width: 40%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 0 32px;
-  background-color: white;
-  border-left: 2px solid rgba(0, 0, 0, 0.3);
+  @apply z-999 fixed right-0 overflow-scroll;
+  @apply flex flex-col h-full w-2/5 px-8 bg-white;
   box-shadow: -2px 0 15px 0 rgba(0, 0, 0, 0.3);
-  overflow: scroll;
 }
 
 /* Special styles for Transition component */
