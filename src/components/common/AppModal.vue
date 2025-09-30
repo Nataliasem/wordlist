@@ -48,46 +48,23 @@ defineEmits<{
 </script>
 
 <style scoped>
+@reference "tailwindcss";
+
 .modal-mask {
-  position: absolute;
-  z-index: 999;
-  background-color: rgba(0, 0, 0, 0.8);
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 64px;
-  transition: opacity 0.3s ease;
+  @apply absolute z-999 w-full h-full transition-opacity duration-300 ease-in;
+  @apply flex justify-center items-center p-16 bg-black/85;
 }
 
 .modal-body {
-  background-color: white;
-  min-height: 30%;
-  max-height: 80%;
-  width: 40%;
-  overflow: scroll;
-  border-radius: 4px;
-  padding: 0 32px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  @apply w-lg bg-white shadow-2xl overflow-scroll rounded-sm px-8 flex flex-col justify-between;
 }
 
 /* Special styles for Transition component */
 .modal-enter-from {
-  opacity: 0;
+  @apply opacity-0
 }
 
 .modal-leave-to {
-  opacity: 0;
-}
-
-.modal-enter-from .modal-container,
-.modal-leave-to .modal-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+  @apply opacity-0
 }
 </style>
