@@ -24,37 +24,39 @@
     </div>
   </div>
 
-  <table class="app-table w-full">
-    <TableHead
-      v-model:hidden-columns="hiddenColumns"
-      v-model:all-selected="allSelected"
-      :sorted-by="sortedBy"
-      :column-config="columnConfig"
-      @select-all="selectAllRows"
-    />
+  <div class="table-scrollable-container">
+    <table class="app-table w-full">
+      <TableHead
+        v-model:hidden-columns="hiddenColumns"
+        v-model:all-selected="allSelected"
+        :sorted-by="sortedBy"
+        :column-config="columnConfig"
+        @select-all="selectAllRows"
+      />
 
-    <tbody>
-      <tr v-if="!tableData.length">
-        <td :colspan="columnLength">
-          <p class="w-full text-center">
-            <slot name="table-message" />
-          </p>
-        </td>
-      </tr>
+      <tbody>
+        <tr v-if="!tableData.length">
+          <td :colspan="columnLength">
+            <p class="w-full text-center">
+              <slot name="table-message" />
+            </p>
+          </td>
+        </tr>
 
-      <template v-else>
-        <TableRow
-          v-for="row in tableData"
-          :key="row.id"
-          v-model:selected-rows="selectedRows"
-          :column-config="columnConfig"
-          :row-data="row"
-          :hidden-columns="hiddenColumns"
-          @click-row="$emit('click-row', row)"
-        />
-      </template>
-    </tbody>
-  </table>
+        <template v-else>
+          <TableRow
+            v-for="row in tableData"
+            :key="row.id"
+            v-model:selected-rows="selectedRows"
+            :column-config="columnConfig"
+            :row-data="row"
+            :hidden-columns="hiddenColumns"
+            @click-row="$emit('click-row', row)"
+          />
+        </template>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script setup lang="ts" generic="T extends { id: number }">
@@ -101,3 +103,11 @@ defineExpose({
   clearSelectedRowsList
 })
 </script>
+
+<style>
+.table-scrollable-container {
+  height: 80vh;
+  overflow-y: scroll;
+  padding-bottom: 32px;
+}
+</style>
