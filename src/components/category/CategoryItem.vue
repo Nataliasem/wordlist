@@ -169,12 +169,11 @@ const deleteCategory = async () => {
 }
 
 .category-actions {
-  display: none;
+  @apply hidden;
 }
 
 .category-name.selected .category-actions {
-  display: flex;
-  gap: 4px;
+  @apply flex gap-1;
 }
 
 </style>

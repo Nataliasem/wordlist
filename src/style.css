@@ -4,11 +4,6 @@
 :root {
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
     font-weight: 400;
-
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
-
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -16,14 +11,11 @@
 }
 
 #app {
-    width: 100%;
+    @apply w-full;
 }
 
 body {
-    margin: 0;
-    display: flex;
-    min-width: 320px;
-    min-height: 100vh;
+    @apply m-0 flex h-screen;
 }
 
 .app-table th, .app-table td {
@@ -49,11 +41,4 @@ body {
 
 .required-field-title {
     @apply after:content-['*'] after:ml-0.5 after:text-red-500;
-}
-
-@media (prefers-color-scheme: light) {
-    :root {
-        color: #213547;
-        background-color: #ffffff;
-    }
 }
