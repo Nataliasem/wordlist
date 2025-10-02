@@ -14,10 +14,12 @@ export const useCategoryStore = defineStore('category', () => {
 
   const createCategory = async (category) => {
     await create(category)
+    selectCategory(category)
     await fetchData()
   }
   const updateCategory = async (category) => {
     await update(category)
+    selectCategory(category)
     await fetchData()
   }
   const deleteCategory = async (id) => {

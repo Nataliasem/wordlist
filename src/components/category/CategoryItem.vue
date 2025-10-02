@@ -71,7 +71,7 @@
 
   <AppModal
     :show="isModalOpen"
-    @confirm="deleteCategory"
+    @confirm="deleteCategoryHandler"
     @cancel="closeModal"
   >
     <template #header>
@@ -90,7 +90,8 @@
 
 <script setup lang="ts">
 import { AppNavigation, AppModal } from '@/components/common'
-import { ref, nextTick } from 'vue'
+import { ref } from 'vue'
+import { useCategoryService } from '@/composables'
 import { useCategoryStore } from '@/stores/index.js'
 import { useModal } from '@/composables/index.js'
 import { Category } from '@/types/category.ts'
@@ -103,48 +104,24 @@ const categoryStore = useCategoryStore()
 
 const { isModalOpen, closeModal, openModal } = useModal()
 
-const updatedCategory = ref(null)
-const selectCategory = (category: Category) => {
-  // Cannot select a category if it's already selected or updating
-  if([categoryStore.selectedCategoryId, updatedCategory.value?.id].includes(category.id)) return
-
-  toggleUpdatingMode(null)
-  categoryStore.selectCategory(category)
-}
-
 const updatedCategoryInputRef = ref(null)
-const toggleUpdatingMode = async (category: Category) => {
-  if(!category?.id) {
-    updatedCategory.value = null
-    return
-  }
+const {
+  updatedCategory,
+  updateCategory,
+  selectCategory,
+  toggleUpdatingMode,
+  deleteCategory
+} = useCategoryService(updatedCategoryInputRef)
 
-  // Cannot edit a category if it's already in updating mode
-  if(category.id === updatedCategory.value?.id) return
-
-  // To avoid direct reference with categories in store
-  updatedCategory.value = {...category}
-
-  // Use function template refs because an input element is initially hidden
-  await nextTick()
-  updatedCategoryInputRef.value.focus()
-}
-
-const updateCategory = async () => {
-  await categoryStore.updateCategory(updatedCategory.value)
-  categoryStore.selectCategory(updatedCategory.value)
-  updatedCategory.value = null
-}
-
-const deleteCategory = async () => {
-  await categoryStore.deleteCategory(categoryStore.selectedCategoryId)
-  categoryStore.selectFirstCategoryAsDefault()
+const deleteCategoryHandler = async () => {
+  await deleteCategory()
   closeModal()
 }
 </script>
 
 <style>
 @reference "tailwindcss";
+
 .category-items__wrapper {
   @apply pt-8 pr-4 w-2xs;
   @apply overflow-y-scroll h-9/10;
@@ -175,5 +152,4 @@ const deleteCategory = async () => {
 .category-name.selected .category-actions {
   @apply flex gap-1;
 }
-
 </style>
