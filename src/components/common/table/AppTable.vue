@@ -63,6 +63,7 @@
 import TableHead from './TableHead.vue'
 import TableRow from './TableRow.vue'
 import { computed, defineExpose, ref } from 'vue'
+import { useTableRows } from '@/composables'
 
 const props = defineProps<{
   tableData: T[]
@@ -87,18 +88,10 @@ const columnLength = computed(() => props.columnConfig.length + FIXED_COLUMN_NUM
 
 const hiddenColumns = ref(new Set<string>())
 
-const selectedRows = ref([])
-const allSelected = ref(false)
-const clearSelectedRowsList = () => {
-  selectedRows.value = []
-  allSelected.value = false
-}
 const tableDataIds = computed(() => {
   return props.tableData.map(item => item.id)
 })
-const selectAllRows = () => {
-  selectedRows.value = allSelected.value ? tableDataIds.value : []
-}
+const { selectedRows, allSelected, clearSelectedRowsList, selectAllRows  } = useTableRows(tableDataIds)
 defineExpose({
   clearSelectedRowsList
 })
