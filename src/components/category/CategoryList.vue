@@ -11,22 +11,22 @@
       <button
         class="app-button border-violet-100 hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300"
         :disabled="!isFoundedCategoriesEmpty"
-        @click="addCategory"
+        @click="addCategoryHandler"
       >
         Add
       </button>
     </div>
 
     <div
-      v-if="categoryStore.hasError || categoryStore.isEmpty"
+      v-if="hasError || isEmpty"
       class="bg-violet-100 p-8 rounded-sm border-2 border-violet-300"
     >
-      <template v-if="categoryStore.hasError">
+      <template v-if="hasError">
         <p>Something went wrong.</p>
         <p>Please <a @click="reloadPage">reload the page</a>.</p>
       </template>
 
-      <template v-if="categoryStore.isEmpty">
+      <template v-if="isEmpty">
         <p>Category`s list is empty.</p>
         <p>Add the first category</p>
       </template>
@@ -41,28 +41,32 @@
 
 <script setup lang="ts">
 import CategoryItem from './CategoryItem.vue'
-import { onMounted } from 'vue'
 import { useCategoryStore } from '@/stores/index.js'
 import { reloadPage } from '@/utils/index.js'
-import { useFilterBySearch } from '@/composables/index.js'
+import { useCategoryFetch, useCategoryService } from '@/composables'
+import { onMounted } from "vue";
 
 const categoryStore = useCategoryStore()
 
 const {
   searchString: searchCategory,
   filteredData: foundedCategories,
-  clearSearch,
-  isFilteredDataEmpty: isFoundedCategoriesEmpty
-} = useFilterBySearch(categoryStore, 'name')
+  isFilteredDataEmpty: isFoundedCategoriesEmpty,
+  isEmpty,
+  hasError,
+  fetchCategories,
+  clearSearch
+} = useCategoryFetch(categoryStore, 'name')
 
-const addCategory = async () => {
-  if (!searchCategory.value) return
-  await categoryStore.createCategory(searchCategory.value)
+const { addCategory } = useCategoryService()
+const addCategoryHandler = async () => {
+  await addCategory(searchCategory.value)
   clearSearch()
 }
 
 onMounted(async () => {
-  await categoryStore.fetchData()
+  await fetchCategories()
   categoryStore.selectFirstCategoryAsDefault()
 })
+
 </script>

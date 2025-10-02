@@ -116,7 +116,7 @@
 import { computed, watch, ref, useTemplateRef } from 'vue'
 import WordForm from './WordForm.vue'
 import { AppSelect, AppTable, AppPagination, AppView } from '@/components/common'
-import { useWordsFetch, useWordView, useWordService } from '@/composables/index.js'
+import { useWordFetch, useWordView, useWordService } from '@/composables/index.js'
 import { useCategoryStore } from '@/stores/index.js'
 import { reloadPage } from '@/utils/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants.js'
@@ -135,7 +135,7 @@ const {
   wordList,
   fetchMessage,
   fetchWordList
-} = useWordsFetch()
+} = useWordFetch()
 
 const {
   removeWords,
