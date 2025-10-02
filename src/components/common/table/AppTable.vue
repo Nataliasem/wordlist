@@ -84,11 +84,11 @@ defineEmits<{
 }>()
 
 const FIXED_COLUMN_NUMBER = 1
-const columnLength = computed(() => props.columnConfig.length + FIXED_COLUMN_NUMBER)
+const columnLength = computed<number>(() => props.columnConfig.length + FIXED_COLUMN_NUMBER)
 
 const hiddenColumns = ref(new Set<string>())
 
-const tableDataIds = computed(() => {
+const tableDataIds = computed<number[]>(() => {
   return props.tableData.map(item => item.id)
 })
 const { selectedRows, allSelected, clearSelectedRowsList, selectAllRows  } = useTableRows(tableDataIds)

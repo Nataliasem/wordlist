@@ -5,7 +5,7 @@ import { useFilterBySearch } from './useFilterBySearch.js'
 import { useSearch } from './useSearch.js'
 import { useWordsFetch } from './useWordsFetch.js'
 import { useWordView } from './useWordView.js'
-import { useTableRows } from './useTableRows.js'
+import { useTableRows } from './useTableRows.ts'
 
 export {
   useCustomFetch,
