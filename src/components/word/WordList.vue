@@ -116,7 +116,7 @@
 import { computed, watch, ref, useTemplateRef } from 'vue'
 import WordForm from './WordForm.vue'
 import { AppSelect, AppTable, AppPagination, AppView } from '@/components/common'
-import { useWordsFetch, useWordView } from '@/composables/index.js'
+import { useWordsFetch, useWordView, useWordService } from '@/composables/index.js'
 import { useCategoryStore } from '@/stores/index.js'
 import { reloadPage } from '@/utils/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants.js'
@@ -134,11 +134,15 @@ const {
   clearSearch,
   wordList,
   fetchMessage,
+  fetchWordList
+} = useWordsFetch()
+
+const {
   removeWords,
   changeWordsCategory,
   updateWord,
   createWord
-} = useWordsFetch()
+} = useWordService()
 
 const { isWordViewShown, toggleWordView } = useWordView()
 const word = ref(null)
@@ -160,8 +164,10 @@ const addWord = () => {
 const createOrUpdateWord = async (updatedWord: Word) => {
   if(updatedWord.id) {
     await updateWord(updatedWord)
+    await fetchWordList()
   } else {
     await createWord(updatedWord)
+    await fetchWordList()
   }
   toggleWordView()
 }
@@ -169,6 +175,7 @@ const createOrUpdateWord = async (updatedWord: Word) => {
 const table = useTemplateRef('app-table')
 const removeSelectedWords = async (wordsIds: number[]) => {
   await removeWords(wordsIds)
+  await fetchWordList()
   table.value?.clearSelectedRowsList()
 }
 
@@ -181,6 +188,7 @@ watch(initialCategory, (newValue) => {
 })
 const changeCategory = async (wordsIds: number[]) => {
   await changeWordsCategory(selectedCategory.value, wordsIds)
+  await fetchWordList()
   selectedCategory.value = null
   table.value?.clearSelectedRowsList()
 }

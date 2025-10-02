@@ -7,6 +7,7 @@ import { useWordsFetch } from './useWordsFetch.js'
 import { useWordView } from './useWordView.js'
 import { useTableRows } from './useTableRows.ts'
 import { useFieldValidation } from './useFieldValidation.ts'
+import { useWordService } from './useWordService.ts'
 
 export {
   useCustomFetch,
@@ -17,5 +18,6 @@ export {
   useWordsFetch,
   useWordView,
   useTableRows,
-  useFieldValidation
+  useFieldValidation,
+  useWordService
 }
