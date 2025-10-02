@@ -6,6 +6,7 @@ import { useSearch } from './useSearch.js'
 import { useWordsFetch } from './useWordsFetch.js'
 import { useWordView } from './useWordView.js'
 import { useTableRows } from './useTableRows.ts'
+import { useFieldValidation } from './useFieldValidation.ts'
 
 export {
   useCustomFetch,
@@ -15,5 +16,6 @@ export {
   useSearch,
   useWordsFetch,
   useWordView,
-  useTableRows
+  useTableRows,
+  useFieldValidation
 }

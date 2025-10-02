@@ -24,8 +24,8 @@
 </template>
 
 <script setup lang="ts">
-import { onClickOutside } from '@vueuse/core'
-import { ref, useTemplateRef, defineExpose, watch } from 'vue'
+import { useTemplateRef, defineExpose } from 'vue'
+import { useFieldValidation } from '@/composables'
 
 const model = defineModel<string>()
 
@@ -43,27 +43,10 @@ defineEmits<{
   blur: []
 }>()
 
-const hasError = ref(false)
-const validate = () => {
-  hasError.value = required && !model.value.length
-}
-const clearError = () => {
-  hasError.value = false
-}
-
 const target = useTemplateRef('app-textarea')
-onClickOutside(target, () => {
-  clearError()
-})
-
-watch(() => model.value, (newValue, oldValue) => {
-  if(!oldValue.length && newValue.length) {
-    clearError()
-  }
-})
-
+const { hasError, validate } = useFieldValidation(target, model, required)
 defineExpose({
-  validate,
-  hasError
+  hasError,
+  validate
 })
 </script>
