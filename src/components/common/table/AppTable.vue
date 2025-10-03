@@ -37,9 +37,9 @@
       <tbody>
         <tr v-if="!tableData.length">
           <td :colspan="columnLength">
-            <p class="w-full text-center py-2">
+            <div class="w-full p-2 flex items-center justify-center">
               <slot name="table-message" />
-            </p>
+            </div>
           </td>
         </tr>
 
@@ -63,6 +63,7 @@
 import TableHead from './TableHead.vue'
 import TableRow from './TableRow.vue'
 import { computed, defineExpose, ref } from 'vue'
+import { useTableRows } from '@/composables'
 
 const props = defineProps<{
   tableData: T[]
@@ -83,22 +84,14 @@ defineEmits<{
 }>()
 
 const FIXED_COLUMN_NUMBER = 1
-const columnLength = computed(() => props.columnConfig.length + FIXED_COLUMN_NUMBER)
+const columnLength = computed<number>(() => props.columnConfig.length + FIXED_COLUMN_NUMBER)
 
 const hiddenColumns = ref(new Set<string>())
 
-const selectedRows = ref([])
-const allSelected = ref(false)
-const clearSelectedRowsList = () => {
-  selectedRows.value = []
-  allSelected.value = false
-}
-const tableDataIds = computed(() => {
+const tableDataIds = computed<number[]>(() => {
   return props.tableData.map(item => item.id)
 })
-const selectAllRows = () => {
-  selectedRows.value = allSelected.value ? tableDataIds.value : []
-}
+const { selectedRows, allSelected, clearSelectedRowsList, selectAllRows  } = useTableRows(tableDataIds)
 defineExpose({
   clearSelectedRowsList
 })

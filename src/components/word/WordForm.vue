@@ -16,12 +16,9 @@
         v-if="item === 'category'"
         class="mb-8"
       >
-        <AppSelect
-          :id="item"
+        <CategorySelect
           v-model="updatedWord.category"
-          :name="item"
-          :label="item"
-          :options="categoryStore.data"
+          use-label
         />
       </div>
 
@@ -47,13 +44,13 @@
 </template>
 
 <script setup lang="ts">
-import { AppForm, AppSelect, AppTextarea } from '@/components/common'
+import CategorySelect from '@/components/category/CategorySelect.vue'
+import { AppForm, AppTextarea } from '@/components/common'
 import WordExamplesInput from './WordExamplesInput.vue'
 import { computed, ref, watch } from 'vue'
-import { useCategoryStore } from '@/stores/index.js'
 import cloneDeep from 'lodash/cloneDeep'
 import { useFormValidation } from '@/composables/index.js'
-import { WORD_FORM_CONFIG } from '@/constants.js'
+import { WORD_FORM_CONFIG } from '@/constants'
 import { Word } from '@/types/word.ts'
 
 const props = defineProps<{
@@ -63,8 +60,6 @@ const emit = defineEmits<{
   submit: [data: Word],
   cancel: []
 }>()
-
-const categoryStore = useCategoryStore()
 
 const updatedWord = ref(null)
 watch(() => props.word, async () => {
