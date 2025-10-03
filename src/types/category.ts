@@ -1,4 +1,8 @@
+export type CategoryId = number | null
+
 export interface Category {
-    id: number | null
-    name: string
+    id: CategoryId
+    name: strivng
 }
+
+export type CategoryKeys = keyof Category

@@ -1,4 +1,5 @@
 import { Category } from './category'
+import { QueryParams } from "@/types/common";
 
 export interface Word {
     id: number | null
@@ -11,3 +12,7 @@ export interface Word {
 }
 
 export type WordKeys = keyof Word
+
+export interface WordQueryParams extends QueryParams {
+   word: string
+}

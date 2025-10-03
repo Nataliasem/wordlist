@@ -1,16 +1,8 @@
 import { WORD_URL } from '@/constants'
 import { normalizeNullable } from '@/utils'
-import { Word } from '@/types'
+import { Word, WordQueryParams } from '@/types'
 
-interface QueryParams {
-    words: string
-    sortColumn: string
-    sortDirection: string
-    limit: number
-    offset: number
-}
-
-const setQueryParams = (rawUrl: string, queryParams?: QueryParams): string | URL => {
+const setQueryParams = (rawUrl: string, queryParams?: WordQueryParams): string | URL => {
     if(!queryParams) return rawUrl
 
     const url = new URL(rawUrl)
@@ -59,7 +51,7 @@ export const removeMany = async (wordIds: number[]): Promise<void> => {
     })
 }
 
-export const getWordlist = async (categoryId: number, queryParams?: QueryParams): Promise<Word[]> => {
+export const getWordlist = async (categoryId: number, queryParams?: WordQueryParams): Promise<Word[]> => {
     const rawData = categoryId
         ? await getWordlistByCategory(categoryId, queryParams)
         : await getWordlistOrphans(queryParams)
@@ -67,7 +59,7 @@ export const getWordlist = async (categoryId: number, queryParams?: QueryParams)
     return rawData.map(word => normalizeNullable(word, ['id', 'category']))
 }
 
-export const getWordlistByCategory = async (categoryId: number, queryParams?: QueryParams): Promise<Word[]> => {
+export const getWordlistByCategory = async (categoryId: number, queryParams?: WordQueryParams): Promise<Word[]> => {
     const url = setQueryParams(`${WORD_URL}/categories/${categoryId}`, queryParams)
     const response = await fetch(url)
     if (response.ok) {
@@ -77,7 +69,7 @@ export const getWordlistByCategory = async (categoryId: number, queryParams?: Qu
     }
 }
 
-export const getWordlistOrphans = async (queryParams?: QueryParams): Promise<Word[]> => {
+export const getWordlistOrphans = async (queryParams?: WordQueryParams): Promise<Word[]> => {
     const url = setQueryParams(`${WORD_URL}/categories/orphan`, queryParams)
     const response = await fetch(url)
     if (response.ok) {

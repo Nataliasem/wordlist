@@ -1,6 +1,8 @@
-export const filterBySearchString = <T extends Record<string, string>>(
+import { Category, CategoryKeys } from '@/types'
+
+export const filterBySearchString = <T extends Category>(
     list: T[],
-    prop: keyof T,
+    prop: CategoryKeys,
     searchString: string
 ): T[] => {
     return list.filter(item => item[prop].toLowerCase().includes(searchString.toLowerCase()));

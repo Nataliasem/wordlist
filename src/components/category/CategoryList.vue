@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { AppMessage, AppSearchInput } from '@/components/common'
 import CategoryItem from './CategoryItem.vue'
-import { useCategoryStore } from '@/stores/index.js'
+import { useCategoryStore } from '@/stores'
 import { useCategoryFetch } from '@/composables'
 import { create, update, remove } from '@/api/category.ts'
 import { onMounted } from 'vue'
