@@ -1,20 +1,15 @@
 <template>
   <div class="bg-gray-100 p-4 shadow-xl/20">
     <div class="flex justify-between gap-1 py-2">
-      <input
+      <AppSearchInput
         v-model="searchCategory"
-        class="app-input"
-        type="text"
         placeholder="Find or add category"
-        name="add-category"
+        @confirm="addCategoryHandler"
       >
-      <button
-        type="button"
-        class="app-button app-button__bordered"
-        @click="addCategoryHandler"
-      >
-        Add
-      </button>
+        <template #confirm>
+          Add
+        </template>
+      </AppSearchInput>
     </div>
 
     <AppMessage
@@ -33,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { AppMessage } from '@/components/common'
+import { AppMessage, AppSearchInput } from '@/components/common'
 import CategoryItem from './CategoryItem.vue'
 import { useCategoryStore } from '@/stores/index.js'
 import { useCategoryFetch } from '@/composables'

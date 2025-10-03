@@ -13,39 +13,12 @@
         @click-row="editWord"
       >
         <template #search>
-          <input
-            id="table-search__input"
+          <AppSearchInput
             v-model="searchString"
-            type="text"
-            class="app-input p-1 h-10 min-w-xs"
-            placeholder="Enter a word here..."
-          >
-          <button
-            id="add-word-button"
-            class="app-button app-button__bordered"
-            type="button"
-            @click="addWord"
-          >
-            <v-icon
-              name="ri-play-list-add-fill"
-              :scale="1.3"
-              title="Add new"
-              fill="purple"
-            />
-          </button>
-
-          <button
-            class="app-button app-button__bordered"
-            type="button"
-            @click="clearSearch"
-          >
-            <v-icon
-              name="ri-delete-back-2-line"
-              :scale="1.3"
-              title="Clear input"
-              fill="purple"
-            />
-          </button>
+            placeholder="Enter a word here"
+            show-clear
+            @confirm="addWord"
+          />
         </template>
 
         <template #selected-rows-action="{ selectedRows }">
@@ -108,7 +81,7 @@
 import { computed, watch, ref, useTemplateRef } from 'vue'
 import WordForm from './WordForm.vue'
 import CategorySelect from '@/components/category/CategorySelect.vue'
-import { AppTable, AppPagination, AppView, AppMessage } from '@/components/common'
+import { AppTable, AppPagination, AppView, AppMessage, AppSearchInput } from '@/components/common'
 import { useWordFetch, useWordView, useWordService } from '@/composables/index.js'
 import { useCategoryStore } from '@/stores/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants'
@@ -123,7 +96,6 @@ const {
   sortedBy,
   currentPage,
   searchString,
-  clearSearch,
   wordList,
   fetchMessage,
   fetchWordList
