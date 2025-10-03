@@ -18,7 +18,7 @@ export const EMPTY_WORD = {
   category: null
 }
 
-export const WORD_TABLE_MESSAGE = {
+export const FETCH_WORD_MESSAGE = {
   empty: {
     type: 'empty',
     text: 'No words in this category.',
@@ -32,7 +32,25 @@ export const WORD_TABLE_MESSAGE = {
   emptySearch: {
     type: 'empty',
     text: 'No such word was found. Try changing the search criteria or add a new word.',
-    style: 'text-blue-800'
+    style: 'text-violet-600'
+  }
+}
+
+export const FETCH_CATEGORY_MESSAGE = {
+  empty: {
+    type: 'empty',
+    text: 'Category`s list is empty. Add the first category',
+    style: 'text-purple-800'
+  },
+  error: {
+    type: 'error',
+    text: 'Something went wrong fetching categories.',
+    style: 'text-red-800'
+  },
+  emptySearch: {
+    type: 'empty',
+    text: 'No such category was found. Try changing the search criteria or add a new category.',
+    style: 'text-violet-600'
   }
 }
 
