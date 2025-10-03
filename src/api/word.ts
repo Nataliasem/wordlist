@@ -1,6 +1,6 @@
-import { WORD_URL } from '@/constants.ts'
-import { normalizeNullable } from '@/utils/index.js'
-import { Word } from '@types/word.ts'
+import { WORD_URL } from '@/constants'
+import { normalizeNullable } from '@/utils'
+import { Word } from '@/types'
 
 interface QueryParams {
     words: string

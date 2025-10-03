@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reloadPage } from '@/utils/index.js'
+import { reloadPage } from '@/utils'
 import { MessageType } from '@/constants'
 
 defineProps<{

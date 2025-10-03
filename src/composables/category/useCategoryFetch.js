@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { useCustomFetch, useSearch } from '@/composables/index.js'
-import { filterBySearchString } from '@/utils/index.js'
+import { filterBySearchString } from '@/utils/index.ts'
 import { getCategories } from '@/api/category.js'
 import { FETCH_CATEGORY_MESSAGE } from '@/constants.ts'
 

@@ -9,3 +9,5 @@ export interface Word {
     examples: string[]
     category: Category | null
 }
+
+export type WordKeys = keyof Word
