@@ -27,36 +27,30 @@ export enum MessageType {
 export const FETCH_WORD_MESSAGE = {
   empty: {
     type: MessageType.Empty,
-    text: 'No words in this category.',
-    style: 'text-purple-800'
+    text: 'No words in this category.'
   },
   error: {
     type: MessageType.Error,
-    text: 'Something went wrong fetching words.',
-    style: 'text-red-800'
+    text: 'Something went wrong fetching words.'
   },
   emptySearch: {
     type: MessageType.EmptySearch,
-    text: 'No such word was found. Try changing the search criteria or add a new word.',
-    style: 'text-violet-600'
+    text: 'No such word was found. Try changing the search criteria or add a new word.'
   }
 }
 
 export const FETCH_CATEGORY_MESSAGE = {
   empty: {
     type: MessageType.Empty,
-    text: 'Category`s list is empty. Add the first category',
-    style: 'text-purple-800'
+    text: 'Category`s list is empty. Add the first category'
   },
   error: {
     type: MessageType.Error,
-    text: 'Something went wrong fetching categories.',
-    style: 'text-red-800'
+    text: 'Something went wrong fetching categories.'
   },
   emptySearch: {
     type: MessageType.EmptySearch,
     text: 'No such category was found. Try changing the search criteria or add a new category.',
-    style: 'text-violet-600'
   }
 }
 

@@ -1,5 +1,5 @@
-import { CATEGORY_URL } from '@/constants.ts'
-import { Category } from '@/types/category.ts'
+import { CATEGORY_URL } from '@/constants'
+import { Category } from '@/types'
 
 export const create = async (categoryName: string): Promise<Category | null> => {
     const response = await fetch(`${CATEGORY_URL}`, {

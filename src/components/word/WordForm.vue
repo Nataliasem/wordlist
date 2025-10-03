@@ -49,9 +49,9 @@ import { AppForm, AppTextarea } from '@/components/common'
 import WordExamplesInput from './WordExamplesInput.vue'
 import { computed, ref, watch } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
-import { useFormValidation } from '@/composables/index.js'
+import { useFormValidation } from '@/composables'
 import { WORD_FORM_CONFIG } from '@/constants'
-import { Word } from '@/types/word.ts'
+import { Word } from '@/types'
 
 const props = defineProps<{
   word: Word

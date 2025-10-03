@@ -82,8 +82,8 @@ import { computed, watch, ref, useTemplateRef } from 'vue'
 import WordForm from './WordForm.vue'
 import CategorySelect from '@/components/category/CategorySelect.vue'
 import { AppTable, AppPagination, AppView, AppMessage, AppSearchInput } from '@/components/common'
-import { useWordFetch, useWordView, useWordService } from '@/composables/index.js'
-import { useCategoryStore } from '@/stores/index.js'
+import { useWordFetch, useWordView, useWordService } from '@/composables'
+import { useCategoryStore } from '@/stores'
 import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants'
 import { Word } from '@/types/word'
 
@@ -143,7 +143,7 @@ const removeSelectedWords = async (wordsIds: number[]) => {
   table.value?.clearSelectedRowsList()
 }
 
-const initialCategory = computed(() => {
+const initialCategory = computed<number | null>(() => {
   return categoryStore.selectedCategoryId
 })
 const selectedCategory = ref(initialCategory.value)

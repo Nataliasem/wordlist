@@ -2,10 +2,9 @@
 import { AppSelect } from '@/components/common'
 import { onMounted, watch } from 'vue'
 import { useCategoryFetch } from '@/composables'
-import type { Category } from '@/types/category'
-import { useCategoryStore } from '@/stores/index.js'
+import { useCategoryStore } from '@/stores'
 
-const model = defineModel<Category>()
+const model = defineModel<number | null>()
 
 const { useLabel = false } = defineProps<{
   useLabel?: boolean

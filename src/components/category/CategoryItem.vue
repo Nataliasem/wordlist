@@ -94,8 +94,8 @@
 <script setup lang="ts">
 import { AppNavigation, AppModal } from '@/components/common'
 import { nextTick, type Ref, ref } from 'vue'
-import { useCategoryStore } from '@/stores/index.js'
-import { useModal } from '@/composables/index.js'
+import { useCategoryStore } from '@/stores'
+import { useModal } from '@/composables'
 import { Category } from '@/types/category.ts'
 
 defineProps<{
