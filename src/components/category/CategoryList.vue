@@ -10,7 +10,6 @@
       >
       <button
         class="app-button border-violet-100 hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300"
-        :disabled="!isFoundedCategoriesEmpty"
         @click="addCategoryHandler"
       >
         Add
@@ -18,23 +17,22 @@
     </div>
 
     <div
-      v-if="hasError || isEmpty"
-      class="bg-violet-100 p-8 rounded-sm border-2 border-violet-300"
+      v-if="fetchMessage"
+      class="bg-violet-100 p-8 rounded-sm border-2 border-violet-300 w-64"
     >
-      <template v-if="hasError">
-        <p>Something went wrong.</p>
-        <p>Please <a @click="reloadPage">reload the page</a>.</p>
-      </template>
-
-      <template v-if="isEmpty">
-        <p>Category`s list is empty.</p>
-        <p>Add the first category</p>
-      </template>
+      <span :class="fetchMessage.style">
+        <span>{{ fetchMessage.text }}</span>
+        <span v-if="fetchMessage.type === 'error'">
+          Please <a @click="reloadPage">reload the page</a>.
+        </span>
+      </span>
     </div>
 
     <CategoryItem
       v-else
       :categories="foundedCategories"
+      @delete-category="deleteCategoryHandler"
+      @update-category="updateCategoryHandler"
     />
   </div>
 </template>
@@ -43,30 +41,42 @@
 import CategoryItem from './CategoryItem.vue'
 import { useCategoryStore } from '@/stores/index.js'
 import { reloadPage } from '@/utils/index.js'
-import { useCategoryFetch, useCategoryService } from '@/composables'
-import { onMounted } from "vue";
+import { useCategoryFetch } from '@/composables'
+import { create, update, remove } from '@/api/category.ts'
+import { onMounted } from 'vue'
 
 const categoryStore = useCategoryStore()
 
 const {
   searchString: searchCategory,
   filteredData: foundedCategories,
-  isFilteredDataEmpty: isFoundedCategoriesEmpty,
-  isEmpty,
-  hasError,
+  fetchMessage,
   fetchCategories,
   clearSearch
-} = useCategoryFetch(categoryStore, 'name')
+} = useCategoryFetch()
 
-const { addCategory } = useCategoryService()
 const addCategoryHandler = async () => {
-  await addCategory(searchCategory.value)
+  if (!searchCategory.value) return
+  const category = await create(searchCategory.value)
+  await fetchCategories()
+  categoryStore.selectCategory(category)
   clearSearch()
+}
+
+const updateCategoryHandler = async (category) => {
+  await update(category)
+  categoryStore.selectCategory(category)
+  await fetchCategories()
+}
+
+const deleteCategoryHandler = async () => {
+  await remove(categoryStore.selectedCategoryId)
+  await fetchCategories()
+  categoryStore.selectCategory(foundedCategories.value[0])
 }
 
 onMounted(async () => {
   await fetchCategories()
-  categoryStore.selectFirstCategoryAsDefault()
+  categoryStore.selectCategory(foundedCategories.value[0])
 })
-
 </script>

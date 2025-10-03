@@ -1,7 +1,7 @@
 import { useSearch, useCustomFetch } from '@/composables/index.js'
 import { getWordlist } from '@/api/word.ts'
 import { computed, ref, watch } from 'vue'
-import { DEFAULT_FETCH_LIMIT, DEFAULT_WORD_SORT, WORD_TABLE_MESSAGE } from '@/constants.js'
+import { DEFAULT_FETCH_LIMIT, DEFAULT_WORD_SORT, FETCH_WORD_MESSAGE } from '@/constants.js'
 import { useCategoryStore } from '@/stores/index.js'
 
 export function useWordFetch() {
@@ -21,9 +21,9 @@ export function useWordFetch() {
   } = useCustomFetch(getWordlist)
 
   const fetchMessage = computed(() => {
-    if (hasError.value) return WORD_TABLE_MESSAGE.error
-    if (!hasActiveSearch.value && isEmpty.value) return WORD_TABLE_MESSAGE.empty
-    if (hasActiveSearch.value && isEmpty.value) return WORD_TABLE_MESSAGE.emptySearch
+    if (hasError.value) return FETCH_WORD_MESSAGE.error
+    if (!hasActiveSearch.value && isEmpty.value) return FETCH_WORD_MESSAGE.empty
+    if (hasActiveSearch.value && isEmpty.value) return FETCH_WORD_MESSAGE.emptySearch
 
     return null
   })
