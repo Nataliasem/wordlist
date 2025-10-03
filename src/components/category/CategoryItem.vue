@@ -26,6 +26,7 @@
             name="update-category"
           >
           <button
+            type="button"
             class="px-1 cursor-pointer hover:text-purple-800"
             @click.stop="updateCategoryHandler"
           >
@@ -46,6 +47,7 @@
             class="category-actions"
           >
             <button
+              type="button"
               class="px-1 cursor-pointer hover:text-purple-800"
               @click.stop="toggleUpdatingMode(item)"
             >
@@ -55,6 +57,7 @@
               />
             </button>
             <button
+              type="button"
               class="px-1 cursor-pointer hover:text-purple-800"
               @click.stop="openModal"
             >

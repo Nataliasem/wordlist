@@ -9,6 +9,7 @@
         name="add-category"
       >
       <button
+        type="button"
         class="app-button border-violet-100 hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300"
         @click="addCategoryHandler"
       >
