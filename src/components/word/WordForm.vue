@@ -53,7 +53,7 @@ import { computed, ref, watch } from 'vue'
 import { useCategoryStore } from '@/stores/index.js'
 import cloneDeep from 'lodash/cloneDeep'
 import { useFormValidation } from '@/composables/index.js'
-import { WORD_FORM_CONFIG } from '@/constants.js'
+import { WORD_FORM_CONFIG } from '@/constants'
 import { Word } from '@/types/word.ts'
 
 const props = defineProps<{

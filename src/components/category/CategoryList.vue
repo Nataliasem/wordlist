@@ -16,17 +16,11 @@
       </button>
     </div>
 
-    <div
+    <AppMessage
       v-if="fetchMessage"
-      class="bg-violet-100 p-8 rounded-sm border-2 border-violet-300 w-64"
-    >
-      <span :class="fetchMessage.style">
-        <span>{{ fetchMessage.text }}</span>
-        <span v-if="fetchMessage.type === 'error'">
-          Please <a @click="reloadPage">reload the page</a>.
-        </span>
-      </span>
-    </div>
+      :message="fetchMessage"
+      class="w-64"
+    />
 
     <CategoryItem
       v-else
@@ -38,9 +32,9 @@
 </template>
 
 <script setup lang="ts">
+import { AppMessage } from '@/components/common'
 import CategoryItem from './CategoryItem.vue'
 import { useCategoryStore } from '@/stores/index.js'
-import { reloadPage } from '@/utils/index.js'
 import { useCategoryFetch } from '@/composables'
 import { create, update, remove } from '@/api/category.ts'
 import { onMounted } from 'vue'

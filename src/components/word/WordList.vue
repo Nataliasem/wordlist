@@ -88,12 +88,10 @@
           v-if="fetchMessage"
           #table-message
         >
-          <span :class="fetchMessage.style">
-            <span>{{ fetchMessage.text }}</span>
-            <span v-if="fetchMessage.type === 'error'">
-              Please <a @click="reloadPage">reload the page</a>.
-            </span>
-          </span>
+          <AppMessage
+            :message="fetchMessage"
+            class="w-full"
+          />
         </template>
       </AppTable>
     </div>
@@ -115,11 +113,10 @@
 <script setup lang="ts">
 import { computed, watch, ref, useTemplateRef } from 'vue'
 import WordForm from './WordForm.vue'
-import { AppSelect, AppTable, AppPagination, AppView } from '@/components/common'
+import { AppSelect, AppTable, AppPagination, AppView, AppMessage } from '@/components/common'
 import { useWordFetch, useWordView, useWordService } from '@/composables/index.js'
 import { useCategoryStore } from '@/stores/index.js'
-import { reloadPage } from '@/utils/index.js'
-import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants.js'
+import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants'
 import { Word } from '@/types/word'
 
 // TODO: fix after backend WL-54

@@ -1,4 +1,4 @@
-import { CATEGORY_URL } from '@/constants.js'
+import { CATEGORY_URL } from '@/constants.ts'
 import { Category } from '@/types/category.ts'
 
 export const create = async (categoryName: string): Promise<Category | null> => {
