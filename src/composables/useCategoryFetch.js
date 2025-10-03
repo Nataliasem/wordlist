@@ -15,12 +15,9 @@ export function useCategoryFetch() {
     isEmpty,
     hasError,
     data: categories,
-    fetchData,
+    fetchData: fetchCategories,
   } = useCustomFetch(getCategories)
 
-  const fetchCategories = async () => {
-    await fetchData()
-  }
   const filteredData = computed(() => {
     return filterBySearchString(categories.value, 'name', searchString.value)
   })
@@ -38,6 +35,7 @@ export function useCategoryFetch() {
     clearSearch,
     isEmpty,
     hasError,
+    categories,
     fetchCategories
   }
 }

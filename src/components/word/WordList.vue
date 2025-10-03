@@ -51,13 +51,7 @@
         <template #selected-rows-action="{ selectedRows }">
           <template v-if="selectedRows.length > 0">
             <div class="flex items-center gap-2 pr-4 ml-2 border-r-2 border-r-violet-200">
-              <AppSelect
-                id="select-category"
-                v-model="selectedCategory"
-                name="select-category"
-                :options="categoryStore.data"
-                class="select-category"
-              />
+              <CategorySelect v-model="selectedCategory" />
 
               <button
                 class="app-button bg-violet-100 border-violet-200"
@@ -113,7 +107,8 @@
 <script setup lang="ts">
 import { computed, watch, ref, useTemplateRef } from 'vue'
 import WordForm from './WordForm.vue'
-import { AppSelect, AppTable, AppPagination, AppView, AppMessage } from '@/components/common'
+import CategorySelect from '@/components/category/CategorySelect.vue'
+import { AppTable, AppPagination, AppView, AppMessage } from '@/components/common'
 import { useWordFetch, useWordView, useWordService } from '@/composables/index.js'
 import { useCategoryStore } from '@/stores/index.js'
 import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants'
