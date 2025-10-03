@@ -1,4 +1,4 @@
-import { WORD_URL } from '@/constants.js'
+import { WORD_URL } from '@/constants.ts'
 import { normalizeNullable } from '@/utils/index.js'
 import { Word } from '@types/word.ts'
 

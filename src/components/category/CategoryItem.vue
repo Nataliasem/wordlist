@@ -26,8 +26,9 @@
             name="update-category"
           >
           <button
+            type="button"
             class="px-1 cursor-pointer hover:text-purple-800"
-            @click.stop="updateCategory"
+            @click.stop="updateCategoryHandler"
           >
             <v-icon
               name="ri-checkbox-line"
@@ -46,6 +47,7 @@
             class="category-actions"
           >
             <button
+              type="button"
               class="px-1 cursor-pointer hover:text-purple-800"
               @click.stop="toggleUpdatingMode(item)"
             >
@@ -55,6 +57,7 @@
               />
             </button>
             <button
+              type="button"
               class="px-1 cursor-pointer hover:text-purple-800"
               @click.stop="openModal"
             >
@@ -71,7 +74,7 @@
 
   <AppModal
     :show="isModalOpen"
-    @confirm="deleteCategory"
+    @confirm="deleteCategoryHandler"
     @cancel="closeModal"
   >
     <template #header>
@@ -90,7 +93,7 @@
 
 <script setup lang="ts">
 import { AppNavigation, AppModal } from '@/components/common'
-import { ref, nextTick } from 'vue'
+import { nextTick, type Ref, ref } from 'vue'
 import { useCategoryStore } from '@/stores/index.js'
 import { useModal } from '@/composables/index.js'
 import { Category } from '@/types/category.ts'
@@ -99,52 +102,55 @@ defineProps<{
   categories: Category[]
 }>()
 
+const emit = defineEmits<{
+  'update-category': Category
+  'delete-category': []
+}>()
+
 const categoryStore = useCategoryStore()
 
 const { isModalOpen, closeModal, openModal } = useModal()
 
-const updatedCategory = ref(null)
-const selectCategory = (category: Category) => {
-  // Cannot select a category if it's already selected or updating
-  if([categoryStore.selectedCategoryId, updatedCategory.value?.id].includes(category.id)) return
-
-  toggleUpdatingMode(null)
-  categoryStore.selectCategory(category)
-}
-
 const updatedCategoryInputRef = ref(null)
+const updatedCategory:Ref<Category | null> = ref(null)
+
+const selectCategory = (category: Category) => {
+  if([categoryStore.selectedCategoryId, updatedCategory.value?.id].includes(category.id)) {
+    return
+  }
+  categoryStore.selectCategory(category)
+  toggleUpdatingMode(null)
+}
 const toggleUpdatingMode = async (category: Category) => {
   if(!category?.id) {
     updatedCategory.value = null
     return
   }
 
-  // Cannot edit a category if it's already in updating mode
-  if(category.id === updatedCategory.value?.id) return
+  if(category.id === updatedCategory.value?.id) {
+    return
+  }
 
-  // To avoid direct reference with categories in store
   updatedCategory.value = {...category}
-
   // Use function template refs because an input element is initially hidden
   await nextTick()
   updatedCategoryInputRef.value.focus()
 }
 
-const updateCategory = async () => {
-  await categoryStore.updateCategory(updatedCategory.value)
-  categoryStore.selectCategory(updatedCategory.value)
+const updateCategoryHandler = async () => {
+  emit('update-category', updatedCategory.value)
   updatedCategory.value = null
 }
 
-const deleteCategory = async () => {
-  await categoryStore.deleteCategory(categoryStore.selectedCategoryId)
-  categoryStore.selectFirstCategoryAsDefault()
+const deleteCategoryHandler = async () => {
+  emit('delete-category')
   closeModal()
 }
 </script>
 
 <style>
 @reference "tailwindcss";
+
 .category-items__wrapper {
   @apply pt-8 pr-4 w-2xs;
   @apply overflow-y-scroll h-9/10;
@@ -175,5 +181,4 @@ const deleteCategory = async () => {
 .category-name.selected .category-actions {
   @apply flex gap-1;
 }
-
 </style>

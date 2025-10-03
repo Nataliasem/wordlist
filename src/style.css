@@ -36,6 +36,9 @@ body {
     @apply text-white font-bold bg-red-800 hover:bg-red-700 focus:border-red-900;
 }
 
+.app-button__bordered {
+    @apply border-violet-200 hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300
+}
 
 .app-input {
     @apply text-lg px-1 rounded-sm border-2 border-violet-100 outline-none;

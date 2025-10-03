@@ -18,21 +18,45 @@ export const EMPTY_WORD = {
   category: null
 }
 
-export const WORD_TABLE_MESSAGE = {
+export enum MessageType {
+  Error = 'ERROR',
+  Empty = 'EMPTY',
+  EmptySearch = 'EMPTY_SEARCH'
+}
+
+export const FETCH_WORD_MESSAGE = {
   empty: {
-    type: 'empty',
+    type: MessageType.Empty,
     text: 'No words in this category.',
     style: 'text-purple-800'
   },
   error: {
-    type: 'error',
+    type: MessageType.Error,
     text: 'Something went wrong fetching words.',
     style: 'text-red-800'
   },
   emptySearch: {
-    type: 'empty',
+    type: MessageType.EmptySearch,
     text: 'No such word was found. Try changing the search criteria or add a new word.',
-    style: 'text-blue-800'
+    style: 'text-violet-600'
+  }
+}
+
+export const FETCH_CATEGORY_MESSAGE = {
+  empty: {
+    type: MessageType.Empty,
+    text: 'Category`s list is empty. Add the first category',
+    style: 'text-purple-800'
+  },
+  error: {
+    type: MessageType.Error,
+    text: 'Something went wrong fetching categories.',
+    style: 'text-red-800'
+  },
+  emptySearch: {
+    type: MessageType.EmptySearch,
+    text: 'No such category was found. Try changing the search criteria or add a new category.',
+    style: 'text-violet-600'
   }
 }
 

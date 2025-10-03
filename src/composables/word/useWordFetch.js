@@ -1,10 +1,10 @@
 import { useSearch, useCustomFetch } from '@/composables/index.js'
-import { getWordlist, create, update, remove, changeCategory, removeMany } from '@/api/word.ts'
+import { getWordlist } from '@/api/word.ts'
 import { computed, ref, watch } from 'vue'
-import { DEFAULT_FETCH_LIMIT, DEFAULT_WORD_SORT, WORD_TABLE_MESSAGE } from '@/constants.js'
+import { DEFAULT_FETCH_LIMIT, DEFAULT_WORD_SORT, FETCH_WORD_MESSAGE } from '@/constants.ts'
 import { useCategoryStore } from '@/stores/index.js'
 
-export function useWordsFetch() {
+export function useWordFetch() {
   const categoryStore = useCategoryStore()
 
   const {
@@ -21,9 +21,9 @@ export function useWordsFetch() {
   } = useCustomFetch(getWordlist)
 
   const fetchMessage = computed(() => {
-    if (hasError.value) return WORD_TABLE_MESSAGE.error
-    if (!hasActiveSearch.value && isEmpty.value) return WORD_TABLE_MESSAGE.empty
-    if (hasActiveSearch.value && isEmpty.value) return WORD_TABLE_MESSAGE.emptySearch
+    if (hasError.value) return FETCH_WORD_MESSAGE.error
+    if (!hasActiveSearch.value && isEmpty.value) return FETCH_WORD_MESSAGE.empty
+    if (hasActiveSearch.value && isEmpty.value) return FETCH_WORD_MESSAGE.emptySearch
 
     return null
   })
@@ -65,27 +65,6 @@ export function useWordsFetch() {
     await fetchWordList()
   }, { immediate: true })
 
-  const createWord = async (word) => {
-    await create(word)
-    await fetchWordList()
-  }
-  const updateWord = async (word) => {
-    await update(word)
-    await fetchWordList()
-  }
-  const removeWord = async (id) => {
-    await remove(id)
-    await fetchWordList()
-  }
-  const removeWords = async (ids) => {
-    await removeMany(ids)
-    await fetchWordList()
-  }
-  const changeWordsCategory = async (categoryId, updatedWords) => {
-    await changeCategory(categoryId, updatedWords)
-    await fetchWordList()
-  }
-
   return {
     sortedBy,
     currentPage,
@@ -93,12 +72,7 @@ export function useWordsFetch() {
     fetchMessage,
     clearSearch,
     wordList,
-    fetchWordList,
-    createWord,
-    updateWord,
-    removeWord,
-    removeWords,
-    changeWordsCategory
+    fetchWordList
   }
 }
 

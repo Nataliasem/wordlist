@@ -13,51 +13,18 @@
         @click-row="editWord"
       >
         <template #search>
-          <input
-            id="table-search__input"
+          <AppSearchInput
             v-model="searchString"
-            type="text"
-            class="app-input p-1 h-10 min-w-xs"
-            placeholder="Enter a word here..."
-          >
-          <button
-            id="add-word-button"
-            class="app-button border-violet-200 hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300"
-            type="button"
-            @click="addWord"
-          >
-            <v-icon
-              name="ri-play-list-add-fill"
-              :scale="1.3"
-              title="Add new"
-              fill="purple"
-            />
-          </button>
-
-          <button
-            class="app-button border-violet-200 hover:bg-violet-100 hover:border-violet-200 focus:border-violet-300"
-            type="button"
-            @click="clearSearch"
-          >
-            <v-icon
-              name="ri-delete-back-2-line"
-              :scale="1.3"
-              title="Clear input"
-              fill="purple"
-            />
-          </button>
+            placeholder="Enter a word here"
+            show-clear
+            @confirm="addWord"
+          />
         </template>
 
         <template #selected-rows-action="{ selectedRows }">
           <template v-if="selectedRows.length > 0">
             <div class="flex items-center gap-2 pr-4 ml-2 border-r-2 border-r-violet-200">
-              <AppSelect
-                id="select-category"
-                v-model="selectedCategory"
-                name="select-category"
-                :options="categoryStore.data"
-                class="select-category"
-              />
+              <CategorySelect v-model="selectedCategory" />
 
               <button
                 class="app-button bg-violet-100 border-violet-200"
@@ -88,12 +55,10 @@
           v-if="fetchMessage"
           #table-message
         >
-          <span :class="fetchMessage.style">
-            <span>{{ fetchMessage.text }}</span>
-            <span v-if="fetchMessage.type === 'error'">
-              Please <a @click="reloadPage">reload the page</a>.
-            </span>
-          </span>
+          <AppMessage
+            :message="fetchMessage"
+            class="w-full"
+          />
         </template>
       </AppTable>
     </div>
@@ -115,11 +80,11 @@
 <script setup lang="ts">
 import { computed, watch, ref, useTemplateRef } from 'vue'
 import WordForm from './WordForm.vue'
-import { AppSelect, AppTable, AppPagination, AppView } from '@/components/common'
-import { useWordsFetch, useWordView } from '@/composables/index.js'
+import CategorySelect from '@/components/category/CategorySelect.vue'
+import { AppTable, AppPagination, AppView, AppMessage, AppSearchInput } from '@/components/common'
+import { useWordFetch, useWordView, useWordService } from '@/composables/index.js'
 import { useCategoryStore } from '@/stores/index.js'
-import { reloadPage } from '@/utils/index.js'
-import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants.js'
+import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants'
 import { Word } from '@/types/word'
 
 // TODO: fix after backend WL-54
@@ -131,14 +96,17 @@ const {
   sortedBy,
   currentPage,
   searchString,
-  clearSearch,
   wordList,
   fetchMessage,
+  fetchWordList
+} = useWordFetch()
+
+const {
   removeWords,
   changeWordsCategory,
   updateWord,
   createWord
-} = useWordsFetch()
+} = useWordService()
 
 const { isWordViewShown, toggleWordView } = useWordView()
 const word = ref(null)
@@ -160,8 +128,10 @@ const addWord = () => {
 const createOrUpdateWord = async (updatedWord: Word) => {
   if(updatedWord.id) {
     await updateWord(updatedWord)
+    await fetchWordList()
   } else {
     await createWord(updatedWord)
+    await fetchWordList()
   }
   toggleWordView()
 }
@@ -169,6 +139,7 @@ const createOrUpdateWord = async (updatedWord: Word) => {
 const table = useTemplateRef('app-table')
 const removeSelectedWords = async (wordsIds: number[]) => {
   await removeWords(wordsIds)
+  await fetchWordList()
   table.value?.clearSelectedRowsList()
 }
 
@@ -181,6 +152,7 @@ watch(initialCategory, (newValue) => {
 })
 const changeCategory = async (wordsIds: number[]) => {
   await changeWordsCategory(selectedCategory.value, wordsIds)
+  await fetchWordList()
   selectedCategory.value = null
   table.value?.clearSelectedRowsList()
 }

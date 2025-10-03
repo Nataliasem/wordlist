@@ -13,6 +13,7 @@
           class="flex gap-2 mb-2"
         >
           <button
+            type="button"
             class="cursor-pointer"
             @click="deleteExample(index)"
           >
