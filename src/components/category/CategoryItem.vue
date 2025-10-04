@@ -1,3 +1,60 @@
+<script setup lang="ts">
+import { AppNavigation, AppModal } from '@/components/common'
+import { nextTick, type Ref, ref } from 'vue'
+import { useCategoryStore } from '@/stores'
+import { useModal } from '@/composables'
+import { Category } from '@/types/category.ts'
+
+defineProps<{
+  categories: Category[]
+}>()
+
+const emit = defineEmits<{
+  'update-category': Category
+  'delete-category': []
+}>()
+
+const categoryStore = useCategoryStore()
+
+const { isModalOpen, closeModal, openModal } = useModal()
+
+const updatedCategoryInputRef = ref(null)
+const updatedCategory:Ref<Category | null> = ref(null)
+
+const selectCategory = (category: Category) => {
+  if([categoryStore.selectedCategoryId, updatedCategory.value?.id].includes(category.id)) {
+    return
+  }
+  categoryStore.selectCategory(category)
+  toggleUpdatingMode(null)
+}
+const toggleUpdatingMode = async (category: Category) => {
+  if(!category?.id) {
+    updatedCategory.value = null
+    return
+  }
+
+  if(category.id === updatedCategory.value?.id) {
+    return
+  }
+
+  updatedCategory.value = {...category}
+  // Use function template refs because an input element is initially hidden
+  await nextTick()
+  updatedCategoryInputRef.value.focus()
+}
+
+const updateCategoryHandler = async () => {
+  emit('update-category', updatedCategory.value)
+  updatedCategory.value = null
+}
+
+const deleteCategoryHandler = async () => {
+  emit('delete-category')
+  closeModal()
+}
+</script>
+
 <template>
   <div
     class="category-items__wrapper"
@@ -90,63 +147,6 @@
     </template>
   </AppModal>
 </template>
-
-<script setup lang="ts">
-import { AppNavigation, AppModal } from '@/components/common'
-import { nextTick, type Ref, ref } from 'vue'
-import { useCategoryStore } from '@/stores'
-import { useModal } from '@/composables'
-import { Category } from '@/types/category.ts'
-
-defineProps<{
-  categories: Category[]
-}>()
-
-const emit = defineEmits<{
-  'update-category': Category
-  'delete-category': []
-}>()
-
-const categoryStore = useCategoryStore()
-
-const { isModalOpen, closeModal, openModal } = useModal()
-
-const updatedCategoryInputRef = ref(null)
-const updatedCategory:Ref<Category | null> = ref(null)
-
-const selectCategory = (category: Category) => {
-  if([categoryStore.selectedCategoryId, updatedCategory.value?.id].includes(category.id)) {
-    return
-  }
-  categoryStore.selectCategory(category)
-  toggleUpdatingMode(null)
-}
-const toggleUpdatingMode = async (category: Category) => {
-  if(!category?.id) {
-    updatedCategory.value = null
-    return
-  }
-
-  if(category.id === updatedCategory.value?.id) {
-    return
-  }
-
-  updatedCategory.value = {...category}
-  // Use function template refs because an input element is initially hidden
-  await nextTick()
-  updatedCategoryInputRef.value.focus()
-}
-
-const updateCategoryHandler = async () => {
-  emit('update-category', updatedCategory.value)
-  updatedCategory.value = null
-}
-
-const deleteCategoryHandler = async () => {
-  emit('delete-category')
-  closeModal()
-}
-</script>
 
 <style>
 @reference "tailwindcss";

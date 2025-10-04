@@ -1,12 +1,3 @@
-<template>
-  <vue-awesome-paginate
-    v-model="model"
-    :total-items="totalItems"
-    :items-per-page="itemsPerPage"
-    :max-pages-shown="maxPagesShown"
-  />
-</template>
-
 <script setup lang="ts">
 import { VueAwesomePaginate } from 'vue-awesome-paginate'
 import 'vue-awesome-paginate/dist/style.css'
@@ -20,6 +11,15 @@ interface Props {
 }
 const { itemsPerPage = 10, maxPagesShown = 5} = defineProps<Props>()
 </script>
+
+<template>
+  <vue-awesome-paginate
+    v-model="model"
+    :total-items="totalItems"
+    :items-per-page="itemsPerPage"
+    :max-pages-shown="maxPagesShown"
+  />
+</template>
 
 <style>
 @reference "tailwindcss";

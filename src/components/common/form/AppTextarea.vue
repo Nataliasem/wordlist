@@ -1,28 +1,3 @@
-<template>
-  <div class="flex flex-col gap-4">
-    <label
-      v-if="label"
-      :for="id"
-    >
-      <span :class="{'required-field-title': required}">{{ label }}:</span>
-    </label>
-
-    <slot />
-
-    <textarea
-      :id="id"
-      ref="app-textarea"
-      v-model="model"
-      class="app-input"
-      :rows="rows"
-      :name="name"
-      :class="{'invalid': required && hasError }"
-      @focus="$emit('focus')"
-      @blur="$emit('blur')"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useTemplateRef, defineExpose } from 'vue'
 import { useFieldValidation } from '@/composables'
@@ -50,3 +25,28 @@ defineExpose({
   validate
 })
 </script>
+
+<template>
+  <div class="flex flex-col gap-4">
+    <label
+      v-if="label"
+      :for="id"
+    >
+      <span :class="{'required-field-title': required}">{{ label }}:</span>
+    </label>
+
+    <slot />
+
+    <textarea
+      :id="id"
+      ref="app-textarea"
+      v-model="model"
+      class="app-input"
+      :rows="rows"
+      :name="name"
+      :class="{'invalid': required && hasError }"
+      @focus="$emit('focus')"
+      @blur="$emit('blur')"
+    />
+  </div>
+</template>

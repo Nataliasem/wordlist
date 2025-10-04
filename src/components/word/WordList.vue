@@ -1,82 +1,3 @@
-<template>
-  <div class="word-list flex-1 p-4">
-    <div>
-      <h2 class="text-3xl mb-8">
-        Category: {{ categoryStore.selectedCategoryName }}
-      </h2>
-
-      <AppTable
-        ref="app-table"
-        :column-config="WORD_TABLE_CONFIG"
-        :table-data="wordList"
-        :sorted-by="sortedBy"
-        @click-row="editWord"
-      >
-        <template #search>
-          <AppSearchInput
-            v-model="searchString"
-            placeholder="Enter a word here"
-            show-clear
-            @confirm="addWord"
-          />
-        </template>
-
-        <template #selected-rows-action="{ selectedRows }">
-          <template v-if="selectedRows.length > 0">
-            <div class="flex items-center gap-2 pr-4 ml-2 border-r-2 border-r-violet-200">
-              <CategorySelect v-model="selectedCategory" />
-
-              <button
-                class="app-button bg-violet-100 border-violet-200"
-                type="button"
-                @click="changeCategory(selectedRows)"
-              >
-                Change category
-              </button>
-            </div>
-
-            <button
-              class="app-button border-amber-500 bg-orange-200 ml-4"
-              type="button"
-              @click="removeSelectedWords(selectedRows)"
-            >
-              Remove selected
-            </button>
-          </template>
-
-          <AppPagination
-            v-else
-            v-model="currentPage"
-            :total-items="TEMPORARY_TOTAL_PAGES"
-          />
-        </template>
-
-        <template
-          v-if="fetchMessage"
-          #table-message
-        >
-          <AppMessage
-            :message="fetchMessage"
-            class="w-full"
-          />
-        </template>
-      </AppTable>
-    </div>
-  </div>
-
-  <AppView
-    :show="isWordViewShown"
-    :ignore-el-selectors="['#table-row', '#add-word-button']"
-    @hide="toggleWordView"
-  >
-    <WordForm
-      :word="word"
-      @submit="createOrUpdateWord"
-      @cancel="toggleWordView"
-    />
-  </AppView>
-</template>
-
 <script setup lang="ts">
 import { computed, watch, ref, useTemplateRef } from 'vue'
 import WordForm from './WordForm.vue'
@@ -157,3 +78,82 @@ const changeCategory = async (wordsIds: number[]) => {
   table.value?.clearSelectedRowsList()
 }
 </script>
+
+<template>
+  <div class="word-list flex-1 p-4">
+    <div>
+      <h2 class="text-3xl mb-8">
+        Category: {{ categoryStore.selectedCategoryName }}
+      </h2>
+
+      <AppTable
+        ref="app-table"
+        :column-config="WORD_TABLE_CONFIG"
+        :table-data="wordList"
+        :sorted-by="sortedBy"
+        @click-row="editWord"
+      >
+        <template #search>
+          <AppSearchInput
+            v-model="searchString"
+            placeholder="Enter a word here"
+            show-clear
+            @confirm="addWord"
+          />
+        </template>
+
+        <template #selected-rows-action="{ selectedRows }">
+          <template v-if="selectedRows.length > 0">
+            <div class="flex items-center gap-2 pr-4 ml-2 border-r-2 border-r-violet-200">
+              <CategorySelect v-model="selectedCategory" />
+
+              <button
+                class="app-button bg-violet-100 border-violet-200"
+                type="button"
+                @click="changeCategory(selectedRows)"
+              >
+                Change category
+              </button>
+            </div>
+
+            <button
+              class="app-button border-amber-500 bg-orange-200 ml-4"
+              type="button"
+              @click="removeSelectedWords(selectedRows)"
+            >
+              Remove selected
+            </button>
+          </template>
+
+          <AppPagination
+            v-else
+            v-model="currentPage"
+            :total-items="TEMPORARY_TOTAL_PAGES"
+          />
+        </template>
+
+        <template
+          v-if="fetchMessage"
+          #table-message
+        >
+          <AppMessage
+            :message="fetchMessage"
+            class="w-full"
+          />
+        </template>
+      </AppTable>
+    </div>
+  </div>
+
+  <AppView
+    :show="isWordViewShown"
+    :ignore-el-selectors="['#table-row', '#add-word-button']"
+    @hide="toggleWordView"
+  >
+    <WordForm
+      :word="word"
+      @submit="createOrUpdateWord"
+      @cancel="toggleWordView"
+    />
+  </AppView>
+</template>
