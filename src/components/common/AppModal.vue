@@ -1,3 +1,12 @@
+<script setup lang="ts">
+defineProps<{show: boolean}>()
+
+defineEmits<{
+  confirm: []
+  cancel: []
+}>()
+</script>
+
 <template>
   <Teleport to="body">
     <Transition name="modal">
@@ -37,15 +46,6 @@
     </Transition>
   </Teleport>
 </template>
-
-<script setup lang="ts">
-defineProps<{show: boolean}>()
-
-defineEmits<{
-  confirm: []
-  cancel: []
-}>()
-</script>
 
 <style scoped>
 @reference "tailwindcss";

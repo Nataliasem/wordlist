@@ -1,3 +1,37 @@
+<script setup lang="ts">
+const hiddenColumns = defineModel<Set<string>>('hiddenColumns')
+const sortedBy = defineModel<{
+  sortColumn: string
+  sortDirection: string
+}>('sortedBy')
+
+const allSelected = defineModel<boolean>('all-selected', {default: false})
+
+defineProps<{
+  columnConfig: {
+    key: string
+    title: string
+    required: boolean
+    sortable: boolean
+  }[]
+}>()
+
+defineEmits(['select-all'])
+
+const toggleColumnVisibility = (columnKey: string) => {
+  if( hiddenColumns.value.has(columnKey)) {
+    hiddenColumns.value.delete(columnKey)
+  } else {
+    hiddenColumns.value.add(columnKey)
+  }
+}
+
+const sortByColumn = (column: string) => {
+  sortedBy.value.sortColumn = column
+  sortedBy.value.sortDirection = sortedBy.value.sortDirection === 'asc' ? 'desc' : 'asc'
+}
+</script>
+
 <template>
   <thead>
     <tr>
@@ -77,37 +111,3 @@
     </tr>
   </thead>
 </template>
-
-<script setup lang="ts">
-const hiddenColumns = defineModel<Set<string>>('hiddenColumns')
-const sortedBy = defineModel<{
-  sortColumn: string
-  sortDirection: string
-}>('sortedBy')
-
-const allSelected = defineModel<boolean>('all-selected', {default: false})
-
-defineProps<{
-  columnConfig: {
-    key: string
-    title: string
-    required: boolean
-    sortable: boolean
-  }[]
-}>()
-
-defineEmits(['select-all'])
-
-const toggleColumnVisibility = (columnKey: string) => {
-  if( hiddenColumns.value.has(columnKey)) {
-    hiddenColumns.value.delete(columnKey)
-  } else {
-    hiddenColumns.value.add(columnKey)
-  }
-}
-
-const sortByColumn = (column: string) => {
-  sortedBy.value.sortColumn = column
-  sortedBy.value.sortDirection = sortedBy.value.sortDirection === 'asc' ? 'desc' : 'asc'
-}
-</script>

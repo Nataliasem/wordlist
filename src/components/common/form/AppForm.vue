@@ -1,3 +1,10 @@
+<script setup lang="ts">
+defineEmits<{
+  submit: []
+  cancel: []
+}>()
+</script>
+
 <template>
   <form @submit.prevent="$emit('submit')">
     <div class="sticky top-0 py-8 bg-white z-100">
@@ -32,10 +39,3 @@
     </div>
   </form>
 </template>
-
-<script setup lang="ts">
-defineEmits<{
-  submit: []
-  cancel: []
-}>()
-</script>
