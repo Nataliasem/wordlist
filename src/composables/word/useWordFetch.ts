@@ -1,8 +1,8 @@
 import { useSearch, useCustomFetch } from '@/composables'
-import { getWordlist } from '@/api/word.ts'
+import { getWordlist } from '@/api/word'
 import { computed, ref, watch } from 'vue'
-import { DEFAULT_FETCH_LIMIT, DEFAULT_WORD_SORT, FETCH_WORD_MESSAGE } from '@/constants.ts'
-import { useCategoryStore } from '@/stores/index.ts'
+import { DEFAULT_FETCH_LIMIT, DEFAULT_WORD_SORT, FETCH_WORD_MESSAGE } from '@/constants'
+import { useCategoryStore } from '@/stores'
 
 export function useWordFetch() {
   const categoryStore = useCategoryStore()
