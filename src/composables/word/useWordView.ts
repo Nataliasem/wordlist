@@ -1,9 +1,8 @@
 import { ref } from 'vue'
-import type { Ref } from 'vue'
 
 export function useWordView() {
-  const isWordViewShown: Ref<boolean> = ref(false)
-  const toggleWordView = (): void => {
+  const isWordViewShown = ref(false)
+  const toggleWordView = () => {
     isWordViewShown.value = !isWordViewShown.value
   }
 

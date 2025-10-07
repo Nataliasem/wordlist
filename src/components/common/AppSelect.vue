@@ -1,3 +1,18 @@
+<script setup lang="ts" generic="T">
+const model = defineModel<string | number | null>()
+
+interface Props {
+  id: string
+  name: string
+  options: T[]
+  valueProp?: string
+  nameProp?: string
+  label?: string
+}
+
+const { valueProp = 'id', nameProp = 'name', label = ''} = defineProps<Props>()
+</script>
+
 <template>
   <div class="flex flex-col gap-4">
     <label
@@ -23,18 +38,3 @@
     </select>
   </div>
 </template>
-
-<script setup lang="ts" generic="T">
-const model = defineModel<string | number | null>()
-
-interface Props {
-  id: string
-  name: string
-  options: T[]
-  valueProp?: string
-  nameProp?: string
-  label?: string
-}
-
-const { valueProp = 'id', nameProp = 'name', label = ''} = defineProps<Props>()
-</script>

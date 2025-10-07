@@ -4,10 +4,10 @@ import { useThrottleFn } from '@vueuse/core'
 import { CategoryId, WordQueryParams } from '@/types'
 
 export function useCustomFetch<T>(apiMethod: (...params: (CategoryId | WordQueryParams)[] ) => Promise<T[]>) {
-  const isFetching: Ref<boolean> = ref(false)
-  const hasError: Ref<boolean> = ref(false)
+  const isFetching = ref(false)
+  const hasError = ref(false)
   const data: Ref<T[]> = ref([])
-  const isEmpty = computed<boolean>(() => {
+  const isEmpty = computed(() => {
     return !isFetching.value && (hasError.value || data.value.length === 0)
   })
 

@@ -1,12 +1,11 @@
 import { ref, computed } from 'vue'
-import type { Ref } from 'vue'
 
 export function useSearch() {
-  const searchString: Ref<string> = ref('')
-  const hasActiveSearch = computed<boolean>(() => {
+  const searchString = ref('')
+  const hasActiveSearch = computed(() => {
     return !!searchString.value.length
   })
-  const clearSearch = (): void => {
+  const clearSearch = () => {
     searchString.value = ''
   }
 

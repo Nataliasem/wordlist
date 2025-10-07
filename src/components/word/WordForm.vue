@@ -1,3 +1,41 @@
+<script setup lang="ts">
+import CategorySelect from '@/components/category/CategorySelect.vue'
+import { AppForm, AppTextarea } from '@/components/common'
+import WordExamplesInput from './WordExamplesInput.vue'
+import { computed, ref, watch } from 'vue'
+import cloneDeep from 'lodash/cloneDeep'
+import { useFormValidation } from '@/composables'
+import { WORD_FORM_CONFIG } from '@/constants'
+import { Word } from '@/types'
+
+const props = defineProps<{
+  word: Word
+}>()
+const emit = defineEmits<{
+  submit: [data: Word],
+  cancel: []
+}>()
+
+const updatedWord = ref(null)
+watch(() => props.word, async () => {
+  updatedWord.value = cloneDeep(props.word)
+}, {
+  immediate: true,
+  deep: true
+})
+const title = computed(() => {
+  return updatedWord.value?.word || ''
+})
+
+const inputRefs = ref({})
+const { validateForm, hasFormError } = useFormValidation(inputRefs)
+const submit = () => {
+  validateForm()
+  if (hasFormError.value) return
+  emit('submit', updatedWord.value)
+}
+</script>
+
 <template>
   <AppForm
     @submit="submit"
@@ -42,41 +80,3 @@
     </template>
   </AppForm>
 </template>
-
-<script setup lang="ts">
-import CategorySelect from '@/components/category/CategorySelect.vue'
-import { AppForm, AppTextarea } from '@/components/common'
-import WordExamplesInput from './WordExamplesInput.vue'
-import { computed, ref, watch } from 'vue'
-import cloneDeep from 'lodash/cloneDeep'
-import { useFormValidation } from '@/composables'
-import { WORD_FORM_CONFIG } from '@/constants'
-import { Word } from '@/types'
-
-const props = defineProps<{
-  word: Word
-}>()
-const emit = defineEmits<{
-  submit: [data: Word],
-  cancel: []
-}>()
-
-const updatedWord = ref(null)
-watch(() => props.word, async () => {
-  updatedWord.value = cloneDeep(props.word)
-}, {
-  immediate: true,
-  deep: true
-})
-const title = computed(() => {
-  return updatedWord.value?.word || ''
-})
-
-const inputRefs = ref({})
-const { validateForm, hasFormError } = useFormValidation(inputRefs)
-const submit = () => {
-  validateForm()
-  if (hasFormError.value) return
-  emit('submit', updatedWord.value)
-}
-</script>
