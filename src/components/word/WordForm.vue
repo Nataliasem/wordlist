@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CategorySelect from '@/components/category/CategorySelect.vue'
-import { AppForm, AppTextarea } from '@/components/common'
+import { AppForm, AppFormInput } from '@/components/common'
 import WordExamplesInput from './WordExamplesInput.vue'
 import { computed, ref, watch } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
@@ -27,7 +27,13 @@ const title = computed(() => {
   return updatedWord.value?.word || ''
 })
 
-const inputRefs = ref({})
+const inputRefs = ref([])
+const setInputRef = (el) => {
+  if (el) {
+    inputRefs.value.push(el);
+  }
+}
+
 const { validateForm, hasFormError } = useFormValidation(inputRefs)
 const submit = () => {
   validateForm()
@@ -68,12 +74,12 @@ const submit = () => {
         v-else
         class="mb-8"
       >
-        <AppTextarea
+        <AppFormInput
+          :is="item === 'definition' ? 'textarea' : 'input'"
           :id="item"
-          :ref="(el) => { inputRefs[item] = el }"
+          :ref="setInputRef"
           v-model="updatedWord[item]"
           :label="item"
-          :rows="5"
           :required="item === 'word'"
         />
       </div>
