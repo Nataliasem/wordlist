@@ -6,20 +6,19 @@ const model = defineModel<string>()
 
 interface Props {
   id: string
-  is?: string
   name?: string
   rows?: number
   label?: string
   required?: boolean
 }
-const { is = 'input', name = '', rows = 3, label = '', required = false } = defineProps<Props>()
+const { name = '', rows = 1, label = '', required = false } = defineProps<Props>()
 
 defineEmits<{
   focus: [],
   blur: []
 }>()
 
-const target = useTemplateRef<HTMLInputElement>('app-input')
+const target = useTemplateRef('app-textarea')
 const { hasError, validate } = useFieldValidation(target, model, required)
 defineExpose({
   hasError,
@@ -38,15 +37,14 @@ defineExpose({
 
     <slot />
 
-    <Component
-      :is="is"
+    <textarea
       :id="id"
+      ref="app-textarea"
       v-model="model"
-      ref="app-input"
       class="app-input"
-      :class="{'invalid': required && hasError }"
       :rows="rows"
       :name="name"
+      :class="{'invalid': required && hasError }"
       @focus="$emit('focus')"
       @blur="$emit('blur')"
     />

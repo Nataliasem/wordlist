@@ -6,10 +6,10 @@ export function useFormValidation(inputRefs) {
 
   const validateForm = () => {
     inputErrors.value = []
-    for (const inputEl of inputRefs.value) {
-        inputEl.validate()
-      if(inputEl.hasError) {
-        inputErrors.value.push(inputEl)
+    for (let key in inputRefs.value) {
+      inputRefs.value[key].validate()
+      if(inputRefs.value[key].hasError) {
+        inputErrors.value.push(key)
       }
     }
   }

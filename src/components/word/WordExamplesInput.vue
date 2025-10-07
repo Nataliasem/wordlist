@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AppFormInput } from '@/components/common'
+import { AppTextarea } from '@/components/common'
 import { computed, ref } from 'vue'
 
 const model = defineModel<string[]>({ default: () => [] })
@@ -20,11 +20,11 @@ const hasExamples = computed(() => {
 
 <template>
   <div class="flex flex-col gap-4">
-    <AppFormInput
-      is="textarea"
+    <AppTextarea
       id="examples"
       v-model="example"
       label="examples"
+      :rows="10"
     >
       <ol v-if="hasExamples">
         <li
@@ -45,7 +45,7 @@ const hasExamples = computed(() => {
           <span>{{ item }}</span>
         </li>
       </ol>
-    </AppFormInput>
+    </AppTextarea>
 
     <button
       class="px-1 self-start cursor-pointer text-purple-700 hover:text-purple-500 focus:outline-purple-700"
