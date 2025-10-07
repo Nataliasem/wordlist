@@ -1,3 +1,5 @@
+export type NumId = number | null
+
 export interface QueryParams {
     sortColumn: string
     sortDirection: string
