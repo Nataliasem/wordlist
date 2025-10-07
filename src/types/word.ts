@@ -1,8 +1,8 @@
 import { Category } from './category'
-import { QueryParams } from "@/types/common";
+import { NumId, QueryParams } from '@/types/common'
 
 export interface Word {
-    id: number | null
+    id: NumId
     word: string
     transcription: string
     translation: string

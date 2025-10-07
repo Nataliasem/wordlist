@@ -1,13 +1,11 @@
 import { ref } from 'vue'
-import type { Ref } from 'vue'
 
 export function useModal() {
-  const isModalOpen: Ref<boolean> = ref(false)
-
-  const openModal = (): void => {
+  const isModalOpen = ref(false)
+  const openModal = () => {
       isModalOpen.value = true
   }
-  const closeModal = (): void => {
+  const closeModal = () => {
       isModalOpen.value = false
   }
 

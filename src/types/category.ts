@@ -1,8 +1,10 @@
-export type CategoryId = number | null
+import { NumId } from '@/types/common'
+
+export type CategoryId = NumId
 
 export interface Category {
     id: CategoryId
-    name: strivng
+    name: string
 }
 
 export type CategoryKeys = keyof Category
