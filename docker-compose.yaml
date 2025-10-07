@@ -1,6 +1,6 @@
 services:
   wordlist-front:
-    build: .
+    image: nataliasemka17/wordlist:1.0.0
     container_name: wordlist-front
     ports:
       - "81:80"

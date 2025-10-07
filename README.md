@@ -4,7 +4,7 @@ A tool for learning foreign language
 ### Production demo:
 
 1. Install docker
-2. Run command:
+2. Copy docker-compose.yaml from this repo. Then run command:
 ```
 docker-compose up -d
 ```

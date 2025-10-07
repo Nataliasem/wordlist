@@ -1,3 +1,23 @@
+<script setup lang="ts">
+import { AppTextarea } from '@/components/common'
+import { computed, ref } from 'vue'
+
+const model = defineModel<string[]>({ default: () => [] })
+
+const example = ref('')
+const addExample = () => {
+  if (!example.value) return
+  model.value.unshift(example.value)
+  example.value = ''
+}
+const deleteExample = (indexToRemove: number) => {
+  model.value.splice(indexToRemove, 1)
+}
+const hasExamples = computed(() => {
+  return model.value.length
+})
+</script>
+
 <template>
   <div class="flex flex-col gap-4">
     <AppTextarea
@@ -40,23 +60,3 @@
     </button>
   </div>
 </template>
-
-<script setup lang="ts">
-import { AppTextarea } from '@/components/common'
-import { computed, ref } from 'vue'
-
-const model = defineModel<string[]>({ default: () => [] })
-
-const example = ref('')
-const addExample = () => {
-  if (!example.value) return
-  model.value.unshift(example.value)
-  example.value = ''
-}
-const deleteExample = (indexToRemove: number) => {
-  model.value.splice(indexToRemove, 1)
-}
-const hasExamples = computed(() => {
-  return model.value.length
-})
-</script>

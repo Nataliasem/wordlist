@@ -1,3 +1,41 @@
+<script setup lang="ts" generic="T extends { id: number }">
+import TableHead from './TableHead.vue'
+import TableRow from './TableRow.vue'
+import { computed, defineExpose, ref } from 'vue'
+import { useTableRows } from '@/composables'
+
+const props = defineProps<{
+  tableData: T[]
+  columnConfig: {
+    title: string
+    key: string
+    required: boolean
+    sortable: boolean
+  }[]
+  sortedBy: {
+    sortColumn: string
+    sortDirection: string
+  }
+}>()
+
+defineEmits<{
+  'click-row': [row: T]
+}>()
+
+const FIXED_COLUMN_NUMBER = 1
+const columnLength = computed<number>(() => props.columnConfig.length + FIXED_COLUMN_NUMBER)
+
+const hiddenColumns = ref(new Set<string>())
+
+const tableDataIds = computed<number[]>(() => {
+  return props.tableData.map(item => item.id)
+})
+const { selectedRows, allSelected, clearSelectedRowsList, selectAllRows  } = useTableRows(tableDataIds)
+defineExpose({
+  clearSelectedRowsList
+})
+</script>
+
 <template>
   <div class="h-8 mb-8 flex items-center justify-between">
     <div
@@ -58,44 +96,6 @@
     </table>
   </div>
 </template>
-
-<script setup lang="ts" generic="T extends { id: number }">
-import TableHead from './TableHead.vue'
-import TableRow from './TableRow.vue'
-import { computed, defineExpose, ref } from 'vue'
-import { useTableRows } from '@/composables'
-
-const props = defineProps<{
-  tableData: T[]
-  columnConfig: {
-    title: string
-    key: string
-    required: boolean
-    sortable: boolean
-  }[]
-  sortedBy: {
-    sortColumn: string
-    sortDirection: string
-  }
-}>()
-
-defineEmits<{
-  'click-row': [row: T]
-}>()
-
-const FIXED_COLUMN_NUMBER = 1
-const columnLength = computed<number>(() => props.columnConfig.length + FIXED_COLUMN_NUMBER)
-
-const hiddenColumns = ref(new Set<string>())
-
-const tableDataIds = computed<number[]>(() => {
-  return props.tableData.map(item => item.id)
-})
-const { selectedRows, allSelected, clearSelectedRowsList, selectAllRows  } = useTableRows(tableDataIds)
-defineExpose({
-  clearSelectedRowsList
-})
-</script>
 
 <style>
 .table-scrollable-container {

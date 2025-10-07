@@ -1,17 +1,3 @@
-<template>
-  <Teleport to="body">
-    <Transition name="slide-right">
-      <div
-        v-if="show"
-        ref="app-view"
-        class="app-view"
-      >
-        <slot />
-      </div>
-    </Transition>
-  </Teleport>
-</template>
-
 <script setup lang="ts">
 import { useTemplateRef } from 'vue'
 import { onClickOutside } from '@vueuse/core'
@@ -31,6 +17,20 @@ onClickOutside(
   () => emit('hide'),
   { ignore: ignoreElSelectors })
 </script>
+
+<template>
+  <Teleport to="body">
+    <Transition name="slide-right">
+      <div
+        v-if="show"
+        ref="app-view"
+        class="app-view"
+      >
+        <slot />
+      </div>
+    </Transition>
+  </Teleport>
+</template>
 
 <style scoped>
 @reference "tailwindcss";

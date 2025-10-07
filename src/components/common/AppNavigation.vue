@@ -1,22 +1,3 @@
-<template>
-  <ul>
-    <li
-      v-for="(item, index) in items"
-      :ref="(el) => { itemRefs[item.id] = el }"
-      :key="item.id"
-      :tabindex="index"
-      class="outline-none"
-      @click="$emit('click', item)"
-      @focus="$emit('click', item)"
-      @keyup.enter="$emit('enter', item)"
-      @keyup.up="navigateUp(index)"
-      @keyup.down="navigateDown(index)"
-    >
-      <slot :item="item" />
-    </li>
-  </ul>
-</template>
-
 <script setup lang="ts">
 import { ref } from 'vue'
 
@@ -47,3 +28,22 @@ const navigateDown = async (currentIndex: number) => {
   itemRefs.value[nextElId]?.focus()
 }
 </script>
+
+<template>
+  <ul>
+    <li
+      v-for="(item, index) in items"
+      :ref="(el) => { itemRefs[item.id] = el }"
+      :key="item.id"
+      :tabindex="index"
+      class="outline-none"
+      @click="$emit('click', item)"
+      @focus="$emit('click', item)"
+      @keyup.enter="$emit('enter', item)"
+      @keyup.up="navigateUp(index)"
+      @keyup.down="navigateDown(index)"
+    >
+      <slot :item="item" />
+    </li>
+  </ul>
+</template>

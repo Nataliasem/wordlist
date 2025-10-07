@@ -1,3 +1,29 @@
+<script setup lang="ts" generic="T extends { id: number }">
+import { computed } from 'vue'
+
+const selectedRows = defineModel<number[]>('selectedRows', { default: [] })
+
+interface Props {
+  rowData: T
+  columnConfig: {
+    title: string
+    key: string
+    required: boolean
+  }[]
+  hiddenColumns: Set<string>
+}
+
+const props = defineProps<Props>()
+
+defineEmits<{
+  'click-row': []
+}>()
+
+const isSelected = computed(() => {
+  return selectedRows.value.includes(props.rowData.id)
+})
+</script>
+
 <template>
   <tr
     id="table-row"
@@ -30,28 +56,3 @@
   </tr>
 </template>
 
-<script setup lang="ts" generic="T extends { id: number }">
-import { computed } from 'vue'
-
-const selectedRows = defineModel<number[]>('selectedRows', { default: [] })
-
-interface Props {
-  rowData: T
-  columnConfig: {
-    title: string
-    key: string
-    required: boolean
-  }[]
-  hiddenColumns: Set<string>
-}
-
-const props = defineProps<Props>()
-
-defineEmits<{
-  'click-row': []
-}>()
-
-const isSelected = computed(() => {
-  return selectedRows.value.includes(props.rowData.id)
-})
-</script>
