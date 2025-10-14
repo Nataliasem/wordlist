@@ -5,18 +5,18 @@ import WordExamplesInput from './WordExamplesInput.vue'
 import { computed, ref, watch } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { useFormValidation } from '@/composables'
-import { WORD_FORM_CONFIG } from '@/constants'
-import { Word } from '@/types'
+import { EMPTY_WORD, WORD_FORM_CONFIG } from '@/constants'
+import { UpdatedWord, WordStringKeys } from '@/types'
 
 const props = defineProps<{
-  word: Word
+  word: UpdatedWord
 }>()
 const emit = defineEmits<{
-  submit: [data: Word],
+  submit: [data: UpdatedWord],
   cancel: []
 }>()
 
-const updatedWord = ref(null)
+const updatedWord = ref(EMPTY_WORD as UpdatedWord)
 watch(() => props.word, async () => {
   updatedWord.value = cloneDeep(props.word)
 }, {
@@ -71,7 +71,7 @@ const submit = () => {
         <AppTextarea
           :id="item"
           :ref="(el) => { inputRefs[item] = el }"
-          v-model="updatedWord[item]"
+          v-model="updatedWord[item as WordStringKeys]"
           :label="item"
           :rows="5"
           :required="item === 'word'"

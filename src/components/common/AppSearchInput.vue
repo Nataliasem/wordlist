@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const model = defineModel<string>()
 const { showClear = false, placeholder = 'Type something here' } =  defineProps<{
+  id: string
   showClear?: boolean
   placeholder?: string
 }>()
@@ -13,7 +14,7 @@ const clearSearch = () => {
 
 <template>
   <input
-    id="app-search-input"
+    :id="id"
     v-model="model"
     type="text"
     class="app-input p-1 h-10"

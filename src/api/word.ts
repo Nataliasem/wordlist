@@ -1,21 +1,22 @@
 import { WORD_URL } from '@/constants'
-import { normalizeNullable } from '@/utils'
-import { Word, WordQueryParams } from '@/types'
+import { UpdatedWord, Word, WordQueryParams } from '@/types'
 
+type WordQueryParamsKey = keyof WordQueryParams
 const setQueryParams = (rawUrl: string, queryParams?: WordQueryParams): string | URL => {
-    if(!queryParams) return rawUrl
+    if (!queryParams) return rawUrl
 
     const url = new URL(rawUrl)
-    Object.keys(queryParams).forEach(key => {
-        if(['', undefined].includes(queryParams[key])) {
+    const keys = Object.keys(queryParams) as WordQueryParamsKey[]
+    keys.forEach(key => {
+        if (['', undefined].includes(queryParams[key] as WordQueryParamsKey)) {
             return
         }
-        url.searchParams.append(key, queryParams[key])
+        url.searchParams.append(key, queryParams[key] as WordQueryParamsKey)
     })
     return url
 }
 
-export const create = async (word: Word): Promise<void> => {
+export const create = async (word: UpdatedWord): Promise<void> => {
     await fetch(`${WORD_URL}`, {
         method: 'POST',
         headers: {
@@ -25,7 +26,7 @@ export const create = async (word: Word): Promise<void> => {
     })
 }
 
-export const update = async (word: Word): Promise<void> => {
+export const update = async (word: UpdatedWord): Promise<void> => {
     await fetch(`${WORD_URL}/${word.id}`, {
         method: 'PUT',
         headers: {
@@ -56,7 +57,17 @@ export const getWordlist = async (categoryId: number, queryParams?: WordQueryPar
         ? await getWordlistByCategory(categoryId, queryParams)
         : await getWordlistOrphans(queryParams)
 
-    return rawData.map(word => normalizeNullable(word, ['id', 'category']))
+    return rawData.map(word => {
+        return {
+            id: word.id,
+            category: word.category,
+            examples: word.examples,
+            word: word.word ?? '',
+            transcription: word.transcription ?? '',
+            definition: word.definition ?? '',
+            translation: word.translation ?? '',
+        }
+    })
 }
 
 export const getWordlistByCategory = async (categoryId: number, queryParams?: WordQueryParams): Promise<Word[]> => {
