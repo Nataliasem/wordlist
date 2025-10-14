@@ -3,7 +3,7 @@ import { AppNavigation, AppModal } from '@/components/common'
 import { nextTick, type Ref, ref } from 'vue'
 import { useCategoryStore } from '@/stores'
 import { useModal } from '@/composables'
-import { Category } from '@/types/category.ts'
+import { Category } from '@/types'
 
 defineProps<{
   categories: Category[]
