@@ -53,9 +53,21 @@ export const removeMany = async (wordIds: number[]): Promise<void> => {
 }
 
 export const getWordlist = async (categoryId: number, queryParams?: WordQueryParams): Promise<Word[]> => {
-    return categoryId
+    const rawData = categoryId
         ? await getWordlistByCategory(categoryId, queryParams)
         : await getWordlistOrphans(queryParams)
+
+    return rawData.map(word => {
+        return {
+            id: word.id,
+            category: word.category,
+            examples: word.examples,
+            word: word.word ?? '',
+            transcription: word.transcription ?? '',
+            definition: word.definition ?? '',
+            translation: word.translation ?? '',
+        }
+    })
 }
 
 export const getWordlistByCategory = async (categoryId: number, queryParams?: WordQueryParams): Promise<Word[]> => {
