@@ -18,7 +18,7 @@ defineEmits<{
   blur: []
 }>()
 
-const target = useTemplateRef('app-textarea')
+const target = useTemplateRef<HTMLInputElement>('app-textarea')
 const { hasError, validate } = useFieldValidation(target, model, required)
 defineExpose({
   hasError,

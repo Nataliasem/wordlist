@@ -1,11 +1,11 @@
 import { changeCategory, create, remove, removeMany, update } from '@/api/word'
-import type { Word, CategoryId } from '@/types'
+import { CategoryId, UpdatedWord } from '@/types'
 
 export function useWordService() {
-    const createWord = async (word: Word): Promise<void> => {
+    const createWord = async (word: UpdatedWord): Promise<void> => {
         await create(word)
     }
-    const updateWord = async (word: Word): Promise<void> => {
+    const updateWord = async (word: UpdatedWord): Promise<void> => {
         await update(word)
     }
     const removeWord = async (id: number): Promise<void> => {

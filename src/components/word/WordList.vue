@@ -6,7 +6,8 @@ import { AppTable, AppPagination, AppView, AppMessage, AppSearchInput } from '@/
 import { useWordFetch, useWordView, useWordService } from '@/composables'
 import { useCategoryStore } from '@/stores'
 import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants'
-import { Word } from '@/types/word'
+import { Word, UpdatedWord } from '@/types/word'
+import type { Ref } from 'vue'
 
 // TODO: fix after backend WL-54
 const TEMPORARY_TOTAL_PAGES = 1000
@@ -30,7 +31,7 @@ const {
 } = useWordService()
 
 const { isWordViewShown, toggleWordView } = useWordView()
-const word = ref(null)
+const word: Ref<UpdatedWord> = ref(EMPTY_WORD)
 const editWord = (data: Word) => {
   word.value = {
     ...data,
@@ -46,7 +47,7 @@ const addWord = () => {
   }
   toggleWordView()
 }
-const createOrUpdateWord = async (updatedWord: Word) => {
+const createOrUpdateWord = async (updatedWord: UpdatedWord) => {
   if(updatedWord.id) {
     await updateWord(updatedWord)
     await fetchWordList()
@@ -95,6 +96,7 @@ const changeCategory = async (wordsIds: number[]) => {
       >
         <template #search>
           <AppSearchInput
+            id="word-search"
             v-model="searchString"
             placeholder="Enter a word here"
             show-clear
