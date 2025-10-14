@@ -1,11 +1,12 @@
 import { ref, watch } from 'vue'
 import { onClickOutside } from '@vueuse/core'
-import type { Ref } from 'vue'
+import type { Ref, ShallowRef } from 'vue'
 
-export function useFieldValidation(target: HTMLInputElement, model: Ref<string>, required: Ref<boolean>) {
+
+export function useFieldValidation(target: Readonly<ShallowRef<HTMLInputElement | null>>, model: Ref<string | undefined>, required: boolean) {
     const hasError: Ref<boolean> = ref(false)
     const validate = (): void => {
-        hasError.value = required && !model.value.length
+        hasError.value = required && !model.value?.length
     }
     const clearError = (): void => {
         hasError.value = false
@@ -16,7 +17,7 @@ export function useFieldValidation(target: HTMLInputElement, model: Ref<string>,
     })
 
     watch(() => model.value, (newValue, oldValue) => {
-        if(!oldValue.length && newValue.length) {
+        if(!oldValue?.length && newValue?.length) {
             clearError()
         }
     })
