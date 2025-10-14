@@ -2,15 +2,17 @@ import { WORD_URL } from '@/constants'
 import { normalizeNullable } from '@/utils'
 import { UpdatedWord, Word, WordQueryParams } from '@/types'
 
+type WordQueryParamsKey = keyof WordQueryParams
 const setQueryParams = (rawUrl: string, queryParams?: WordQueryParams): string | URL => {
     if(!queryParams) return rawUrl
 
     const url = new URL(rawUrl)
-    Object.keys(queryParams).forEach(key => {
-        if(['', undefined].includes(queryParams[key])) {
+    const keys = Object.keys(queryParams) as WordQueryParamsKey[]
+    keys.forEach(key => {
+        if(['', undefined].includes(queryParams[key] as WordQueryParamsKey)) {
             return
         }
-        url.searchParams.append(key, queryParams[key])
+        url.searchParams.append(key, queryParams[key] as WordQueryParamsKey)
     })
     return url
 }
