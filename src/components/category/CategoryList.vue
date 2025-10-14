@@ -46,6 +46,7 @@ onMounted(async () => {
   <div class="bg-gray-100 p-4 shadow-xl/20">
     <div class="flex justify-between gap-1 py-2">
       <AppSearchInput
+        id="category-search"
         v-model="searchCategory"
         placeholder="Find or add category"
         @confirm="addCategoryHandler"

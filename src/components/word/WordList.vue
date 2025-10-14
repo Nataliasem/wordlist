@@ -96,6 +96,7 @@ const changeCategory = async (wordsIds: number[]) => {
       >
         <template #search>
           <AppSearchInput
+            id="word-search"
             v-model="searchString"
             placeholder="Enter a word here"
             show-clear
