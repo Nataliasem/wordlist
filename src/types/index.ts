@@ -1,5 +1,5 @@
 import { CategoryId, Category, CategoryKeys } from './category'
-import { Word, WordKeys, WordQueryParams } from './word'
+import { Word, WordStringKeys, WordQueryParams, UpdatedWord } from './word'
 import { QueryParams } from './common'
 
 export {
@@ -7,7 +7,8 @@ export {
     Category,
     CategoryKeys,
     Word,
-    WordKeys,
+    UpdatedWord,
+    WordStringKeys,
     WordQueryParams,
     QueryParams
 }

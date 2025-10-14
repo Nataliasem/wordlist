@@ -11,7 +11,12 @@ export interface Word {
     category: Category | null
 }
 
-export type WordKeys = keyof Word
+export interface UpdatedWord extends Omit<Word, 'id' | 'category'> {
+    id?: NumId
+    category: number | null
+}
+
+export type WordStringKeys = 'word' | 'transcription' | 'translation' | 'definition'
 
 export interface WordQueryParams extends QueryParams {
    word: string

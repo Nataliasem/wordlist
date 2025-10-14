@@ -1,6 +1,6 @@
 import { WORD_URL } from '@/constants'
 import { normalizeNullable } from '@/utils'
-import { Word, WordQueryParams } from '@/types'
+import { UpdatedWord, Word, WordQueryParams } from '@/types'
 
 const setQueryParams = (rawUrl: string, queryParams?: WordQueryParams): string | URL => {
     if(!queryParams) return rawUrl
@@ -15,7 +15,7 @@ const setQueryParams = (rawUrl: string, queryParams?: WordQueryParams): string |
     return url
 }
 
-export const create = async (word: Word): Promise<void> => {
+export const create = async (word: UpdatedWord): Promise<void> => {
     await fetch(`${WORD_URL}`, {
         method: 'POST',
         headers: {
@@ -25,7 +25,7 @@ export const create = async (word: Word): Promise<void> => {
     })
 }
 
-export const update = async (word: Word): Promise<void> => {
+export const update = async (word: UpdatedWord): Promise<void> => {
     await fetch(`${WORD_URL}/${word.id}`, {
         method: 'PUT',
         headers: {
