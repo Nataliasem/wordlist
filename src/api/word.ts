@@ -1,15 +1,14 @@
 import { WORD_URL } from '@/constants'
-import { normalizeNullable } from '@/utils'
 import { UpdatedWord, Word, WordQueryParams } from '@/types'
 
 type WordQueryParamsKey = keyof WordQueryParams
 const setQueryParams = (rawUrl: string, queryParams?: WordQueryParams): string | URL => {
-    if(!queryParams) return rawUrl
+    if (!queryParams) return rawUrl
 
     const url = new URL(rawUrl)
     const keys = Object.keys(queryParams) as WordQueryParamsKey[]
     keys.forEach(key => {
-        if(['', undefined].includes(queryParams[key] as WordQueryParamsKey)) {
+        if (['', undefined].includes(queryParams[key] as WordQueryParamsKey)) {
             return
         }
         url.searchParams.append(key, queryParams[key] as WordQueryParamsKey)
@@ -54,11 +53,9 @@ export const removeMany = async (wordIds: number[]): Promise<void> => {
 }
 
 export const getWordlist = async (categoryId: number, queryParams?: WordQueryParams): Promise<Word[]> => {
-    const rawData = categoryId
+    return categoryId
         ? await getWordlistByCategory(categoryId, queryParams)
         : await getWordlistOrphans(queryParams)
-
-    return rawData.map(word => normalizeNullable(word, ['id', 'category']))
 }
 
 export const getWordlistByCategory = async (categoryId: number, queryParams?: WordQueryParams): Promise<Word[]> => {
