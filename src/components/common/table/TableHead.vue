@@ -19,7 +19,9 @@ defineProps<{
 defineEmits(['select-all'])
 
 const toggleColumnVisibility = (columnKey: string) => {
-  if( hiddenColumns.value.has(columnKey)) {
+  if(!hiddenColumns.value) return
+
+  if(hiddenColumns.value.has(columnKey)) {
     hiddenColumns.value.delete(columnKey)
   } else {
     hiddenColumns.value.add(columnKey)
@@ -27,6 +29,7 @@ const toggleColumnVisibility = (columnKey: string) => {
 }
 
 const sortByColumn = (column: string) => {
+  if(!sortedBy.value) return
   sortedBy.value.sortColumn = column
   sortedBy.value.sortDirection = sortedBy.value.sortDirection === 'asc' ? 'desc' : 'asc'
 }
@@ -53,7 +56,10 @@ const sortByColumn = (column: string) => {
       >
         <span :class="{'required-field-title': item.required}">{{ item.title }}</span>
 
-        <span class="p-2">
+        <span
+          v-if="hiddenColumns"
+          class="p-2"
+        >
           <button
             v-if="hiddenColumns.has(item.key)"
             type="button"
@@ -79,7 +85,7 @@ const sortByColumn = (column: string) => {
           </button>
 
           <span
-            v-if="item.sortable"
+            v-if="sortedBy && item.sortable"
             class="sort-icon__wrapper"
           >
             <button
