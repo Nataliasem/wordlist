@@ -1,11 +1,12 @@
-<script setup lang="ts" generic="T extends { id: number }">
-import TableHead from './TableHead.vue'
-import TableRow from './TableRow.vue'
+<script setup lang="ts">
+import AppTableHead from './AppTableHead.vue'
+import AppTableRow from './AppTableRow.vue'
 import { computed, defineExpose, ref } from 'vue'
 import { useTableRows } from '@/composables'
+import { TableRow } from '@/types'
 
 const props = defineProps<{
-  tableData: T[]
+  tableData: TableRow[]
   columnConfig: {
     title: string
     key: string
@@ -19,7 +20,7 @@ const props = defineProps<{
 }>()
 
 defineEmits<{
-  'click-row': [row: T]
+  'click-row': [row: TableRow]
 }>()
 
 const FIXED_COLUMN_NUMBER = 1
@@ -27,7 +28,7 @@ const columnLength = computed<number>(() => props.columnConfig.length + FIXED_CO
 
 const hiddenColumns = ref(new Set<string>())
 
-const tableDataIds = computed<number[]>(() => {
+const tableDataIds = computed(() => {
   return props.tableData.map(item => item.id)
 })
 const { selectedRows, allSelected, clearSelectedRowsList, selectAllRows  } = useTableRows(tableDataIds)
@@ -64,7 +65,7 @@ defineExpose({
 
   <div class="table-scrollable-container">
     <table class="app-table w-full">
-      <TableHead
+      <AppTableHead
         v-model:hidden-columns="hiddenColumns"
         v-model:all-selected="allSelected"
         :sorted-by="sortedBy"
@@ -82,7 +83,7 @@ defineExpose({
         </tr>
 
         <template v-else>
-          <TableRow
+          <AppTableRow
             v-for="row in tableData"
             :key="row.id"
             v-model:selected-rows="selectedRows"

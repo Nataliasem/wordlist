@@ -6,3 +6,8 @@ export interface QueryParams {
     limit: number
     offset: number
 }
+
+export interface TableRow {
+    id: number | string
+    [key: string]: unknown
+}

@@ -1,4 +1,4 @@
-import { NumId } from '@/types/common'
+import { NumId } from '@/types'
 
 export type CategoryId = NumId
 

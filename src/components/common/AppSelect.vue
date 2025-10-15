@@ -4,7 +4,7 @@ const model = defineModel<string | number | null>()
 interface Props {
   id: string
   name: string
-  options: T[]
+  options: Record<string, string | number | null>[]
   valueProp?: string
   nameProp?: string
   label?: string
@@ -29,7 +29,7 @@ const { valueProp = 'id', nameProp = 'name', label = ''} = defineProps<Props>()
     >
       <option
         v-for="item in options"
-        :key="item[valueProp]"
+        :key="String(item[valueProp])"
         :value="item[valueProp]"
         :selected="item[valueProp] === model"
       >

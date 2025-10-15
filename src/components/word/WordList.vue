@@ -8,6 +8,9 @@ import { useCategoryStore } from '@/stores'
 import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants'
 import { Word, UpdatedWord } from '@/types/word'
 import type { Ref } from 'vue'
+import { TableRow } from '@/types'
+
+type WordRow = Word & TableRow
 
 // TODO: fix after backend WL-54
 const TEMPORARY_TOTAL_PAGES = 1000
@@ -32,7 +35,7 @@ const {
 
 const { isWordViewShown, toggleWordView } = useWordView()
 const word: Ref<UpdatedWord> = ref(EMPTY_WORD)
-const editWord = (data: Word) => {
+const editWord = (data: WordRow) => {
   word.value = {
     ...data,
     category: categoryStore.selectedCategoryId
@@ -90,7 +93,7 @@ const changeCategory = async (wordsIds: number[]) => {
       <AppTable
         ref="app-table"
         :column-config="WORD_TABLE_CONFIG"
-        :table-data="wordList"
+        :table-data="wordList as WordRow[]"
         :sorted-by="sortedBy"
         @click-row="editWord"
       >
@@ -112,7 +115,7 @@ const changeCategory = async (wordsIds: number[]) => {
               <button
                 class="app-button bg-violet-100 border-violet-200"
                 type="button"
-                @click="changeCategory(selectedRows)"
+                @click="changeCategory(selectedRows as number[])"
               >
                 Change category
               </button>
@@ -121,7 +124,7 @@ const changeCategory = async (wordsIds: number[]) => {
             <button
               class="app-button border-amber-500 bg-orange-200 ml-4"
               type="button"
-              @click="removeSelectedWords(selectedRows)"
+              @click="removeSelectedWords(selectedRows as number[])"
             >
               Remove selected
             </button>
