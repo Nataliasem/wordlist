@@ -1,6 +1,6 @@
 import { CategoryId, Category, CategoryKeys } from './category'
 import { Word, WordStringKeys, WordQueryParams, UpdatedWord } from './word'
-import { NumId, QueryParams, TableRow, SelectOption } from './common'
+import { NumId, QueryParams, TableRow, SelectOption, FormFieldExposed } from './common'
 
 export {
     CategoryId,
@@ -13,5 +13,6 @@ export {
     NumId,
     QueryParams,
     TableRow,
-    SelectOption
+    SelectOption,
+    FormFieldExposed
 }

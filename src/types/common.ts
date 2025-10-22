@@ -13,3 +13,8 @@ export interface TableRow {
 }
 
 export type SelectOption = Record<string, string | number | null>
+
+export interface FormFieldExposed extends HTMLElement {
+    validate: () => void
+    hasError: boolean
+}
