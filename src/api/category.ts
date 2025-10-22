@@ -1,7 +1,7 @@
 import { CATEGORY_URL } from '@/constants'
 import { Category } from '@/types'
 
-export const create = async (categoryName: string): Promise<Category | null> => {
+export const create = async (categoryName: string): Promise<Category> => {
     const response = await fetch(`${CATEGORY_URL}`, {
         method: 'POST',
         headers: {
@@ -13,7 +13,7 @@ export const create = async (categoryName: string): Promise<Category | null> => 
     if (response.ok) {
         return await response.json()
     } else {
-        return null
+        throw new Error('Unable to create a category')
     }
 }
 
