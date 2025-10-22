@@ -3,6 +3,9 @@ import { AppSelect } from '@/components/common'
 import { onMounted, watch } from 'vue'
 import { useCategoryFetch } from '@/composables'
 import { useCategoryStore } from '@/stores'
+import { SelectOption, Category } from '@/types'
+
+type ExtendedOption = SelectOption & Category
 
 const model = defineModel<number | null>()
 
@@ -27,6 +30,6 @@ watch(() => categoryStore.selectedCategory, () => {
     v-model="model"
     name="select-category"
     :label="useLabel ? 'category' : ''"
-    :options="categories"
+    :options="categories as ExtendedOption[]"
   />
 </template>

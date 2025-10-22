@@ -11,3 +11,5 @@ export interface TableRow {
     id: number | string
     [key: string]: unknown
 }
+
+export type SelectOption = Record<string, string | number | null>

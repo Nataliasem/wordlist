@@ -1,10 +1,12 @@
 <script setup lang="ts" generic="T">
+import { SelectOption } from '@/types'
+
 const model = defineModel<string | number | null>()
 
 interface Props {
   id: string
   name: string
-  options: Record<string, string | number | null>[]
+  options: SelectOption[]
   valueProp?: string
   nameProp?: string
   label?: string
