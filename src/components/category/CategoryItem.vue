@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AppNavigation, AppModal } from '@/components/common'
-import { nextTick, type Ref, ref } from 'vue'
+import { computed, nextTick, type Ref, ref } from 'vue'
 import { useCategoryStore } from '@/stores'
 import { useModal } from '@/composables'
 import { Category } from '@/types'
@@ -10,7 +10,7 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  'update-category': Category
+  'update-category': [category: Category | null]
   'delete-category': []
 }>()
 
@@ -18,8 +18,12 @@ const categoryStore = useCategoryStore()
 
 const { isModalOpen, closeModal, openModal } = useModal()
 
-const updatedCategoryInputRef = ref(null)
+// Use function template refs because an input element is initially hidden
+const updatedCategoryInputRef = ref<HTMLInputElement | null>(null)
 const updatedCategory:Ref<Category | null> = ref(null)
+const updatedCategoryId = computed(() => {
+  return updatedCategory.value?.id || null
+})
 
 const selectCategory = (category: Category) => {
   if([categoryStore.selectedCategoryId, updatedCategory.value?.id].includes(category.id)) {
@@ -28,28 +32,30 @@ const selectCategory = (category: Category) => {
   categoryStore.selectCategory(category)
   toggleUpdatingMode(null)
 }
-const toggleUpdatingMode = async (category: Category) => {
-  if(!category?.id) {
+const toggleUpdatingMode = async (category: Category | null) => {
+  if(!category || !category.id) {
     updatedCategory.value = null
     return
   }
 
+  // this category is already in updating mode - do nothing
   if(category.id === updatedCategory.value?.id) {
     return
   }
 
   updatedCategory.value = {...category}
-  // Use function template refs because an input element is initially hidden
   await nextTick()
-  updatedCategoryInputRef.value.focus()
+  if(updatedCategoryInputRef.value) {
+    updatedCategoryInputRef.value.focus()
+  }
 }
 
-const updateCategoryHandler = async () => {
+const updateCategoryHandler =  () => {
   emit('update-category', updatedCategory.value)
-  updatedCategory.value = null
+  toggleUpdatingMode(null)
 }
 
-const deleteCategoryHandler = async () => {
+const deleteCategoryHandler = () => {
   emit('delete-category')
   closeModal()
 }
@@ -64,7 +70,7 @@ const deleteCategoryHandler = async () => {
       :items="categories"
       :selected-item-id="categoryStore.selectedCategoryId"
       @click="selectCategory"
-      @enter="toggleUpdatingMode"
+      @enter="toggleUpdatingMode($event as Category)"
     >
       <div
         class="category-name"
@@ -73,10 +79,10 @@ const deleteCategoryHandler = async () => {
           'divided': item.id === null
         }"
       >
-        <div v-if="updatedCategory && updatedCategory.id === item.id">
+        <div v-if="updatedCategory && updatedCategoryId === item.id">
           <input
-            :id="updatedCategory && `updated-category-${updatedCategory.id}`"
-            :ref="(el) => updatedCategoryInputRef = el"
+            :id="`updated-category-${updatedCategoryId}`"
+            :ref="(el) => updatedCategoryInputRef = el as HTMLInputElement"
             v-model="updatedCategory.name"
             class="category-input"
             type="text"
@@ -106,7 +112,7 @@ const deleteCategoryHandler = async () => {
             <button
               type="button"
               class="px-1 cursor-pointer hover:text-purple-800"
-              @click.stop="toggleUpdatingMode(item)"
+              @click.stop="toggleUpdatingMode(item as Category)"
             >
               <v-icon
                 name="ri-pencil-line"
@@ -135,7 +141,7 @@ const deleteCategoryHandler = async () => {
     @cancel="closeModal"
   >
     <template #header>
-      Want to remove category <em class="">{{ categoryStore.selectedCategory.name }}</em>?
+      Want to remove category <em>{{ categoryStore.selectedCategoryName }}</em>?
     </template>
 
     <template #content>
