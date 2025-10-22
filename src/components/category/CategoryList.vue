@@ -4,7 +4,7 @@ import CategoryItem from './CategoryItem.vue'
 import { useCategoryStore } from '@/stores'
 import { useCategoryFetch } from '@/composables'
 import { create, update, remove } from '@/api/category'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Category } from '@/types'
 
 const categoryStore = useCategoryStore()
@@ -41,34 +41,54 @@ onMounted(async () => {
   await fetchCategories()
   categoryStore.selectCategory(foundedCategories.value[0])
 })
+
+const isExpanded = ref(false)
 </script>
 
 <template>
-  <div class="bg-gray-100 p-4 shadow-xl/20">
-    <div class="flex justify-between gap-1 py-2">
-      <AppSearchInput
-        id="category-search"
-        v-model="searchCategory"
-        placeholder="Find or add category"
-        @confirm="addCategoryHandler"
-      >
-        <template #confirm>
-          Add
-        </template>
-      </AppSearchInput>
-    </div>
+  <div
+    class="h-full bg-gray-100 p-4 shadow-xl/20"
+    :class="{'fixed': isExpanded}"
+  >
+    <button
+      class="app-button app-button__bordered"
+      type="button"
+      @click="isExpanded = !isExpanded"
+    >
+      <v-icon
+        :name="isExpanded ? 'ri-arrow-left-line' : 'ri-arrow-right-line'"
+        :scale="1.3"
+        title="expand category list"
+        fill="purple"
+      />
+    </button>
 
-    <AppMessage
-      v-if="fetchMessage"
-      :message="fetchMessage"
-      class="w-64"
-    />
+    <template v-if="isExpanded">
+      <div class="flex justify-between gap-1 py-4">
+        <AppSearchInput
+          id="category-search"
+          v-model="searchCategory"
+          placeholder="Find or add category"
+          @confirm="addCategoryHandler"
+        >
+          <template #confirm>
+            Add
+          </template>
+        </AppSearchInput>
+      </div>
 
-    <CategoryItem
-      v-else
-      :categories="foundedCategories"
-      @delete-category="deleteCategoryHandler"
-      @update-category="updateCategoryHandler"
-    />
+      <AppMessage
+        v-if="fetchMessage"
+        :message="fetchMessage"
+        class="w-64"
+      />
+
+      <CategoryItem
+        v-else
+        :categories="foundedCategories"
+        @delete-category="deleteCategoryHandler"
+        @update-category="updateCategoryHandler"
+      />
+    </template>
   </div>
 </template>
