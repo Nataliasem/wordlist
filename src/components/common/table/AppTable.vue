@@ -50,7 +50,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="h-8 mb-8 flex items-center justify-between">
+  <div class="mb-8 flex flex-col gap-4 xl:h-8 xl:flex-row xl:items-center xl:justify-between">
     <div
       v-if="$slots.search"
       class="flex gap-2 items-center"
