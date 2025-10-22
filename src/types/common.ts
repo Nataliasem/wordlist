@@ -6,3 +6,15 @@ export interface QueryParams {
     limit: number
     offset: number
 }
+
+export interface TableRow {
+    id: number | string
+    [key: string]: unknown
+}
+
+export type SelectOption = Record<string, string | number | null>
+
+export interface FormFieldExposed extends HTMLElement {
+    validate: () => void
+    hasError: boolean
+}

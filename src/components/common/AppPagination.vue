@@ -2,7 +2,7 @@
 import { VueAwesomePaginate } from 'vue-awesome-paginate'
 import 'vue-awesome-paginate/dist/style.css'
 
-const model = defineModel<number>()
+const model = defineModel<number>({ required: true })
 
 interface Props {
   totalItems: number
