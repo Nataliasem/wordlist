@@ -28,8 +28,12 @@ const columnLength = computed<number>(() => props.columnConfig.length + FIXED_CO
 
 const hiddenColumns = ref(new Set<string>())
 
-const tableDataIds = computed(() => {
-  return props.tableData.map(item => item.id)
+const tableDataIds = computed<number[] | string[]>(() => {
+  if(typeof props.tableData[0]?.id === 'string') {
+    return props.tableData.map(item => item.id) as string[]
+  } else {
+    return props.tableData.map(item => item.id) as number[]
+  }
 })
 const { selectedRows, allSelected, clearSelectedRowsList, selectAllRows  } = useTableRows(tableDataIds)
 defineExpose({
