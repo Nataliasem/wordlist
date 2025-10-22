@@ -1,10 +1,11 @@
-<script setup lang="ts" generic="T extends { id: number }">
+<script setup lang="ts">
 import { computed } from 'vue'
+import { TableRow } from '@/types'
 
-const selectedRows = defineModel<number[]>('selectedRows', { default: [] })
+const selectedRows = defineModel<number[] | string[]>('selectedRows', { default: [] })
 
 interface Props {
-  rowData: T
+  rowData: TableRow
   columnConfig: {
     title: string
     key: string
@@ -20,7 +21,13 @@ defineEmits<{
 }>()
 
 const isSelected = computed(() => {
-  return selectedRows.value.includes(props.rowData.id)
+  const id = props.rowData.id
+
+  if(selectedRows.value.every(item => typeof item === 'string') ) {
+    return selectedRows.value.includes(id as string)
+  }
+
+  return selectedRows.value.includes(id as number)
 })
 </script>
 

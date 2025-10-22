@@ -6,7 +6,7 @@ import { computed, ref, watch } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { useFormValidation } from '@/composables'
 import { EMPTY_WORD, WORD_FORM_CONFIG } from '@/constants'
-import { UpdatedWord, WordStringKeys } from '@/types'
+import { UpdatedWord, WordStringKeys, FormFieldExposed} from '@/types'
 
 const props = defineProps<{
   word: UpdatedWord
@@ -27,7 +27,11 @@ const title = computed(() => {
   return updatedWord.value?.word || ''
 })
 
-const inputRefs = ref({})
+const inputRefs = ref<Record<string, FormFieldExposed>>({})
+const setRefs = (key: string, element: FormFieldExposed): void => {
+  inputRefs.value[key] = element
+}
+
 const { validateForm, hasFormError } = useFormValidation(inputRefs)
 const submit = () => {
   validateForm()
@@ -70,7 +74,7 @@ const submit = () => {
       >
         <AppTextarea
           :id="item"
-          :ref="(el) => { inputRefs[item] = el }"
+          :ref="(el: FormFieldExposed) => setRefs(item, el)"
           v-model="updatedWord[item as WordStringKeys]"
           :label="item"
           :rows="5"

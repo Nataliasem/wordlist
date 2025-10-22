@@ -5,6 +5,7 @@ import { useCategoryStore } from '@/stores'
 import { useCategoryFetch } from '@/composables'
 import { create, update, remove } from '@/api/category'
 import { onMounted } from 'vue'
+import { Category } from '@/types'
 
 const categoryStore = useCategoryStore()
 
@@ -24,14 +25,14 @@ const addCategoryHandler = async () => {
   clearSearch()
 }
 
-const updateCategoryHandler = async (category) => {
+const updateCategoryHandler = async (category: Category) => {
   await update(category)
   categoryStore.selectCategory(category)
   await fetchCategories()
 }
 
 const deleteCategoryHandler = async () => {
-  await remove(categoryStore.selectedCategoryId)
+  await remove(categoryStore.selectedCategoryId as number)
   await fetchCategories()
   categoryStore.selectCategory(foundedCategories.value[0])
 }

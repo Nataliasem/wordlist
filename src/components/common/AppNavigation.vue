@@ -18,13 +18,17 @@ defineEmits<{
 }>()
 
 // Use function template refs because of re-rendering items when props changes
-const itemRefs = ref({})
+const itemRefs = ref<Record<string, HTMLElement>>({})
+const setRefs = (elementId: number | string | null, element: HTMLElement): void => {
+  const key = String(elementId)
+  itemRefs.value[key] = element
+}
 const navigateUp = async (currentIndex: number) => {
-  const prevElId = props.items[currentIndex - 1]?.id
+  const prevElId = String(props.items[currentIndex - 1]?.id)
   itemRefs.value[prevElId]?.focus()
 }
 const navigateDown = async (currentIndex: number) => {
-  const nextElId = props.items[currentIndex + 1]?.id
+  const nextElId = String(props.items[currentIndex + 1]?.id)
   itemRefs.value[nextElId]?.focus()
 }
 </script>
@@ -33,8 +37,8 @@ const navigateDown = async (currentIndex: number) => {
   <ul>
     <li
       v-for="(item, index) in items"
-      :ref="(el) => { itemRefs[item.id] = el }"
-      :key="item.id"
+      :ref="(el: HTMLElement) => setRefs(item.id, el)"
+      :key="String(item.id)"
       :tabindex="index"
       class="outline-none"
       @click="$emit('click', item)"

@@ -1,5 +1,5 @@
 import { Category } from './category'
-import { NumId, QueryParams } from '@/types/common'
+import { NumId, QueryParams } from '@/types'
 
 export interface Word {
     id: NumId

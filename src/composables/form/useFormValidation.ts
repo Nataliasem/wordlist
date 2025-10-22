@@ -1,12 +1,8 @@
 import { computed, ref } from 'vue'
 import type { Ref } from 'vue'
+import { FormFieldExposed } from '@/types'
 
-interface FormField {
-    validate: () => void
-    hasError: boolean
-}
-
-export function useFormValidation(inputRefs: Ref<Record<string, FormField>>) {
+export function useFormValidation(inputRefs: Ref<Record<string, FormFieldExposed>>) {
   const inputErrors: Ref<string[]> = ref([])
   const hasFormError = computed(() => inputErrors.value.length > 0)
 
