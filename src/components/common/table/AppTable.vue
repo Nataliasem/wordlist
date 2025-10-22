@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import AppTableHead from './AppTableHead.vue'
-import AppTableRow from './AppTableRow.vue'
 import { computed, defineExpose, ref } from 'vue'
 import { useTableRows } from '@/composables'
 import { TableRow } from '@/types'
@@ -36,6 +35,15 @@ const tableDataIds = computed<number[] | string[]>(() => {
   }
 })
 const { selectedRows, allSelected, clearSelectedRowsList, selectAllRows  } = useTableRows(tableDataIds)
+const setRowStyle = (id: string | number) => {
+  const isSelected =
+    selectedRows.value.every(item => typeof item === 'string')
+      ? selectedRows.value.includes(id as string)
+      : selectedRows.value.includes(id as number)
+
+  return isSelected ? 'bg-amber-500 hover:bg-amber-600' : 'hover:bg-violet-200'
+}
+
 defineExpose({
   clearSelectedRowsList
 })
@@ -87,15 +95,37 @@ defineExpose({
         </tr>
 
         <template v-else>
-          <AppTableRow
+          <tr
             v-for="row in tableData"
+            id="table-row"
             :key="row.id"
-            v-model:selected-rows="selectedRows"
-            :column-config="columnConfig"
-            :row-data="row"
-            :hidden-columns="hiddenColumns"
-            @click-row="$emit('click-row', row)"
-          />
+            class="cursor-pointer transition-all duration-300 ease-in"
+            :class="setRowStyle(row.id)"
+          >
+            <td class="text-center">
+              <input
+                :id="String(row.id)"
+                v-model="selectedRows"
+                :value="row.id"
+                type="checkbox"
+                title="Select row"
+                class="accent-white w-4 h-4"
+              >
+            </td>
+
+            <td
+              v-for="item in columnConfig"
+              :key="item.key"
+              @click-row="$emit('click-row', row)"
+            >
+              <p
+                class="p-1 overflow-hidden text-ellipsis whitespace-nowrap"
+                :class="{ 'blur-sm': hiddenColumns.has(item.key) }"
+              >
+                {{ row[item.key] }}
+              </p>
+            </td>
+          </tr>
         </template>
       </tbody>
     </table>
