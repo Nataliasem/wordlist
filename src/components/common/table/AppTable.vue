@@ -116,7 +116,7 @@ defineExpose({
             <td
               v-for="item in columnConfig"
               :key="item.key"
-              @click-row="$emit('click-row', row)"
+              @click="$emit('click-row', row)"
             >
               <p
                 class="p-1 overflow-hidden text-ellipsis whitespace-nowrap"
