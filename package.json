@@ -8,7 +8,6 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .js,.vue --ignore-pattern .gitignore src",
-    "format": "prettier .  --write",
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
