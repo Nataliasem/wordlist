@@ -2,8 +2,7 @@
 import CategorySelect from '@/components/category/CategorySelect.vue'
 import { AppForm, AppTextarea } from '@/components/common'
 import WordExamplesInput from './WordExamplesInput.vue'
-import { computed, ref, watch } from 'vue'
-import cloneDeep from 'lodash/cloneDeep'
+import { computed, ref, watch, toRaw } from 'vue'
 import { useFormValidation } from '@/composables'
 import { EMPTY_WORD, WORD_FORM_CONFIG } from '@/constants'
 import { UpdatedWord, WordStringKeys, FormFieldExposed} from '@/types'
@@ -18,7 +17,7 @@ const emit = defineEmits<{
 
 const updatedWord = ref(EMPTY_WORD as UpdatedWord)
 watch(() => props.word, async () => {
-  updatedWord.value = cloneDeep(props.word)
+  updatedWord.value = structuredClone(toRaw(props.word))
 }, {
   immediate: true,
   deep: true
