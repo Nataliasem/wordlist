@@ -7,6 +7,14 @@ import { create, update, remove } from '@/api/category'
 import { Category } from '@/types'
 import { MessageType } from '@/constants'
 import { reloadPage } from '@/utils'
+import { useWindowSize } from '@vueuse/core'
+
+const { width } = useWindowSize()
+const isExpanded = ref(true)
+const TABLET_SCREEN_SIZE = 1024
+if(width.value < TABLET_SCREEN_SIZE) {
+  isExpanded.value = false
+}
 
 const { selectCategory, selectedCategoryId } = useSelectedCategory()
 
@@ -42,8 +50,6 @@ onMounted(async () => {
   await fetchCategories()
   selectCategory(foundedCategories.value[0])
 })
-
-const isExpanded = ref(true)
 </script>
 
 <template>
