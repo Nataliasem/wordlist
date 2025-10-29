@@ -4,8 +4,7 @@ import AppTable from '@/components/common/table/AppTable.vue'
 import AppPagination from '@/components/common/AppPagination.vue'
 import AppView from '@/components/common/AppView.vue'
 import AppSearchInput  from '@/components/common/AppSearchInput.vue'
-import { useWordFetch, useWordView, useWordService } from '@/composables'
-import { useCategoryStore } from '@/stores'
+import { useWordFetch, useWordView, useWordService, useSelectedCategory } from '@/composables'
 import { WORD_TABLE_CONFIG, EMPTY_WORD, MessageType } from '@/constants'
 import { TableRow, Word, UpdatedWord } from '@/types'
 import type { Ref } from 'vue'
@@ -18,8 +17,6 @@ type WordRow = Word & TableRow
 
 // TODO: fix after backend WL-54
 const TEMPORARY_TOTAL_PAGES = 1000
-
-const categoryStore = useCategoryStore()
 
 const {
   sortedBy,
@@ -37,12 +34,14 @@ const {
   createWord
 } = useWordService()
 
+const { selectedCategoryId, selectedCategoryName } = useSelectedCategory()
+
 const { isWordViewShown, toggleWordView } = useWordView()
 const word: Ref<UpdatedWord> = ref(EMPTY_WORD)
 const editWord = (data: WordRow) => {
   word.value = {
     ...data,
-    category: categoryStore.selectedCategoryId
+    category: selectedCategoryId.value,
   }
   toggleWordView()
 }
@@ -50,7 +49,7 @@ const addWord = () => {
   word.value = {
     ...EMPTY_WORD,
     word: searchString.value,
-    category: categoryStore.selectedCategoryId
+    category: selectedCategoryId.value,
   }
   toggleWordView()
 }
@@ -73,7 +72,7 @@ const removeSelectedWords = async (wordsIds: number[]) => {
 }
 
 const initialCategory = computed<number | null>(() => {
-  return categoryStore.selectedCategoryId
+  return selectedCategoryId.value
 })
 const selectedCategory = ref(initialCategory.value)
 watch(initialCategory, (newValue) => {
@@ -91,7 +90,7 @@ const changeCategory = async (wordsIds: number[]) => {
   <div class="word-list flex-1 p-4">
     <div>
       <h2 class="text-3xl mb-8">
-        Category: {{ categoryStore.selectedCategoryName }}
+        Category: {{ selectedCategoryName }}
       </h2>
 
       <AppTable

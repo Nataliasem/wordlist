@@ -2,14 +2,13 @@
 import { onMounted } from 'vue'
 import AppSearchInput from '@/components/common/AppSearchInput.vue'
 import CategoryItem from './CategoryItem.vue'
-import { useCategoryStore } from '@/stores'
-import { useCategoryFetch } from '@/composables'
+import { useCategoryFetch, useSelectedCategory } from '@/composables'
 import { create, update, remove } from '@/api/category'
 import { Category } from '@/types'
 import { MessageType } from '@/constants'
 import { reloadPage } from '@/utils'
 
-const categoryStore = useCategoryStore()
+const { selectCategory, selectedCategoryId } = useSelectedCategory()
 
 const {
   searchString: searchCategory,
@@ -23,25 +22,25 @@ const addCategoryHandler = async () => {
   if (!searchCategory.value) return
   const category = await create(searchCategory.value)
   await fetchCategories()
-  categoryStore.selectCategory(category)
+  selectCategory(category)
   clearSearch()
 }
 
 const updateCategoryHandler = async (category: Category) => {
   await update(category)
-  categoryStore.selectCategory(category)
+  selectCategory(category)
   await fetchCategories()
 }
 
 const deleteCategoryHandler = async () => {
-  await remove(categoryStore.selectedCategoryId as number)
+  await remove(selectedCategoryId.value as number)
   await fetchCategories()
-  categoryStore.selectCategory(foundedCategories.value[0])
+  selectCategory(foundedCategories.value[0])
 }
 
 onMounted(async () => {
   await fetchCategories()
-  categoryStore.selectCategory(foundedCategories.value[0])
+  selectCategory(foundedCategories.value[0])
 })
 </script>
 

@@ -1,5 +1,4 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 import './style.css'
 import App from './App.vue'
 import { OhVueIcon, addIcons } from 'oh-vue-icons'
@@ -27,8 +26,6 @@ addIcons(
    RiSortDesc
 )
 
-const pinia = createPinia()
 const app = createApp(App)
-app.use(pinia)
 app.component('VIcon', OhVueIcon)
 app.mount('#app')
