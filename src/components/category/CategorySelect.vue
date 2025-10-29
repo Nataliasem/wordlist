@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import AppSelect from '@/components/common/AppSelect.vue'
-import { onMounted, watch } from 'vue'
-import { useCategoryFetch, useSelectedCategory } from '@/composables'
+import { useCategoryFetch } from '@/composables'
 import { SelectOption, Category } from '@/types'
 
 type ExtendedOption = SelectOption & Category
@@ -12,15 +11,7 @@ const { useLabel = false } = defineProps<{
   useLabel?: boolean
 }>()
 
-const { categories, fetchCategories } = useCategoryFetch()
-onMounted(() => {
-  fetchCategories()
-})
-
-const { selectedCategory } = useSelectedCategory()
-watch(() => selectedCategory, () => {
-  fetchCategories()
-})
+const { categories } = useCategoryFetch()
 </script>
 
 <template>
