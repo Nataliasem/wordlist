@@ -7,6 +7,10 @@ import { watchDebounced } from '@vueuse/core'
 
 export function useWordFetch() {
     const { selectedCategoryId } = useSelectedCategory()
+    watch(selectedCategoryId, async () => {
+        resetQueryParams()
+        await fetchWordList()
+    })
 
     const {
         searchString,
@@ -30,6 +34,11 @@ export function useWordFetch() {
     })
 
     const currentPage = ref(1)
+    watch(searchString, () => {
+        if (searchString.value.length) {
+            currentPage.value = 1
+        }
+    })
     const sortedBy = ref({
         sortColumn: DEFAULT_WORD_SORT.column,
         sortDirection: DEFAULT_WORD_SORT.direction,
@@ -47,17 +56,6 @@ export function useWordFetch() {
         sortedBy.value.sortColumn = DEFAULT_WORD_SORT.column
         sortedBy.value.sortDirection = DEFAULT_WORD_SORT.direction
     }
-
-    watch(searchString, () => {
-        if (searchString.value.length) {
-            currentPage.value = 1
-        }
-    })
-
-    watch(selectedCategoryId, async () => {
-        resetQueryParams()
-        await fetchWordList()
-    })
 
     const fetchWordList = async () => {
         await fetchData(selectedCategoryId.value, queryParams.value)
