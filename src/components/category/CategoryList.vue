@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { AppMessage, AppSearchInput } from '@/components/common'
+import { onMounted } from 'vue'
+import AppSearchInput from '@/components/common/AppSearchInput.vue'
 import CategoryItem from './CategoryItem.vue'
 import { useCategoryStore } from '@/stores'
 import { useCategoryFetch } from '@/composables'
 import { create, update, remove } from '@/api/category'
-import { onMounted } from 'vue'
 import { Category } from '@/types'
+import { MessageType } from '@/constants'
+import { reloadPage } from '@/utils'
 
 const categoryStore = useCategoryStore()
 
@@ -58,11 +60,15 @@ onMounted(async () => {
       </AppSearchInput>
     </div>
 
-    <AppMessage
+    <p
       v-if="fetchMessage"
-      :message="fetchMessage"
-      class="w-64"
-    />
+      class="w-64 app-message"
+    >
+      <span>{{ fetchMessage.text }}</span>
+      <span v-if="fetchMessage.type === MessageType.Error">
+        Please <a @click="reloadPage">reload the page</a>.
+      </span>
+    </p>
 
     <CategoryItem
       v-else

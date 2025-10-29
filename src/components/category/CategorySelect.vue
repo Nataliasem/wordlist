@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AppSelect } from '@/components/common'
+import AppSelect from '@/components/common/AppSelect.vue'
 import { onMounted, watch } from 'vue'
 import { useCategoryFetch } from '@/composables'
 import { useCategoryStore } from '@/stores'
