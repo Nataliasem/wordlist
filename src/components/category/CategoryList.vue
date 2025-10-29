@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import AppSearchInput from '@/components/common/AppSearchInput.vue'
 import CategoryItem from './CategoryItem.vue'
 import { useCategoryFetch, useSelectedCategory } from '@/composables'
