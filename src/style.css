@@ -53,3 +53,7 @@ body {
 .required-field-title {
     @apply after:content-['*'] after:ml-0.5 after:text-red-500;
 }
+
+.app-message {
+    @apply bg-violet-100 p-4 rounded-sm border-2 border-violet-300 text-center;
+}

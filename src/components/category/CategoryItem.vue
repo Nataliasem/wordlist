@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { AppNavigation, AppModal } from '@/components/common'
-import { computed, nextTick, type Ref, ref } from 'vue'
-import { useCategoryStore } from '@/stores'
+import { defineAsyncComponent, computed, nextTick, type Ref, ref } from 'vue'
+import AppNavigation from '@/components/common/AppNavigation.vue'
+import { useSelectedCategory } from '@/composables'
 import { useModal } from '@/composables'
 import { Category } from '@/types'
 
+const AppModal = defineAsyncComponent(() => import('@/components/common/AppModal.vue'))
 defineProps<{
   categories: Category[]
 }>()
@@ -14,8 +15,7 @@ const emit = defineEmits<{
   'delete-category': []
 }>()
 
-const categoryStore = useCategoryStore()
-
+const { selectedCategoryId, selectedCategoryName, selectCategory } = useSelectedCategory()
 const { isModalOpen, closeModal, openModal } = useModal()
 
 // Use function template refs because an input element is initially hidden
@@ -25,11 +25,11 @@ const updatedCategoryId = computed(() => {
   return updatedCategory.value?.id || null
 })
 
-const selectCategory = (category: Category) => {
-  if([categoryStore.selectedCategoryId, updatedCategory.value?.id].includes(category.id)) {
+const onSelectCategory = (category: Category) => {
+  if([selectedCategoryId, updatedCategory.value?.id].includes(category.id)) {
     return
   }
-  categoryStore.selectCategory(category)
+  selectCategory(category)
   toggleUpdatingMode(null)
 }
 const toggleUpdatingMode = async (category: Category | null) => {
@@ -68,14 +68,14 @@ const deleteCategoryHandler = () => {
     <AppNavigation
       v-slot="{ item }"
       :items="categories"
-      :selected-item-id="categoryStore.selectedCategoryId"
-      @click="selectCategory"
+      :selected-item-id="selectedCategoryId"
+      @click="onSelectCategory"
       @enter="toggleUpdatingMode($event as Category)"
     >
       <div
         class="category-name"
         :class="{
-          'selected' : item.id === categoryStore.selectedCategoryId,
+          'selected' : item.id === selectedCategoryId,
           'divided': item.id === null
         }"
       >
@@ -136,12 +136,13 @@ const deleteCategoryHandler = () => {
   </div>
 
   <AppModal
+    v-if="isModalOpen"
     :show="isModalOpen"
     @confirm="deleteCategoryHandler"
     @cancel="closeModal"
   >
     <template #header>
-      Want to remove category <em>{{ categoryStore.selectedCategoryName }}</em>?
+      Want to remove category <em>{{ selectedCategoryName }}</em>?
     </template>
 
     <template #content>

@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { AppSelect } from '@/components/common'
+import AppSelect from '@/components/common/AppSelect.vue'
 import { onMounted, watch } from 'vue'
-import { useCategoryFetch } from '@/composables'
-import { useCategoryStore } from '@/stores'
+import { useCategoryFetch, useSelectedCategory } from '@/composables'
 import { SelectOption, Category } from '@/types'
 
 type ExtendedOption = SelectOption & Category
@@ -18,8 +17,8 @@ onMounted(() => {
   fetchCategories()
 })
 
-const categoryStore = useCategoryStore()
-watch(() => categoryStore.selectedCategory, () => {
+const { selectedCategory } = useSelectedCategory()
+watch(() => selectedCategory, () => {
   fetchCategories()
 })
 </script>
