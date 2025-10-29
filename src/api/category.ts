@@ -1,4 +1,4 @@
-import { CATEGORY_URL } from '@/constants'
+import { CATEGORY_URL, WITHOUT_CATEGORY_NAME } from '@/constants'
 import { Category } from '@/types'
 
 export const create = async (categoryName: string): Promise<Category> => {
@@ -23,7 +23,7 @@ export const getCategories = async (): Promise<Category[]> => {
         const res = await response.json()
         return [{
             id: null,
-            name: 'Words without category',
+            name: WITHOUT_CATEGORY_NAME,
         }].concat(res.sort())
     } else {
         return []

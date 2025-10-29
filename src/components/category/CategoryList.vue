@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import AppSearchInput from '@/components/common/AppSearchInput.vue'
 import CategoryItem from './CategoryItem.vue'
-import { useCategoryFetch, useSelectedCategory } from '@/composables'
-import { create, update, remove } from '@/api/category'
-import { Category } from '@/types'
+import { useCategoryFetch } from '@/composables'
 import { MessageType } from '@/constants'
 import { reloadPage } from '@/utils'
 import { useWindowSize } from '@vueuse/core'
@@ -16,40 +14,14 @@ if(width.value < TABLET_SCREEN_SIZE) {
   isExpanded.value = false
 }
 
-const { selectCategory, selectedCategoryId } = useSelectedCategory()
-
 const {
-  searchString: searchCategory,
+  searchString,
   filteredData: foundedCategories,
   fetchMessage,
-  fetchCategories,
-  clearSearch
+  createCategory,
+  updateCategory,
+  removeCategory
 } = useCategoryFetch()
-
-const addCategoryHandler = async () => {
-  if (!searchCategory.value) return
-  const category = await create(searchCategory.value)
-  await fetchCategories()
-  selectCategory(category)
-  clearSearch()
-}
-
-const updateCategoryHandler = async (category: Category) => {
-  await update(category)
-  selectCategory(category)
-  await fetchCategories()
-}
-
-const deleteCategoryHandler = async () => {
-  await remove(selectedCategoryId.value as number)
-  await fetchCategories()
-  selectCategory(foundedCategories.value[0])
-}
-
-onMounted(async () => {
-  await fetchCategories()
-  selectCategory(foundedCategories.value[0])
-})
 </script>
 
 <template>
@@ -71,12 +43,12 @@ onMounted(async () => {
     </button>
 
     <template v-if="isExpanded">
-      <div class="flex justify-between gap-1 py-4">
+      <div class="flex justify-between gap-1 py-2">
         <AppSearchInput
           id="category-search"
-          v-model="searchCategory"
+          v-model="searchString"
           placeholder="Find or add category"
-          @confirm="addCategoryHandler"
+          @confirm="createCategory"
         >
           <template #confirm>
             Add
@@ -97,8 +69,8 @@ onMounted(async () => {
       <CategoryItem
         v-else
         :categories="foundedCategories"
-        @delete-category="deleteCategoryHandler"
-        @update-category="updateCategoryHandler"
+        @delete-category="removeCategory"
+        @update-category="updateCategory"
       />
     </template>
   </div>

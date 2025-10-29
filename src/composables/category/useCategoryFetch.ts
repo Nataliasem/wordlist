@@ -1,7 +1,12 @@
-import { computed } from 'vue'
-import { useCustomFetch, useSearch } from '@/composables'
+import { computed, ref } from 'vue'
+import { useCustomFetch, useSearch, useSelectedCategory } from '@/composables'
 import { getCategories } from '@/api/category'
 import { FETCH_CATEGORY_MESSAGE } from '@/constants'
+import { Category } from '@/types'
+import type { Ref } from 'vue'
+import { create, update, remove } from '@/api/category'
+
+const categories: Ref<Category[]> = ref([])
 
 export function useCategoryFetch() {
     const {
@@ -13,9 +18,17 @@ export function useCategoryFetch() {
     const {
         isEmpty,
         hasError,
-        data: categories,
-        fetchData: fetchCategories,
-    } = useCustomFetch(getCategories)
+        data,
+        fetchData,
+    } = useCustomFetch(getCategories);
+
+    const fetchCategories = async () => {
+        await fetchData()
+        categories.value = data.value
+    }
+    (async () => {
+        await fetchCategories()
+    })()
 
     const filteredData = computed(() => {
         return categories.value.filter(item => item.name.toLowerCase()
@@ -28,6 +41,28 @@ export function useCategoryFetch() {
         return null
     })
 
+    const { selectCategory, selectedCategoryId } = useSelectedCategory()
+    const createCategory = async (): Promise<void> => {
+        if (!searchString.value) return
+        const category = await create(searchString.value)
+        await fetchCategories()
+        selectCategory(category)
+        clearSearch()
+    }
+
+    const updateCategory = async (category: Category) => {
+        await update(category)
+        await fetchCategories()
+        selectCategory(category)
+    }
+
+    const removeCategory = async () => {
+        await remove(selectedCategoryId.value as number)
+        await fetchCategories()
+        selectCategory(categories.value[0])
+        clearSearch()
+    }
+
     return {
         fetchMessage,
         searchString,
@@ -36,6 +71,9 @@ export function useCategoryFetch() {
         isEmpty,
         hasError,
         categories,
-        fetchCategories
+        fetchCategories,
+        createCategory,
+        updateCategory,
+        removeCategory
     }
 }

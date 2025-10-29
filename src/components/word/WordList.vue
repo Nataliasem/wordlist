@@ -4,8 +4,8 @@ import AppTable from '@/components/common/table/AppTable.vue'
 import AppPagination from '@/components/common/AppPagination.vue'
 import AppView from '@/components/common/AppView.vue'
 import AppSearchInput  from '@/components/common/AppSearchInput.vue'
-import { useWordFetch, useWordView, useWordService, useSelectedCategory } from '@/composables'
-import { WORD_TABLE_CONFIG, EMPTY_WORD, MessageType } from '@/constants'
+import { useWordFetch, useWordView, useSelectedCategory } from '@/composables'
+import { WITHOUT_CATEGORY_NAME, WORD_TABLE_CONFIG, EMPTY_WORD, MessageType } from '@/constants'
 import { TableRow, Word, UpdatedWord } from '@/types'
 import type { Ref } from 'vue'
 import { reloadPage } from '@/utils'
@@ -24,15 +24,11 @@ const {
   searchString,
   wordList,
   fetchMessage,
-  fetchWordList
-} = useWordFetch()
-
-const {
   removeWords,
   changeWordsCategory,
   updateWord,
   createWord
-} = useWordService()
+} = useWordFetch()
 
 const { selectedCategoryId, selectedCategoryName } = useSelectedCategory()
 
@@ -56,10 +52,8 @@ const addWord = () => {
 const createOrUpdateWord = async (updatedWord: UpdatedWord) => {
   if(updatedWord.id) {
     await updateWord(updatedWord)
-    await fetchWordList()
   } else {
     await createWord(updatedWord)
-    await fetchWordList()
   }
   toggleWordView()
 }
@@ -67,7 +61,6 @@ const createOrUpdateWord = async (updatedWord: UpdatedWord) => {
 const table = useTemplateRef('app-table')
 const removeSelectedWords = async (wordsIds: number[]) => {
   await removeWords(wordsIds)
-  await fetchWordList()
   table.value?.clearSelectedRowsList()
 }
 
@@ -80,7 +73,6 @@ watch(initialCategory, (newValue) => {
 })
 const changeCategory = async (wordsIds: number[]) => {
   await changeWordsCategory(selectedCategory.value, wordsIds)
-  await fetchWordList()
   selectedCategory.value = null
   table.value?.clearSelectedRowsList()
 }
@@ -90,7 +82,7 @@ const changeCategory = async (wordsIds: number[]) => {
   <div class="word-list flex-1 p-4">
     <div>
       <h2 class="text-3xl mb-8">
-        Category: {{ selectedCategoryName }}
+        Category: {{ selectedCategoryName || WITHOUT_CATEGORY_NAME }}
       </h2>
 
       <AppTable
@@ -110,15 +102,15 @@ const changeCategory = async (wordsIds: number[]) => {
           />
         </template>
 
-        <template #selected-rows-action="{ selectedRows }">
-          <template v-if="selectedRows.length > 0">
+        <template #selected-rows-action="{ selectedRows, clearSelectedRowsList }">
+          <template v-if="selectedRows.size > 0">
             <div class="flex items-center gap-2 pr-4 ml-2 border-r-2 border-r-violet-200">
               <CategorySelect v-model="selectedCategory" />
 
               <button
                 class="app-button bg-violet-100 border-violet-200"
                 type="button"
-                @click="changeCategory(selectedRows as number[])"
+                @click="changeCategory([...selectedRows] as number[])"
               >
                 Change category
               </button>
@@ -127,9 +119,17 @@ const changeCategory = async (wordsIds: number[]) => {
             <button
               class="app-button border-amber-500 bg-orange-200 ml-4"
               type="button"
-              @click="removeSelectedWords(selectedRows as number[])"
+              @click="removeSelectedWords([...selectedRows] as number[])"
             >
               Remove selected
+            </button>
+
+            <button
+              class="app-button bg-amber-500 border-amber-500 ml-2"
+              type="button"
+              @click="clearSelectedRowsList"
+            >
+              Cancel
             </button>
           </template>
 
