@@ -19,12 +19,15 @@ export function useCategoryFetch() {
         isEmpty,
         hasError,
         data,
-        fetchData: fetchCategories,
+        fetchData,
     } = useCustomFetch(getCategories);
 
+    const fetchCategories = async () => {
+        await fetchData()
+        categories.value = data.value
+    }
     (async () => {
         await fetchCategories()
-        categories.value = data.value
     })()
 
     const filteredData = computed(() => {
@@ -43,7 +46,6 @@ export function useCategoryFetch() {
         if (!searchString.value) return
         const category = await create(searchString.value)
         await fetchCategories()
-        categories.value = data.value
         selectCategory(category)
         clearSearch()
     }
@@ -51,14 +53,12 @@ export function useCategoryFetch() {
     const updateCategory = async (category: Category) => {
         await update(category)
         await fetchCategories()
-        categories.value = data.value
         selectCategory(category)
     }
 
     const removeCategory = async () => {
         await remove(selectedCategoryId.value as number)
         await fetchCategories()
-        categories.value = data.value
         selectCategory(categories.value[0])
         clearSearch()
     }
