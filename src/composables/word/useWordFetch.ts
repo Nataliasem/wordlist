@@ -22,9 +22,9 @@ export function useWordFetch() {
 
     const fetchMessage = computed(() => {
         if (hasError.value) return FETCH_WORD_MESSAGE.error
-        if (!hasActiveSearch.value && isEmpty.value) return FETCH_WORD_MESSAGE.empty
-        if (hasActiveSearch.value && isEmpty.value) return FETCH_WORD_MESSAGE.emptySearch
-
+        if(isEmpty.value) {
+            return hasActiveSearch.value ? FETCH_WORD_MESSAGE.emptySearch : FETCH_WORD_MESSAGE.empty
+        }
         return null
     })
 
