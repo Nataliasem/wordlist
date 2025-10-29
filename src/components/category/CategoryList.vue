@@ -43,12 +43,12 @@ onMounted(async () => {
   selectCategory(foundedCategories.value[0])
 })
 
-const isExpanded = ref(false)
+const isExpanded = ref(true)
 </script>
 
 <template>
   <div
-    class="h-full bg-gray-100 p-4 shadow-xl/20"
+    class="h-full bg-gray-100 p-4 shadow-xl/20 lg:static"
     :class="{'fixed': isExpanded}"
   >
     <button
