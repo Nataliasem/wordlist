@@ -3,6 +3,7 @@ import { changeCategory, create, getWordlist, remove, removeMany, update } from 
 import { computed, ref, watch } from 'vue'
 import { DEFAULT_FETCH_LIMIT, DEFAULT_WORD_SORT, FETCH_WORD_MESSAGE } from '@/constants'
 import { CategoryId, UpdatedWord } from '@/types'
+import { watchDebounced } from '@vueuse/core'
 
 export function useWordFetch() {
     const { selectedCategoryId } = useSelectedCategory()
@@ -58,16 +59,15 @@ export function useWordFetch() {
         await fetchWordList()
     })
 
-    watch(queryParams, async () => {
-        await fetchWordList()
-    })
-
     const fetchWordList = async () => {
         await fetchData(selectedCategoryId.value, queryParams.value)
     }
     (async () => {
         await fetchWordList()
     })()
+    watchDebounced(queryParams, fetchWordList, {
+        debounce: 500
+    })
 
     const createWord = async (word: UpdatedWord): Promise<void> => {
         await create(word)

@@ -1,6 +1,5 @@
 import { computed, ref, shallowRef } from 'vue'
 import type { Ref } from 'vue'
-import { useThrottleFn } from '@vueuse/core'
 import { CategoryId, WordQueryParams } from '@/types'
 
 export function useCustomFetch<T>(apiMethod: (categoryId?: CategoryId, queryParams?: WordQueryParams) => Promise<T[]>) {
@@ -11,7 +10,7 @@ export function useCustomFetch<T>(apiMethod: (categoryId?: CategoryId, queryPara
     return !isFetching.value && (hasError.value || data.value.length === 0)
   })
 
-  const fetchDataNoThrottling = async (categoryId?: CategoryId, queryParams?: WordQueryParams): Promise<void> => {
+  const fetchData = async (categoryId?: CategoryId, queryParams?: WordQueryParams): Promise<void> => {
     isFetching.value = true
     try {
       data.value = await apiMethod(categoryId, queryParams)
@@ -21,7 +20,6 @@ export function useCustomFetch<T>(apiMethod: (categoryId?: CategoryId, queryPara
       isFetching.value = false
     }
   }
-  const fetchData = useThrottleFn(fetchDataNoThrottling, 100)
 
   return {
     isFetching,
