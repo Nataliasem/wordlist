@@ -1,7 +1,8 @@
 import { useSearch, useCustomFetch, useSelectedCategory } from '@/composables'
-import { getWordlist } from '@/api/word'
+import { changeCategory, create, getWordlist, remove, removeMany, update } from '@/api/word'
 import { computed, ref, watch } from 'vue'
 import { DEFAULT_FETCH_LIMIT, DEFAULT_WORD_SORT, FETCH_WORD_MESSAGE } from '@/constants'
+import { CategoryId, UpdatedWord } from '@/types'
 
 export function useWordFetch() {
     const { selectedCategoryId } = useSelectedCategory()
@@ -45,9 +46,6 @@ export function useWordFetch() {
         sortedBy.value.sortColumn = DEFAULT_WORD_SORT.column
         sortedBy.value.sortDirection = DEFAULT_WORD_SORT.direction
     }
-    const fetchWordList = async () => {
-        await fetchData(selectedCategoryId.value, queryParams.value)
-    }
 
     watch(searchString, () => {
         if (searchString.value.length) {
@@ -62,7 +60,35 @@ export function useWordFetch() {
 
     watch(queryParams, async () => {
         await fetchWordList()
-    }, {immediate: true})
+    })
+
+    const fetchWordList = async () => {
+        await fetchData(selectedCategoryId.value, queryParams.value)
+    }
+    (async () => {
+        await fetchWordList()
+    })()
+
+    const createWord = async (word: UpdatedWord): Promise<void> => {
+        await create(word)
+        await fetchWordList()
+    }
+    const updateWord = async (word: UpdatedWord): Promise<void> => {
+        await update(word)
+        await fetchWordList()
+    }
+    const removeWord = async (id: number): Promise<void> => {
+        await remove(id)
+        await fetchWordList()
+    }
+    const removeWords = async (ids: number[]): Promise<void> => {
+        await removeMany(ids)
+        await fetchWordList()
+    }
+    const changeWordsCategory = async (categoryId: CategoryId, updatedWords: number[]): Promise<void> => {
+        await changeCategory(categoryId, updatedWords)
+        await fetchWordList()
+    }
 
     return {
         sortedBy,
@@ -71,7 +97,12 @@ export function useWordFetch() {
         fetchMessage,
         clearSearch,
         wordList,
-        fetchWordList
+        fetchWordList,
+        removeWord,
+        removeWords,
+        changeWordsCategory,
+        updateWord,
+        createWord
     }
 }
 
