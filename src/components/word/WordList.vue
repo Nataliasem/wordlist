@@ -5,7 +5,7 @@ import AppPagination from '@/components/common/AppPagination.vue'
 import AppView from '@/components/common/AppView.vue'
 import AppSearchInput  from '@/components/common/AppSearchInput.vue'
 import { useWordFetch, useWordView, useSelectedCategory } from '@/composables'
-import { WORD_TABLE_CONFIG, EMPTY_WORD, MessageType } from '@/constants'
+import { WITHOUT_CATEGORY_NAME, WORD_TABLE_CONFIG, EMPTY_WORD, MessageType } from '@/constants'
 import { TableRow, Word, UpdatedWord } from '@/types'
 import type { Ref } from 'vue'
 import { reloadPage } from '@/utils'
@@ -82,7 +82,7 @@ const changeCategory = async (wordsIds: number[]) => {
   <div class="word-list flex-1 p-4">
     <div>
       <h2 class="text-3xl mb-8">
-        Category: {{ selectedCategoryName }}
+        Category: {{ selectedCategoryName || WITHOUT_CATEGORY_NAME }}
       </h2>
 
       <AppTable
