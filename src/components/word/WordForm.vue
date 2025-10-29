@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CategorySelect from '@/components/category/CategorySelect.vue'
-import { AppForm, AppTextarea } from '@/components/common'
+import AppForm  from '@/components/common/form/AppForm.vue'
+import AppTextarea from '@/components/common/form/AppTextarea.vue'
 import WordExamplesInput from './WordExamplesInput.vue'
 import { computed, ref, watch, toRaw } from 'vue'
 import { useFormValidation } from '@/composables'

@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { AppMessage, AppSearchInput } from '@/components/common'
-import CategoryItem from './CategoryItem.vue'
-import { useCategoryStore } from '@/stores'
-import { useCategoryFetch } from '@/composables'
-import { create, update, remove } from '@/api/category'
 import { onMounted } from 'vue'
+import AppSearchInput from '@/components/common/AppSearchInput.vue'
+import CategoryItem from './CategoryItem.vue'
+import { useCategoryFetch, useSelectedCategory } from '@/composables'
+import { create, update, remove } from '@/api/category'
 import { Category } from '@/types'
+import { MessageType } from '@/constants'
+import { reloadPage } from '@/utils'
 
-const categoryStore = useCategoryStore()
+const { selectCategory, selectedCategoryId } = useSelectedCategory()
 
 const {
   searchString: searchCategory,
@@ -21,25 +22,25 @@ const addCategoryHandler = async () => {
   if (!searchCategory.value) return
   const category = await create(searchCategory.value)
   await fetchCategories()
-  categoryStore.selectCategory(category)
+  selectCategory(category)
   clearSearch()
 }
 
 const updateCategoryHandler = async (category: Category) => {
   await update(category)
-  categoryStore.selectCategory(category)
+  selectCategory(category)
   await fetchCategories()
 }
 
 const deleteCategoryHandler = async () => {
-  await remove(categoryStore.selectedCategoryId as number)
+  await remove(selectedCategoryId.value as number)
   await fetchCategories()
-  categoryStore.selectCategory(foundedCategories.value[0])
+  selectCategory(foundedCategories.value[0])
 }
 
 onMounted(async () => {
   await fetchCategories()
-  categoryStore.selectCategory(foundedCategories.value[0])
+  selectCategory(foundedCategories.value[0])
 })
 </script>
 
@@ -58,11 +59,15 @@ onMounted(async () => {
       </AppSearchInput>
     </div>
 
-    <AppMessage
+    <p
       v-if="fetchMessage"
-      :message="fetchMessage"
-      class="w-64"
-    />
+      class="w-64 app-message"
+    >
+      <span>{{ fetchMessage.text }}</span>
+      <span v-if="fetchMessage.type === MessageType.Error">
+        Please <a @click="reloadPage">reload the page</a>.
+      </span>
+    </p>
 
     <CategoryItem
       v-else
