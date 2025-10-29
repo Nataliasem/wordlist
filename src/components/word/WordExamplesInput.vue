@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AppTextarea } from '@/components/common'
+import AppTextarea from '@/components/common/form/AppTextarea.vue'
 import { computed, ref } from 'vue'
 
 const model = defineModel<string[]>({ default: () => [] })

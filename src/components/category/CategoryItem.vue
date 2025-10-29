@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { AppNavigation, AppModal } from '@/components/common'
-import { computed, nextTick, type Ref, ref } from 'vue'
+import { defineAsyncComponent, computed, nextTick, type Ref, ref } from 'vue'
+import AppNavigation from '@/components/common/AppNavigation.vue'
 import { useSelectedCategory } from '@/composables'
 import { useModal } from '@/composables'
 import { Category } from '@/types'
 
+const AppModal = defineAsyncComponent(() => import('@/components/common/AppModal.vue'))
 defineProps<{
   categories: Category[]
 }>()
@@ -135,6 +136,7 @@ const deleteCategoryHandler = () => {
   </div>
 
   <AppModal
+    v-if="isModalOpen"
     :show="isModalOpen"
     @confirm="deleteCategoryHandler"
     @cancel="closeModal"

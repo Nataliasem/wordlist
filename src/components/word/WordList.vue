@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { computed, watch, ref, useTemplateRef } from 'vue'
-import WordForm from './WordForm.vue'
-import CategorySelect from '@/components/category/CategorySelect.vue'
-import { AppTable, AppPagination, AppView, AppMessage, AppSearchInput } from '@/components/common'
+import { defineAsyncComponent, computed, watch, ref, useTemplateRef } from 'vue'
+import AppTable from '@/components/common/table/AppTable.vue'
+import AppPagination from '@/components/common/AppPagination.vue'
+import AppView from '@/components/common/AppView.vue'
+import AppSearchInput  from '@/components/common/AppSearchInput.vue'
 import { useWordFetch, useWordView, useWordService, useSelectedCategory } from '@/composables'
-import { WORD_TABLE_CONFIG, EMPTY_WORD } from '@/constants'
-import { Word, UpdatedWord } from '@/types/word'
+import { WORD_TABLE_CONFIG, EMPTY_WORD, MessageType } from '@/constants'
+import { TableRow, Word, UpdatedWord } from '@/types'
 import type { Ref } from 'vue'
-import { TableRow } from '@/types'
+import { reloadPage } from '@/utils'
+
+const WordForm = defineAsyncComponent(() => import('./WordForm.vue'))
+const CategorySelect = defineAsyncComponent(() => import('@/components/category/CategorySelect.vue'))
 
 type WordRow = Word & TableRow
 
@@ -140,10 +144,12 @@ const changeCategory = async (wordsIds: number[]) => {
           v-if="fetchMessage"
           #table-message
         >
-          <AppMessage
-            :message="fetchMessage"
-            class="w-full"
-          />
+          <p class="w-full app-message">
+            <span>{{ fetchMessage.text }}</span>
+            <span v-if="fetchMessage.type === MessageType.Error">
+              Please <a @click="reloadPage">reload the page</a>.
+            </span>
+          </p>
         </template>
       </AppTable>
     </div>
