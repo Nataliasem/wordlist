@@ -4,7 +4,7 @@ import AppTable from '@/components/common/table/AppTable.vue'
 import AppPagination from '@/components/common/AppPagination.vue'
 import AppView from '@/components/common/AppView.vue'
 import AppSearchInput  from '@/components/common/AppSearchInput.vue'
-import { useWordFetch, useWordView, useWordService, useSelectedCategory } from '@/composables'
+import { useWordFetch, useWordView, useSelectedCategory } from '@/composables'
 import { WORD_TABLE_CONFIG, EMPTY_WORD, MessageType } from '@/constants'
 import { TableRow, Word, UpdatedWord } from '@/types'
 import type { Ref } from 'vue'
@@ -24,15 +24,11 @@ const {
   searchString,
   wordList,
   fetchMessage,
-  fetchWordList
-} = useWordFetch()
-
-const {
   removeWords,
   changeWordsCategory,
   updateWord,
   createWord
-} = useWordService()
+} = useWordFetch()
 
 const { selectedCategoryId, selectedCategoryName } = useSelectedCategory()
 
@@ -56,10 +52,8 @@ const addWord = () => {
 const createOrUpdateWord = async (updatedWord: UpdatedWord) => {
   if(updatedWord.id) {
     await updateWord(updatedWord)
-    await fetchWordList()
   } else {
     await createWord(updatedWord)
-    await fetchWordList()
   }
   toggleWordView()
 }
@@ -67,7 +61,6 @@ const createOrUpdateWord = async (updatedWord: UpdatedWord) => {
 const table = useTemplateRef('app-table')
 const removeSelectedWords = async (wordsIds: number[]) => {
   await removeWords(wordsIds)
-  await fetchWordList()
   table.value?.clearSelectedRowsList()
 }
 
@@ -80,7 +73,6 @@ watch(initialCategory, (newValue) => {
 })
 const changeCategory = async (wordsIds: number[]) => {
   await changeWordsCategory(selectedCategory.value, wordsIds)
-  await fetchWordList()
   selectedCategory.value = null
   table.value?.clearSelectedRowsList()
 }
