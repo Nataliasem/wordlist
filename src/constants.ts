@@ -69,3 +69,5 @@ export const DEFAULT_WORD_SORT = {
   column: 'word',
   direction: 'asc'
 }
+
+export const WITHOUT_CATEGORY_NAME = 'Words without category'

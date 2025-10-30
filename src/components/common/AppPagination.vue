@@ -29,10 +29,9 @@ const { itemsPerPage = 10, maxPagesShown = 5} = defineProps<Props>()
 }
 
 .paginate-buttons {
-  @apply cursor-pointer;
-  @apply border-2 border-transparent rounded-sm;
-  @apply outline-none;
-  @apply border-violet-200 h-10 w-10 hover:bg-violet-100 focus:bg-violet-300 focus:text-white focus:border-violet-300;
+  @apply cursor-pointer h-10 w-10;
+  @apply outline-none border-2 rounded-sm;
+  @apply border-violet-200 hover:bg-violet-100 focus:bg-violet-300 focus:text-white focus:border-violet-300;
   @apply transition-all duration-300 ease-in;
 }
 

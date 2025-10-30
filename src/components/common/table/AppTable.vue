@@ -35,14 +35,6 @@ const tableDataIds = computed<number[] | string[]>(() => {
   }
 })
 const { selectedRows, allSelected, clearSelectedRowsList, selectAllRows  } = useTableRows(tableDataIds)
-const setRowStyle = (id: string | number) => {
-  const isSelected =
-    selectedRows.value.every(item => typeof item === 'string')
-      ? selectedRows.value.includes(id as string)
-      : selectedRows.value.includes(id as number)
-
-  return isSelected ? 'bg-amber-500 hover:bg-amber-600' : 'hover:bg-violet-200'
-}
 
 defineExpose({
   clearSelectedRowsList
@@ -50,7 +42,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="h-8 mb-8 flex items-center justify-between">
+  <div class="mb-8 flex flex-col gap-4 xl:h-8 xl:flex-row xl:items-center xl:justify-between">
     <div
       v-if="$slots.search"
       class="flex gap-2 items-center"
@@ -62,16 +54,8 @@ defineExpose({
       <slot
         name="selected-rows-action"
         :selected-rows="selectedRows"
+        :clear-selected-rows-list="clearSelectedRowsList"
       />
-
-      <button
-        v-if="selectedRows.length"
-        class="app-button bg-amber-500 border-amber-500 ml-2"
-        type="button"
-        @click="clearSelectedRowsList"
-      >
-        Cancel
-      </button>
     </div>
   </div>
 
@@ -100,7 +84,7 @@ defineExpose({
             id="table-row"
             :key="row.id"
             class="cursor-pointer transition-all duration-300 ease-in"
-            :class="setRowStyle(row.id)"
+            :class="selectedRows.has(row.id) ? 'bg-amber-500 hover:bg-amber-600' : 'hover:bg-violet-200'"
           >
             <td class="text-center">
               <input

@@ -3,9 +3,14 @@ import { changeCategory, create, getWordlist, remove, removeMany, update } from 
 import { computed, ref, watch } from 'vue'
 import { DEFAULT_FETCH_LIMIT, DEFAULT_WORD_SORT, FETCH_WORD_MESSAGE } from '@/constants'
 import { CategoryId, UpdatedWord } from '@/types'
+import { watchDebounced } from '@vueuse/core'
 
 export function useWordFetch() {
     const { selectedCategoryId } = useSelectedCategory()
+    watch(selectedCategoryId, async () => {
+        resetQueryParams()
+        await fetchWordList()
+    })
 
     const {
         searchString,
@@ -22,13 +27,18 @@ export function useWordFetch() {
 
     const fetchMessage = computed(() => {
         if (hasError.value) return FETCH_WORD_MESSAGE.error
-        if (!hasActiveSearch.value && isEmpty.value) return FETCH_WORD_MESSAGE.empty
-        if (hasActiveSearch.value && isEmpty.value) return FETCH_WORD_MESSAGE.emptySearch
-
+        if(isEmpty.value) {
+            return hasActiveSearch.value ? FETCH_WORD_MESSAGE.emptySearch : FETCH_WORD_MESSAGE.empty
+        }
         return null
     })
 
     const currentPage = ref(1)
+    watch(searchString, () => {
+        if (searchString.value.length) {
+            currentPage.value = 1
+        }
+    })
     const sortedBy = ref({
         sortColumn: DEFAULT_WORD_SORT.column,
         sortDirection: DEFAULT_WORD_SORT.direction,
@@ -47,27 +57,15 @@ export function useWordFetch() {
         sortedBy.value.sortDirection = DEFAULT_WORD_SORT.direction
     }
 
-    watch(searchString, () => {
-        if (searchString.value.length) {
-            currentPage.value = 1
-        }
-    })
-
-    watch(selectedCategoryId, async () => {
-        resetQueryParams()
-        await fetchWordList()
-    })
-
-    watch(queryParams, async () => {
-        await fetchWordList()
-    })
-
     const fetchWordList = async () => {
         await fetchData(selectedCategoryId.value, queryParams.value)
     }
     (async () => {
         await fetchWordList()
     })()
+    watchDebounced(queryParams, fetchWordList, {
+        debounce: 500
+    })
 
     const createWord = async (word: UpdatedWord): Promise<void> => {
         await create(word)
