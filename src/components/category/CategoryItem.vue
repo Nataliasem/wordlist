@@ -161,7 +161,7 @@ const deleteCategoryHandler = () => {
 .category-items__wrapper {
   @apply pt-8 pr-4 w-2xs;
   @apply overflow-y-scroll h-9/10;
-  @apply fixed top-24;
+  @apply fixed top-32;
 }
 
 .category-name {
