@@ -37,7 +37,7 @@ onClickOutside(
 
 .app-view {
   @apply z-999 fixed right-0 overflow-scroll;
-  @apply flex flex-col h-full w-2/5 px-8 bg-white;
+  @apply flex flex-col h-full lg:w-2/5 px-8 bg-white;
   box-shadow: -2px 0 15px 0 rgba(0, 0, 0, 0.3);
 }
 

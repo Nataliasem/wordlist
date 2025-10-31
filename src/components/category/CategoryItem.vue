@@ -159,9 +159,14 @@ const deleteCategoryHandler = () => {
 @reference "tailwindcss";
 
 .category-items__wrapper {
-  @apply pt-8 pr-4 w-2xs;
-  @apply overflow-y-scroll h-9/10;
+  height: calc(100vh - 128px);
+  @apply pt-8 w-[260px];
+  @apply overflow-y-scroll;
   @apply fixed top-32;
+}
+
+.category-items__wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .category-name {

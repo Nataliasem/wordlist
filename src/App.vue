@@ -30,7 +30,7 @@ if(width.value < TABLET_SCREEN_SIZE) {
       Wordlist
     </h1>
   </nav>
-  <main class="flex h-full w-full">
+  <main class="flex h-full w-full fixed top-16">
     <CategoryList v-if="isExpanded" />
     <WordList />
   </main>
