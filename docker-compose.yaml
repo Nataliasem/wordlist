@@ -6,7 +6,7 @@ services:
       - "81:80"
 
   dictionary-server:
-    image: k9nz00/dictionary:1.0.0
+    image: k9nz00/dictionary:1.1.0
     restart: always
     ports:
       - "8080:8080"
