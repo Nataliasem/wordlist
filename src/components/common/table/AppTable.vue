@@ -118,8 +118,8 @@ defineExpose({
 
 <style>
 .table-scrollable-container {
-  height: 80vh;
-  overflow-y: scroll;
+  height: calc(100vh - 256px);
+  overflow: scroll;
   padding-bottom: 32px;
 }
 </style>
