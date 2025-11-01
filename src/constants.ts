@@ -63,7 +63,7 @@ export const WORD_FORM_CONFIG = [
   'examples'
 ]
 
-export const DEFAULT_FETCH_LIMIT = 130
+export const DEFAULT_FETCH_LIMIT = 100
 
 export const DEFAULT_WORD_SORT = {
   column: 'word',
