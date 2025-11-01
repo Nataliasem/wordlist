@@ -8,16 +8,18 @@ import { useTableRows } from './table/useTableRows'
 import { useCustomFetch } from './useCustomFetch'
 import { useModal } from './useModal'
 import { useSearch } from './useSearch'
+import { useExpanded } from './useExpanded'
 
 export {
-  useFormValidation,
-  useFieldValidation,
-  useCategoryFetch,
-  useSelectedCategory,
-  useWordFetch,
-  useWordView,
-  useTableRows,
-  useCustomFetch,
-  useModal,
-  useSearch
+    useFormValidation,
+    useFieldValidation,
+    useCategoryFetch,
+    useSelectedCategory,
+    useWordFetch,
+    useWordView,
+    useTableRows,
+    useCustomFetch,
+    useModal,
+    useSearch,
+    useExpanded
 }
