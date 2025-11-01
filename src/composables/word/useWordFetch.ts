@@ -58,7 +58,10 @@ export function useWordFetch() {
     }
 
     const fetchWordList = async () => {
-        await fetchData(selectedCategoryId.value, queryParams.value)
+        await fetchData({
+            categoryId: selectedCategoryId.value,
+            queryParams: queryParams.value
+        })
     }
     (async () => {
         await fetchWordList()

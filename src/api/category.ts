@@ -17,8 +17,8 @@ export const create = async (categoryName: string): Promise<Category> => {
     }
 }
 
-export const getCategories = async (): Promise<Category[]> => {
-    const response = await fetch(`${CATEGORY_URL}`)
+export const getCategories = async (categoryName?: string): Promise<Category[]> => {
+    const response = await fetch(`${CATEGORY_URL}?categoryName=${categoryName}`)
     if (response.ok) {
         const res = await response.json()
         return [{

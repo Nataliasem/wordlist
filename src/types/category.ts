@@ -10,5 +10,5 @@ export interface Category {
 export type CategoryKeys = keyof Category
 
 export interface CategoryQueryParams {
-    name: string
+    categoryName: string
 }

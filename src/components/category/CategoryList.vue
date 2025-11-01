@@ -7,7 +7,7 @@ import { reloadPage } from '@/utils'
 
 const {
   searchString,
-  filteredData: foundedCategories,
+  categories,
   fetchMessage,
   createCategory,
   updateCategory,
@@ -42,7 +42,7 @@ const {
 
     <CategoryItem
       v-else
-      :categories="foundedCategories"
+      :categories="categories"
       @delete-category="removeCategory"
       @update-category="updateCategory"
     />
