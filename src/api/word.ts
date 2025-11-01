@@ -1,5 +1,5 @@
 import { WORD_URL } from '@/constants'
-import { UpdatedWord, Word, WordQueryParams } from '@/types'
+import { NumId, UpdatedWord, Word, WordQueryParams } from '@/types'
 
 type WordQueryParamsKey = keyof WordQueryParams
 const setQueryParams = (rawUrl: string, queryParams?: WordQueryParams): string | URL => {
@@ -52,10 +52,14 @@ export const removeMany = async (wordIds: number[]): Promise<void> => {
     })
 }
 
-export const getWordlist = async (categoryId: number, queryParams?: WordQueryParams): Promise<Word[]> => {
-    const rawData = categoryId
-        ? await getWordlistByCategory(categoryId, queryParams)
-        : await getWordlistOrphans(queryParams)
+interface WordListRequestParams {
+    categoryId: NumId
+    queryParams?: WordQueryParams
+}
+export const getWordlist = async (params: WordListRequestParams): Promise<Word[]> => {
+    const rawData = params.categoryId
+        ? await getWordlistByCategory(params.categoryId, params.queryParams)
+        : await getWordlistOrphans(params.queryParams)
 
     return rawData.map(word => {
         return {

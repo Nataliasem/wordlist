@@ -1,8 +1,7 @@
 import { computed, ref, shallowRef } from 'vue'
 import type { Ref } from 'vue'
-import { CategoryId, WordQueryParams } from '@/types'
 
-export function useCustomFetch<T>(apiMethod: (categoryId?: CategoryId, queryParams?: WordQueryParams) => Promise<T[]>) {
+export function useCustomFetch<T>(apiMethod: (params?: unknown) => Promise<T[]>) {
   const isFetching = ref(false)
   const hasError = ref(false)
   const data: Ref<T[]> = shallowRef([])
@@ -10,10 +9,10 @@ export function useCustomFetch<T>(apiMethod: (categoryId?: CategoryId, queryPara
     return !isFetching.value && (hasError.value || data.value.length === 0)
   })
 
-  const fetchData = async (categoryId?: CategoryId, queryParams?: WordQueryParams): Promise<void> => {
+  const fetchData = async (params: unknown): Promise<void> => {
     isFetching.value = true
     try {
-      data.value = await apiMethod(categoryId, queryParams)
+      data.value = await apiMethod(params)
     } catch  {
       hasError.value = true
     } finally {

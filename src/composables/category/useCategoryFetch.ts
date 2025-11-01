@@ -5,6 +5,7 @@ import { FETCH_CATEGORY_MESSAGE } from '@/constants'
 import { Category } from '@/types'
 import type { Ref } from 'vue'
 import { create, update, remove } from '@/api/category'
+import { watchDebounced } from '@vueuse/core'
 
 const categories: Ref<Category[]> = ref([])
 
@@ -23,21 +24,22 @@ export function useCategoryFetch() {
     } = useCustomFetch(getCategories);
 
     const fetchCategories = async () => {
-        await fetchData()
+        await fetchData(searchString.value)
         categories.value = data.value
     }
     (async () => {
         await fetchCategories()
     })()
 
-    const filteredData = computed(() => {
-        return categories.value.filter(item => item.name.toLowerCase()
-            .includes(searchString.value.toLowerCase()))
+    watchDebounced(searchString, fetchCategories, {
+        debounce: 500
     })
+
     const fetchMessage = computed(() => {
         if (hasError.value) return FETCH_CATEGORY_MESSAGE.error
-        if (!hasActiveSearch.value && isEmpty.value) return FETCH_CATEGORY_MESSAGE.empty
-        if (hasActiveSearch.value && !filteredData.value.length) return FETCH_CATEGORY_MESSAGE.emptySearch
+        if(isEmpty.value) {
+            return hasActiveSearch.value ? FETCH_CATEGORY_MESSAGE.emptySearch : FETCH_CATEGORY_MESSAGE.empty
+        }
         return null
     })
 
@@ -66,7 +68,6 @@ export function useCategoryFetch() {
     return {
         fetchMessage,
         searchString,
-        filteredData,
         clearSearch,
         isEmpty,
         hasError,

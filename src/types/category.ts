@@ -8,3 +8,7 @@ export interface Category {
 }
 
 export type CategoryKeys = keyof Category
+
+export interface CategoryQueryParams {
+    categoryName: string
+}
