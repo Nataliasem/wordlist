@@ -53,7 +53,7 @@ export const removeMany = async (wordIds: number[]): Promise<void> => {
 }
 
 interface WordListRequestParams {
-    categoryId?: NumId
+    categoryId: NumId
     queryParams?: WordQueryParams
 }
 export const getWordlist = async (params: WordListRequestParams): Promise<Word[]> => {
