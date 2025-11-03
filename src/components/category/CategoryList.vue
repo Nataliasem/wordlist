@@ -19,7 +19,7 @@ const { isExpanded } = useExpanded()
 
 <template>
   <div
-    class="h-full border-r border-gray-200"
+    class="h-full border-r border-gray-200 transition-[width] duration-200"
     :class="isExpanded ? 'w-(--sidebar-expanded)' : 'w-(--sidebar-compressed)'"
   >
     <div class="h-16 border-b border-gray-200 flex items-center pl-4">

@@ -13,7 +13,7 @@ const { isExpanded } = useExpanded()
     </aside>
 
     <div
-      class="fixed top-0 w-(--content-sidebar-compressed) ml-(--sidebar-compressed)"
+      class="fixed top-0 w-(--content-sidebar-compressed) ml-(--sidebar-compressed) transition-[margin] duration-200"
       :class="{ 'lg:w-(--content-sidebar-expanded) lg:ml-(--sidebar-expanded)' : isExpanded }"
     >
       <nav class="h-16 border-b border-gray-200 px-4 flex items-center justify-end">
