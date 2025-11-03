@@ -10,10 +10,10 @@
 }
 
 @theme {
-    --sidebar-expanded: 288px;
+    --sidebar-expanded: 304px;
     --sidebar-compressed: 80px;
-    --width-sidebar-compressed: calc(100vw - var(--sidebar-compressed));
-    --width-sidebar-expanded: calc(100vw - var(--sidebar-expanded));
+    --content-sidebar-compressed: calc(100vw - var(--sidebar-compressed));
+    --content-sidebar-expanded: calc(100vw - var(--sidebar-expanded));
 }
 
 #app {
