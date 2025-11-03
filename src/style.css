@@ -9,6 +9,13 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+@theme {
+    --sidebar-expanded: 304px;
+    --sidebar-compressed: 80px;
+    --content-sidebar-compressed: calc(100vw - var(--sidebar-compressed));
+    --content-sidebar-expanded: calc(100vw - var(--sidebar-expanded));
+}
+
 #app {
     @apply w-full;
 }
