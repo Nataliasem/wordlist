@@ -8,29 +8,30 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .js,.vue --ignore-pattern .gitignore src",
-    "type-check": "vue-tsc --noEmit"
+    "type-check": "vue-tsc --noEmit",
+    "test": "vitest --run"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
     "@vueuse/core": "^14.1.0",
     "oh-vue-icons": "^1.0.0-rc3",
     "tailwindcss": "^4.1.18",
-    "vue": "^3.5.25",
+    "vue": "^3.5.26",
     "vue-awesome-paginate": "^1.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
-    "@typescript-eslint/eslint-plugin": "^8.50.0",
-    "@typescript-eslint/parser": "^8.50.0",
+    "@typescript-eslint/eslint-plugin": "^8.51.0",
+    "@typescript-eslint/parser": "^8.51.0",
     "@vitejs/plugin-vue": "^6.0.3",
     "@vue/eslint-config-typescript": "^14.6.0",
     "eslint": "^9.39.2",
     "eslint-plugin-vue": "^10.6.2",
     "globals": "^16.5.0",
-    "typescript-eslint": "^8.50.0",
+    "typescript-eslint": "^8.51.0",
     "vite": "^7.3.0",
     "vite-bundle-analyzer": "^1.3.2",
     "vitest": "^4.0.16",
-    "vue-tsc": "^3.1.8"
+    "vue-tsc": "^3.2.1"
   }
 }
