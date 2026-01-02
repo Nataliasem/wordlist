@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppTableHead from './AppTableHead.vue'
-import { computed, defineExpose, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useTableRows } from '@/composables'
 import { TableRow } from '@/types'
 

@@ -21,7 +21,7 @@ export default defineConfig({
             all: true,
             provider: 'v8',
             reporter: ['text'],
-            include: ['src/**/*.ts'],
+            include: ['src/**/*.vue', 'src/**/*.ts', 'src/**/*.js'],
             exclude: ['node_modules/', 'dist/'],
         },
     }

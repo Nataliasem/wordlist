@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemplateRef, defineExpose } from 'vue'
+import { useTemplateRef } from 'vue'
 import { useFieldValidation } from '@/composables'
 
 const model = defineModel<string>()
