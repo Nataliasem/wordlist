@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppSearchInput from '@/components/common/AppSearchInput.vue'
-import CategoryItem from './CategoryItem.vue'
+import CategoryItems from './CategoryItems.vue'
 import { useCategoryFetch, useExpanded } from '@/composables'
 import { MessageType } from '@/constants'
 import { reloadPage } from '@/utils'
@@ -64,7 +64,7 @@ const { isExpanded } = useExpanded()
         </span>
       </p>
 
-      <CategoryItem
+      <CategoryItems
         v-else
         :categories="categories"
         @delete-category="removeCategory"
