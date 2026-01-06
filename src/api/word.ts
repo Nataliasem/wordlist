@@ -61,7 +61,6 @@ export const getWordlist = async (params: WordListRequestParams): Promise<Word[]
 }
 
 export const getWordlistByCategory = async (categoryId: number, queryParams?: WordQueryParams): Promise<Word[]> => {
-  console.log(categoryId)
     const url = setWordQueryParams(`${WORD_URL}/categories/${categoryId}`, queryParams)
     const response = await fetch(url)
     if (response.ok) {
