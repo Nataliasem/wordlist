@@ -17,7 +17,7 @@ describe('setQueryParams utility function', () => {
         const result = setWordQueryParams(baseUrl, queryParams) as URL
 
         expect(result instanceof URL).toBe(true)
-        expect(result.searchParams.get('limit')).toBe(10)
+        expect(result.searchParams.get('limit')).toBe('10')
         expect(result.toString()).toBe(`${baseUrl}?limit=10`)
     })
 
@@ -32,7 +32,7 @@ describe('setQueryParams utility function', () => {
         const result = setWordQueryParams(baseUrl, queryParams) as URL
 
         expect(result instanceof URL).toBe(true)
-        expect(result.searchParams.get('limit')).toBe(10)
+        expect(result.searchParams.get('limit')).toBe('10')
         expect(result.searchParams.get('word')).toBe('app')
         expect(result.searchParams.get('sortColumn')).toBe('word')
         expect(result.searchParams.get('sortDirection')).toBe('asc')
@@ -47,9 +47,9 @@ describe('setQueryParams utility function', () => {
         const result = setWordQueryParams(baseUrl, queryParams) as URL
 
         expect(result instanceof URL).toBe(true)
-        expect(result.searchParams.get('limit')).toBe(10)
+        expect(result.searchParams.get('limit')).toBe('10')
         expect(result.searchParams.get('word')).toBeNull()
-        expect(result.toString()).toBe(`${baseUrl}?limit=1`)
+        expect(result.toString()).toBe(`${baseUrl}?limit=10`)
     })
 
     it('should handle undefined values by skipping them', () => {
@@ -60,9 +60,9 @@ describe('setQueryParams utility function', () => {
         const result = setWordQueryParams(baseUrl, queryParams) as URL
 
         expect(result instanceof URL).toBe(true)
-        expect(result.searchParams.get('limit')).toBe(10)
+        expect(result.searchParams.get('limit')).toBe('10')
         expect(result.searchParams.get('word')).toBeNull()
-        expect(result.toString()).toBe(`${baseUrl}?limit=1`)
+        expect(result.toString()).toBe(`${baseUrl}?limit=10`)
     })
 
     it('should handle numeric values correctly', () => {
@@ -72,7 +72,7 @@ describe('setQueryParams utility function', () => {
         const result = setWordQueryParams(baseUrl, queryParams) as URL
 
         expect(result instanceof URL).toBe(true)
-        expect(result.searchParams.get('offset')).toBe(10)
+        expect(result.searchParams.get('offset')).toBe('10')
         expect(result.toString()).toBe(`${baseUrl}?offset=10`)
     })
 
@@ -83,7 +83,7 @@ describe('setQueryParams utility function', () => {
 
         expect(result instanceof URL).toBe(true)
         expect(result.searchParams.get('existing')).toBe('param')
-        expect(result.searchParams.get('limit')).toBe(10)
+        expect(result.searchParams.get('limit')).toBe('10')
         expect(result.toString()).toBe(`${baseUrl}?existing=param&limit=10`)
     })
 
@@ -94,19 +94,18 @@ describe('setQueryParams utility function', () => {
         const result = setWordQueryParams(baseUrl, queryParams) as URL
 
         expect(result instanceof URL).toBe(true)
-        expect(result.searchParams.get('search')).toBe('test & value')
-        expect(result.toString()).toBe(`${baseUrl}?search=test%20%26%20value`)
+        expect(result.searchParams.get('word')).toBe('test & value')
+        expect(result.toString()).toBe(`${baseUrl}?word=test+%26+value`)
     })
 
-    it('should handle duplicate parameter names by appending values', () => {
+    it('should not append duplicated params', () => {
         const queryParams: WordQueryParams = {
-            word: 'tech',
             word: 'programming'
         }
-        const result = setWordQueryParams(baseUrl, queryParams as WordQueryParams) as URL
+        const result = setWordQueryParams(`${baseUrl}?word=tech`, queryParams as WordQueryParams) as URL
 
         expect(result instanceof URL).toBe(true)
-        expect(result.searchParams.getAll('tag')).toEqual(['tech', 'programming'])
-        expect(result.toString()).toBe(`${baseUrl}?tag=tech&tag=programming`)
+        expect(result.searchParams.getAll('word')).toEqual(['programming'])
+        expect(result.toString()).toBe(`${baseUrl}?word=programming`)
     })
 })
