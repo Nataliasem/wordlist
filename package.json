@@ -9,11 +9,12 @@
     "preview": "vite preview",
     "lint": "eslint --ext .js,.vue --ignore-pattern .gitignore src",
     "type-check": "vue-tsc --noEmit",
-    "test": "vitest --run",
+    "test": "vitest",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
+    "@vue/test-utils": "^2.4.6",
     "@vueuse/core": "^14.1.0",
     "oh-vue-icons": "^1.0.0-rc3",
     "tailwindcss": "^4.1.18",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "@types/node": "^25.0.3",
     "@typescript-eslint/eslint-plugin": "^8.51.0",
     "@typescript-eslint/parser": "^8.51.0",
     "@vitejs/plugin-vue": "^6.0.3",

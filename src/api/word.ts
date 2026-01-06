@@ -1,20 +1,6 @@
 import { WORD_URL } from '@/constants'
+import { setWordQueryParams } from '@/utils'
 import { NumId, UpdatedWord, Word, WordQueryParams } from '@/types'
-
-type WordQueryParamsKey = keyof WordQueryParams
-const setQueryParams = (rawUrl: string, queryParams?: WordQueryParams): string | URL => {
-    if (!queryParams) return rawUrl
-
-    const url = new URL(rawUrl)
-    const keys = Object.keys(queryParams) as WordQueryParamsKey[]
-    keys.forEach(key => {
-        if (['', undefined].includes(queryParams[key] as WordQueryParamsKey)) {
-            return
-        }
-        url.searchParams.append(key, queryParams[key] as WordQueryParamsKey)
-    })
-    return url
-}
 
 export const create = async (word: UpdatedWord): Promise<void> => {
     await fetch(`${WORD_URL}`, {
@@ -75,7 +61,7 @@ export const getWordlist = async (params: WordListRequestParams): Promise<Word[]
 }
 
 export const getWordlistByCategory = async (categoryId: number, queryParams?: WordQueryParams): Promise<Word[]> => {
-    const url = setQueryParams(`${WORD_URL}/categories/${categoryId}`, queryParams)
+    const url = setWordQueryParams(`${WORD_URL}/categories/${categoryId}`, queryParams)
     const response = await fetch(url)
     if (response.ok) {
         return await response.json()
@@ -85,7 +71,7 @@ export const getWordlistByCategory = async (categoryId: number, queryParams?: Wo
 }
 
 export const getWordlistOrphans = async (queryParams?: WordQueryParams): Promise<Word[]> => {
-    const url = setQueryParams(`${WORD_URL}/categories/orphan`, queryParams)
+    const url = setWordQueryParams(`${WORD_URL}/categories/orphan`, queryParams)
     const response = await fetch(url)
     if (response.ok) {
         return await response.json()
@@ -106,5 +92,3 @@ export const changeCategory = async (categoryId: number | null, updatedWords: nu
         })
     })
 }
-
-
