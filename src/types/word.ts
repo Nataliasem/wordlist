@@ -19,5 +19,5 @@ export interface UpdatedWord extends Omit<Word, 'id' | 'category'> {
 export type WordStringKeys = 'word' | 'transcription' | 'translation' | 'definition'
 
 export interface WordQueryParams extends QueryParams {
-   word: string
+   word?: string
 }
