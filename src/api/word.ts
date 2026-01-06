@@ -92,5 +92,3 @@ export const changeCategory = async (categoryId: number | null, updatedWords: nu
         })
     })
 }
-
-
