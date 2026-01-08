@@ -86,9 +86,9 @@ const navigateDown = async (currentIndex: number) => {
         :key="String(item.id)"
         :tabindex="index"
         class="outline-none"
-        @click="onSelectCategory"
-        @focus="onSelectCategory"
-        @keyup.enter="toggleUpdatingMode"
+        @click="onSelectCategory(item)"
+        @focus="onSelectCategory(item)"
+        @keyup.enter="toggleUpdatingMode(item)"
         @keyup.up="navigateUp(index)"
         @keyup.down="navigateDown(index)"
       >
@@ -142,7 +142,7 @@ const navigateDown = async (currentIndex: number) => {
                 />
               </button>
               <button
-                data-test-id="open-modal-button"
+                data-test-id="open-confirm-deleting-modal-button"
                 type="button"
                 class="px-1 cursor-pointer hover:text-purple-800"
                 @click.stop="openModal"

@@ -1,5 +1,6 @@
-import { mount, config } from '@vue/test-utils'
+import { mount, config, flushPromises } from '@vue/test-utils'
 import CategoryItems from './CategoryItems.vue'
+import AppModal from '@/components/common/AppModal.vue'
 import { WITHOUT_CATEGORY_NAME } from '@/constants'
 
 config.global.stubs['v-icon'] = {
@@ -42,8 +43,8 @@ describe('CategoryItems.vue', () => {
     const actions = wrapper.findAll('[data-test-id="category-actions"]')
     expect(actions).length(1)
 
-    wrapper.get('[data-test-id="toggle-updating-mode-button"]')
-    wrapper.get('[data-test-id="open-modal-button"]')
+    expect(wrapper.find('[data-test-id="toggle-updating-mode-button"]').exists()).toBe(true)
+    expect(wrapper.find('[data-test-id="open-confirm-deleting-modal-button"]').exists()).toBe(true)
   })
 
   it('should not render action buttons if category id is null', async () => {
@@ -58,6 +59,18 @@ describe('CategoryItems.vue', () => {
     expect(actions).length(0)
 
     expect(() => wrapper.get('[data-test-id="toggle-updating-mode-button"]')).toThrowError()
-    expect(() => wrapper.get('[data-test-id="open-modal-button"]')).toThrowError()
+    expect(() => wrapper.get('[data-test-id="open-confirm-deleting-modal-button"]')).toThrowError()
+  })
+
+  it('opens modal to confirm deleting category', async () => {
+    const wrapper = mount(CategoryItems, {
+      props: {
+        categories: testCategories,
+      }
+    });
+
+    await wrapper.get('[data-test-id="open-confirm-deleting-modal-button"]').trigger('click');
+    await flushPromises();
+    expect(wrapper.findComponent(AppModal).exists()).toBe(true);
   })
 })
