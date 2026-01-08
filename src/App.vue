@@ -11,6 +11,7 @@ const { isExpanded } = useExpanded()
     <aside class="fixed h-full z-1000">
       <div class="h-16 border-b border-gray-200 flex items-center pl-4">
         <button
+          data-test-id="expand-menu-button"
           class="app-button app-button__bordered"
           type="button"
           @click="isExpanded = !isExpanded"
