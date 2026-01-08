@@ -9,7 +9,27 @@ const { isExpanded } = useExpanded()
 <template>
   <div>
     <aside class="fixed h-full z-1000">
-      <CategoryList />
+      <div class="h-16 border-b border-gray-200 flex items-center pl-4">
+        <button
+          class="app-button app-button__bordered"
+          type="button"
+          @click="isExpanded = !isExpanded"
+        >
+          <v-icon
+            :name="isExpanded ? 'ri-arrow-left-line' : 'ri-arrow-right-line'"
+            :scale="1.3"
+            title="toggle category list"
+            fill="purple"
+          />
+        </button>
+      </div>
+
+      <div
+        class="h-full border-r border-gray-200 transition-[width] duration-200"
+        :class="isExpanded ? 'w-(--sidebar-expanded)' : 'w-(--sidebar-compressed)'"
+      >
+        <CategoryList v-if="isExpanded" />
+      </div>
     </aside>
 
     <div
