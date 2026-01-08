@@ -9,7 +9,7 @@ const { isExpanded } = useExpanded()
 <template>
   <div>
     <aside class="fixed h-full z-1000">
-      <CategoryList data-test-id="category-list" />
+      <CategoryList />
     </aside>
 
     <div
@@ -24,7 +24,7 @@ const { isExpanded } = useExpanded()
       </nav>
 
       <main>
-        <WordList data-test-id="word-list" />
+        <WordList />
       </main>
     </div>
   </div>
