@@ -1,7 +1,7 @@
-import { computed, ref } from 'vue'
+import { computed, ComputedRef, ref } from 'vue'
 import { useCustomFetch, useSearch, useSelectedCategory } from '@/composables'
 import { getCategories } from '@/api/category'
-import { FETCH_CATEGORY_MESSAGE } from '@/constants'
+import { FETCH_CATEGORY_MESSAGE, MessageType } from '@/constants'
 import { Category } from '@/types'
 import type { Ref } from 'vue'
 import { create, update, remove } from '@/api/category'
@@ -9,7 +9,23 @@ import { watchDebounced } from '@vueuse/core'
 
 const categories: Ref<Category[]> = ref([])
 
-export function useCategoryFetch() {
+export interface UseCategoryFetchReturn {
+  fetchMessage: ComputedRef<{
+    type: MessageType;
+    text: string;
+  } | null>,
+  searchString: Ref<string>,
+  clearSearch: () => void,
+  isEmpty: ComputedRef<boolean>,
+  hasError: Ref<boolean>,
+  categories: Ref<Category[]>,
+  fetchCategories: () => Promise<void>,
+  createCategory: () => Promise<void>,
+  updateCategory: (category: Category) => Promise<void>,
+  removeCategory: () => Promise<void>
+}
+
+export function useCategoryFetch(): UseCategoryFetchReturn {
     const {
         searchString,
         hasActiveSearch,

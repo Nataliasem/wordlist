@@ -11,15 +11,17 @@ import { useSearch } from './useSearch'
 import { useExpanded } from './useExpanded'
 
 export {
-    useFormValidation,
-    useFieldValidation,
-    useCategoryFetch,
-    useSelectedCategory,
-    useWordFetch,
-    useWordView,
-    useTableRows,
-    useCustomFetch,
-    useModal,
-    useSearch,
-    useExpanded
+  useFormValidation,
+  useFieldValidation,
+  useCategoryFetch,
+  useSelectedCategory,
+  useWordFetch,
+  useWordView,
+  useTableRows,
+  useCustomFetch,
+  useModal,
+  useSearch,
+  useExpanded
 }
+
+export type UseCategoryFetchReturn = ReturnType<typeof useCategoryFetch>

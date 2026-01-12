@@ -35,8 +35,11 @@ const {
       v-if="fetchMessage"
       class="w-64 app-message"
     >
-      <span>{{ fetchMessage.text }}</span>
-      <span v-if="fetchMessage.type === MessageType.Error">
+      <span data-test-id="fetch-message-text">{{ fetchMessage.text }}</span>
+      <span
+        v-if="fetchMessage.type === MessageType.Error"
+        data-test-id="reload-page-link"
+      >
         Please <a @click="reloadPage">reload the page</a>.
       </span>
     </p>
