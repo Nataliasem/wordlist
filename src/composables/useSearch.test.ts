@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { ref } from 'vue'
 import { useSearch } from './useSearch'
 
 describe('useSearch composable', () => {
@@ -35,20 +34,16 @@ describe('useSearch composable', () => {
   })
 
   it('should update hasActiveSearch when search string changes', () => {
-    // Initially false
     expect(result.hasActiveSearch.value).toBe(false)
 
-    // After setting search string
     result.searchString.value = 'test'
     expect(result.hasActiveSearch.value).toBe(true)
 
-    // After clearing
     result.clearSearch()
     expect(result.hasActiveSearch.value).toBe(false)
   })
 
   it('should have reactive hasActiveSearch computed property', async () => {
-    // Test reactivity by changing the search string
     result.searchString.value = 'a'
     expect(result.hasActiveSearch.value).toBe(true)
 

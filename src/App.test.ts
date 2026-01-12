@@ -1,34 +1,15 @@
-import { mount } from '@vue/test-utils'
+import { mount, config } from '@vue/test-utils'
 import App from './App.vue'
 import CategoryList from './components/category/CategoryList.vue'
 import WordList from './components/word/WordList.vue'
-import { useExpanded } from './composables'
-import { ref } from "vue";
 
-vi.mock('@/composables', () => ({
-  useExpanded: vi.fn()
-}))
+config.global.stubs['v-icon'] = {
+  template: '<div class="stubbed-v-icon" />'
+}
 
 describe('App.vue', () => {
-  const isExpandedDefault = ref(true)
-  const mountComponent = (isExpanded = isExpandedDefault) => {
-    vi.mocked(useExpanded).mockReturnValue({
-      isExpanded: isExpanded
-    })
-
-
-    return mount(App, {
-      global: {
-        stubs: {
-          CategoryList: true,
-          WordList: true
-        }
-      }
-    })
-  }
-
   it('renders the component', () => {
-    const wrapper = mountComponent()
+    const wrapper = mount(App)
 
     expect(wrapper.exists()).toBe(true)
     expect(wrapper.find('aside').exists()).toBe(true)
@@ -37,17 +18,17 @@ describe('App.vue', () => {
   })
 
   it('renders CategoryList component', () => {
-    const wrapper = mountComponent()
+    const wrapper = mount(App)
     expect(wrapper.findComponent(CategoryList).exists()).toBe(true)
   })
 
   it('renders WordList component', () => {
-    const wrapper = mountComponent()
+    const wrapper = mount(App)
     expect(wrapper.findComponent(WordList).exists()).toBe(true)
   })
 
   it('displays the correct application title', () => {
-    const wrapper = mountComponent()
+    const wrapper = mount(App)
     const title = wrapper.find('h1')
 
     expect(title.exists()).toBe(true)
@@ -57,7 +38,7 @@ describe('App.vue', () => {
   })
 
   it('renders navigation bar with correct styling', () => {
-    const wrapper = mountComponent()
+    const wrapper = mount(App)
     const nav = wrapper.find('nav')
 
     expect(nav.exists()).toBe(true)
@@ -70,8 +51,33 @@ describe('App.vue', () => {
     expect(nav.classes()).toContain('justify-end')
   })
 
+  it('renders components properly when menu is expanded', () => {
+    const wrapper = mount(App)
+    expect(wrapper.findComponent(CategoryList).exists()).toBe(true)
+    expect(wrapper.findComponent(WordList).exists()).toBe(true)
+
+    const contentContainer = wrapper.find('[data-test-id="content-wrapper"]')
+    expect(contentContainer.classes()).toContain('lg:w-(--content-sidebar-expanded)')
+    expect(contentContainer.classes()).toContain('lg:ml-(--sidebar-expanded)')
+  })
+
+  it('renders components properly when menu is compressed', async () => {
+    const wrapper = mount(App)
+
+    await wrapper.find('[data-test-id="expand-menu-button"]').trigger('click')
+
+    expect(wrapper.findComponent(CategoryList).exists()).toBe(false)
+    expect(wrapper.findComponent(WordList).exists()).toBe(true)
+
+    const contentContainer = wrapper.find('[data-test-id="content-wrapper"]')
+    expect(contentContainer.classes()).not.toContain('lg:w-(--content-sidebar-expanded)')
+    expect(contentContainer.classes()).not.toContain('lg:ml-(--sidebar-expanded)')
+    expect(contentContainer.classes()).toContain('w-(--content-sidebar-compressed)')
+    expect(contentContainer.classes()).toContain('ml-(--sidebar-compressed)')
+  })
+
   it('applies correct classes to main content container', () => {
-    const wrapper = mountComponent()
+    const wrapper = mount(App)
     const contentContainer = wrapper.find('[data-test-id="content-wrapper"]')
 
     expect(contentContainer.classes()).toContain('fixed')
@@ -82,27 +88,8 @@ describe('App.vue', () => {
     expect(contentContainer.classes()).toContain('duration-200')
   })
 
-  it('applies expanded classes when isExpanded is true', () => {
-    const wrapper = mountComponent(true)
-    const contentContainer = wrapper.find('[data-test-id="content-wrapper"]')
-
-    expect(contentContainer.classes()).toContain('lg:w-(--content-sidebar-expanded)')
-    expect(contentContainer.classes()).toContain('lg:ml-(--sidebar-expanded)')
-  })
-
-  it('does not apply expanded classes when isExpanded is false', () => {
-    const isExpanded = ref(false)
-    const wrapper = mountComponent(isExpanded)
-    const contentContainer = wrapper.find('[data-test-id="content-wrapper"]')
-
-    expect(contentContainer.classes()).not.toContain('lg:w-(--content-sidebar-expanded)')
-    expect(contentContainer.classes()).not.toContain('lg:ml-(--sidebar-expanded)')
-    expect(contentContainer.classes()).toContain('w-(--content-sidebar-compressed)')
-    expect(contentContainer.classes()).toContain('ml-(--sidebar-compressed)')
-  })
-
   it('renders sidebar as fixed with correct z-index', () => {
-    const wrapper = mountComponent()
+    const wrapper = mount(App)
     const aside = wrapper.find('aside')
 
     expect(aside.exists()).toBe(true)
@@ -111,15 +98,8 @@ describe('App.vue', () => {
     expect(aside.classes()).toContain('z-1000')
   })
 
-  it('passes correct props to child components', () => {
-    const wrapper = mountComponent()
-
-    expect(wrapper.findComponent(CategoryList).exists()).toBe(true)
-    expect(wrapper.findComponent(WordList).exists()).toBe(true)
-  })
-
   it('maintains proper layout structure', () => {
-    const wrapper = mountComponent()
+    const wrapper = mount(App)
 
     const aside = wrapper.find('aside')
     const mainContainer = wrapper.find('div > div')
