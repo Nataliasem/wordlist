@@ -1,78 +1,52 @@
 <script setup lang="ts">
-import { defineAsyncComponent, computed, nextTick, type Ref, ref } from 'vue'
-import { useSelectedCategory } from '@/composables'
-import { useModal } from '@/composables'
-import { Category } from '@/types'
+import { defineAsyncComponent, ref } from "vue";
+import { useSelectedCategory } from "@/composables";
+import { useUpdatedCategory } from "@/composables/category/useUpdatedCategory";
+import { useModal } from "@/composables";
+import { Category } from "@/types";
+import CategoryItem from "./CategoryItem.vue";
 
-const AppModal = defineAsyncComponent(() => import('@/components/common/AppModal.vue'))
+const AppModal = defineAsyncComponent(() => import("@/components/common/AppModal.vue"));
 const props = defineProps<{
   categories: Category[]
-}>()
+}>();
 
 const emit = defineEmits<{
-  'update-category': [category: Category | null]
-  'delete-category': []
-}>()
+  "update-category": [category: Category | null]
+  "delete-category": []
+}>();
 
-const { selectedCategoryId, selectedCategoryName, selectCategory } = useSelectedCategory()
-const { isModalOpen, closeModal, openModal } = useModal()
-
-// Use function template refs because an input element is initially hidden
-const updatedCategoryInputRef = ref<HTMLInputElement | null>(null)
-const updatedCategory: Ref<Category | null> = ref(null)
-const updatedCategoryId = computed(() => {
-  return updatedCategory.value?.id || null
-})
+const { selectedCategoryId, selectedCategoryName, selectCategory } = useSelectedCategory();
+const { updatedCategoryId, toggleUpdatingMode, } = useUpdatedCategory();
+const { isModalOpen, closeModal, openModal: openConfirmDeleteModal } = useModal();
 
 const onSelectCategory = (category: Category) => {
-  if ([selectedCategoryId, updatedCategory.value?.id].includes(category.id)) {
-    return
+  if ([selectedCategoryId.value, updatedCategoryId.value].includes(category.id)) {
+    return;
   }
-  selectCategory(category)
-  toggleUpdatingMode(null)
-}
-const toggleUpdatingMode = async (category: Category | null) => {
-  if (!category || !category.id) {
-    updatedCategory.value = null
-    return
-  }
+  selectCategory(category);
+  toggleUpdatingMode(null);
+};
 
-  // this category is already in updating mode - do nothing
-  if (category.id === updatedCategory.value?.id) {
-    return
-  }
-
-  updatedCategory.value = { ...category }
-  await nextTick()
-  if (updatedCategoryInputRef.value) {
-    updatedCategoryInputRef.value.focus()
-  }
-}
-
-const updateCategoryHandler = () => {
-  emit('update-category', updatedCategory.value)
-  toggleUpdatingMode(null)
-}
-
-const deleteCategoryHandler = () => {
-  emit('delete-category')
-  closeModal()
-}
+const onDeleteCategory = () => {
+  emit("delete-category");
+  closeModal();
+};
 
 // Use function template refs because of re-rendering items when props changes
-const itemRefs = ref<Record<string, HTMLElement>>({})
+const itemRefs = ref<Record<string, HTMLElement>>({});
 const setRefs = (elementId: number | string | null, element: HTMLElement): void => {
-  const key = String(elementId)
-  itemRefs.value[key] = element
-}
+  const key = String(elementId);
+  itemRefs.value[key] = element;
+};
 const navigateUp = async (currentIndex: number) => {
-  const prevElId = String(props.categories[currentIndex - 1]?.id)
-  itemRefs.value[prevElId]?.focus()
-}
+  const prevElId = String(props.categories[currentIndex - 1]?.id);
+  itemRefs.value[prevElId]?.focus();
+};
 const navigateDown = async (currentIndex: number) => {
-  const nextElId = String(props.categories[currentIndex + 1]?.id)
-  itemRefs.value[nextElId]?.focus()
-}
+  const nextElId = String(props.categories[currentIndex + 1]?.id);
+  itemRefs.value[nextElId]?.focus();
+};
 </script>
 
 <template>
@@ -92,69 +66,10 @@ const navigateDown = async (currentIndex: number) => {
         @keyup.up="navigateUp(index)"
         @keyup.down="navigateDown(index)"
       >
-        <div
-          class="category-name"
-          :class="{
-            'selected' : item.id === selectedCategoryId,
-            'divided': item.id === null
-          }"
-        >
-          <div v-if="updatedCategory && updatedCategoryId === item.id">
-            <input
-              :id="`updated-category-${updatedCategoryId}`"
-              :ref="(el) => updatedCategoryInputRef = el as HTMLInputElement"
-              v-model="updatedCategory.name"
-              class="category-input"
-              type="text"
-              name="update-category"
-            >
-            <button
-              type="button"
-              class="px-1 cursor-pointer hover:text-purple-800"
-              @click.stop="updateCategoryHandler"
-            >
-              <v-icon
-                name="ri-checkbox-line"
-                title="Update category"
-              />
-            </button>
-          </div>
-
-          <template v-else>
-            <p class="overflow-hidden text-ellipsis" data-test-id="category-name">
-              {{ item.name }}
-            </p>
-
-            <div
-              v-if="item.id !== null"
-              data-test-id="category-actions"
-              class="category-actions"
-            >
-              <button
-                data-test-id="toggle-updating-mode-button"
-                type="button"
-                class="px-1 cursor-pointer hover:text-purple-800"
-                @click.stop="toggleUpdatingMode(item as Category)"
-              >
-                <v-icon
-                  name="ri-pencil-line"
-                  title="Edit category"
-                />
-              </button>
-              <button
-                data-test-id="open-confirm-deleting-modal-button"
-                type="button"
-                class="px-1 cursor-pointer hover:text-purple-800"
-                @click.stop="openModal"
-              >
-                <v-icon
-                  name="ri-delete-bin-2-line"
-                  title="Delete category"
-                />
-              </button>
-            </div>
-          </template>
-        </div>
+        <CategoryItem
+          :category="item"
+          @delete-category="openConfirmDeleteModal"
+        />
       </li>
     </ul>
   </div>
@@ -162,7 +77,7 @@ const navigateDown = async (currentIndex: number) => {
   <AppModal
     v-if="isModalOpen"
     :show="isModalOpen"
-    @confirm="deleteCategoryHandler"
+    @confirm="onDeleteCategory"
     @cancel="closeModal"
   >
     <template #header>

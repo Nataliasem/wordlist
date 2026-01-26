@@ -2,6 +2,7 @@ import { useFormValidation } from './form/useFormValidation'
 import { useFieldValidation } from './form/useFieldValidation'
 import { useCategoryFetch } from './category/useCategoryFetch'
 import { useSelectedCategory } from './category/useSelectedCategory'
+import { useUpdatedCategory } from './category/useUpdatedCategory'
 import { useWordFetch } from './word/useWordFetch'
 import { useWordView } from './word/useWordView'
 import { useTableRows } from './table/useTableRows'
@@ -15,6 +16,7 @@ export {
   useFieldValidation,
   useCategoryFetch,
   useSelectedCategory,
+  useUpdatedCategory,
   useWordFetch,
   useWordView,
   useTableRows,

@@ -47,8 +47,8 @@ const {
     <CategoryItems
       v-else
       :categories="categories"
-      @delete-category="removeCategory"
-      @update-category="updateCategory"
+      @delete-category='removeCategory'
+      @update-category='updateCategory'
     />
   </div>
 </template>
