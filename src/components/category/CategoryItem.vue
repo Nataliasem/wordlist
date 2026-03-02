@@ -20,7 +20,6 @@ const {
   toggleUpdatingMode,
 } = useUpdatedCategory();
 
-
 const updateCategoryHandler = () => {
   emit('update-category', updatedCategory.value)
   toggleUpdatingMode(null)

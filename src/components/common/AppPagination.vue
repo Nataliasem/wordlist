@@ -21,7 +21,7 @@ const { itemsPerPage = 10, maxPagesShown = 5} = defineProps<Props>()
   />
 </template>
 
-<style>
+<style scoped>
 @reference "tailwindcss";
 
 .pagination-container {

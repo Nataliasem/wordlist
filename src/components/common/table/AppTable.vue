@@ -116,7 +116,7 @@ defineExpose({
   </div>
 </template>
 
-<style>
+<style scoped>
 .table-scrollable-container {
   height: calc(100vh - 256px);
   overflow: scroll;

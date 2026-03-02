@@ -21,7 +21,7 @@ export interface UseCategoryFetchReturn {
   categories: Ref<Category[]>,
   fetchCategories: () => Promise<void>,
   createCategory: () => Promise<void>,
-  updateCategory: (category: Category) => Promise<void>,
+  updateCategory: (category: Category | null) => Promise<void>,
   removeCategory: () => Promise<void>
 }
 
@@ -68,7 +68,8 @@ export function useCategoryFetch(): UseCategoryFetchReturn {
         clearSearch()
     }
 
-    const updateCategory = async (category: Category) => {
+    const updateCategory = async (category: Category | null) => {
+        if(!category) return;
         await update(category)
         await fetchCategories()
         selectCategory(category)
